@@ -1,0 +1,183 @@
+\documentclass[11pt,a4paper]{article}
+
+% --------------------
+% Packages
+% --------------------
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{parskip}
+
+% --------------------
+% Fonts & spacing
+% --------------------
+\setstretch{1.15}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --------------------
+% Header / Footer
+% --------------------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Machine Learning Engineer Interview}}
+\rhead{\textbf{Google}}
+\cfoot{\thepage}
+
+% --------------------
+% Custom commands
+% --------------------
+\newcommand{\interviewer}{\textbf{Interviewer:}}
+\newcommand{\candidate}{\textbf{Candidate:}}
+
+% --------------------
+% Document
+% --------------------
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Machine Learning Engineer Interview Conversation}}\\
+    \vspace{0.5em}
+    {\large Oral Technical Interview}
+\end{center}
+
+\vspace{1em}
+
+\interviewer\\
+Give me a brief overview of your background in machine learning.
+
+\candidate\\
+I have \textbf{7 years of experience} working in machine learning and data-driven systems. For the last \textbf{4 years}, I worked as a \textbf{Senior Machine Learning Engineer} on large-scale production models serving over \textbf{80 million users}. My work focused on model development, deployment, monitoring, and failure analysis in real-world environments.
+
+\vspace{1em}
+
+\interviewer\\
+Describe a machine learning system you built end to end.
+
+\candidate\\
+I designed and deployed a recommendation system for content ranking. It ingested user interaction events in real time, performed feature extraction using a mix of batch and streaming pipelines, trained gradient-boosted and deep learning models, and served predictions with a latency budget under \textbf{30 milliseconds}. The system processed approximately \textbf{1.5 million events per second} at peak.
+
+\vspace{1em}
+
+\interviewer\\
+How did you define success for that model?
+
+\candidate\\
+Success was measured using online metrics rather than offline accuracy alone. We tracked click-through rate, long-term engagement, and regression metrics tied to business outcomes. Offline metrics were used only as gating checks, not final decision criteria.
+
+\vspace{1em}
+
+\interviewer\\
+How do you handle training–serving skew?
+
+\candidate\\
+The same feature generation logic is shared between training and serving through a unified feature store. Features are versioned, and statistical checks compare training and serving distributions continuously. Any detected drift triggers alerts and automated rollbacks.
+
+\vspace{1em}
+
+\interviewer\\
+Explain the difference between bias and variance in practical terms.
+
+\candidate\\
+Bias represents systematic error caused by overly simplistic assumptions in the model. Variance represents sensitivity to noise in the training data. In production, high bias leads to consistently wrong predictions, while high variance causes unstable behavior under slight data changes.
+
+\vspace{1em}
+
+\interviewer\\
+How do you decide which model to deploy?
+
+\candidate\\
+Model selection is based on offline validation, followed by controlled online experiments. A model is deployed only if it shows statistically significant improvement in primary metrics without degrading secondary metrics such as latency or stability.
+
+\vspace{1em}
+
+\interviewer\\
+How do you handle concept drift?
+
+\candidate\\
+We monitor feature distributions and prediction confidence over time. Retraining is scheduled regularly, but we also trigger retraining when drift exceeds defined thresholds. For severe drift, the system falls back to a previously stable model.
+
+\vspace{1em}
+
+\interviewer\\
+Describe your approach to feature engineering.
+
+\candidate\\
+I prioritize features that are stable, interpretable, and cheap to compute. Complex features are introduced only when they demonstrate clear incremental value. Feature importance and ablation studies guide pruning decisions.
+
+\vspace{1em}
+
+\interviewer\\
+How do you ensure models are explainable?
+
+\candidate\\
+For inherently complex models, we use post-hoc explanation techniques such as feature attribution and sensitivity analysis. For high-risk decisions, we favor simpler models even if they are marginally less accurate.
+
+\vspace{1em}
+
+\interviewer\\
+What happens when a deployed model starts degrading silently?
+
+\candidate\\
+Silent degradation is detected through monitoring of downstream metrics rather than model scores alone. When detected, traffic is shifted to a fallback model while the root cause is investigated. Models are never treated as static artifacts.
+
+\vspace{1em}
+
+\interviewer\\
+How do you think about fairness in machine learning systems?
+
+\candidate\\
+Fairness constraints are defined at the problem level, not added afterward. We measure disparities across relevant subgroups and enforce thresholds during training and evaluation. Trade-offs are documented explicitly.
+
+\vspace{1em}
+
+\interviewer\\
+What is the biggest mistake teams make with machine learning systems?
+
+\candidate\\
+Over-optimizing offline metrics while ignoring deployment, monitoring, and failure modes. Most ML failures are systems failures, not algorithmic ones.
+
+\vspace{1em}
+
+\interviewer\\
+How do you debug a model behaving unexpectedly in production?
+
+\candidate\\
+I start by checking data freshness, feature distributions, and serving logs. If data is correct, I inspect recent changes to training data or code. Model parameters are rarely the first suspect.
+
+\vspace{1em}
+
+\interviewer\\
+How do you version and roll back models?
+
+\candidate\\
+Every model artifact, feature schema, and dataset snapshot is versioned. Rollbacks are automated and reversible within minutes. No model is deployed without a known-good fallback.
+
+\vspace{1em}
+
+\interviewer\\
+What trade-offs do you commonly face in ML system design?
+
+\candidate\\
+Accuracy versus latency, model complexity versus interpretability, and automation versus control. These trade-offs are resolved based on system constraints, not theoretical optimality.
+
+\vspace{1em}
+
+\interviewer\\
+What defines a well-engineered machine learning system?
+
+\candidate\\
+A system where models can fail without causing outages, performance degrades gracefully, and behavior is observable and explainable. If engineers can reason about it under pressure, it is well engineered.
+
+\vspace{2em}
+
+\interviewer\\
+That’s all. Thank you.
+
+\candidate\\
+Thank you.
+
+\end{document}
+

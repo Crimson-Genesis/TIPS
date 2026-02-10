@@ -1,0 +1,423 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+
+\geometry{a4paper, margin=1in}
+\hypersetup{colorlinks=true, urlcolor=blue, linkcolor=black}
+
+\title{Interview Interface: WebRTC-based Media Capture System}
+\author{MCA Minor Project}
+\date{January 2024}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+
+\subsection{Purpose and Scope}
+The interview interface provides real-time media capture capabilities for two-participant interview scenarios. The system captures separate audio streams for both candidate and interviewer, along with video from the candidate only. Media is transmitted through WebRTC to a FastAPI backend service that handles track registration and file storage.
+
+\subsection{System Boundaries}
+The interview interface is responsible for:
+\begin{itemize}
+\item Browser-based media capture through WebRTC
+\item Real-time transport to backend services
+\item Track labeling and identification
+\item Production of media artifacts for downstream processing
+\end{itemize}
+
+The interface does not perform:
+\begin{itemize}
+\item Audio or video processing
+\item Transcription or analysis
+\item User authentication beyond role selection
+\item Decision-making or evaluation logic
+\end{itemize}
+
+\subsection{Technical Constraints}
+\begin{itemize}
+\item Deployment on same Wi-Fi network
+\item Modern browser support (Chrome, Firefox, Safari)
+\item No TURN server requirement for LAN deployment
+\item Session duration limited to 2 hours maximum
+\end{itemize}
+
+\section{Role-Based User Interface Design}
+
+\subsection{Candidate Interface}
+
+\subsubsection{Media Capture Requirements}
+The candidate interface captures both audio and video streams:
+\begin{verbatim}
+const stream = await navigator.mediaDevices.getUserMedia({
+  audio: true,
+  video: {
+    width: { ideal: 1280 },
+    height: { ideal: 720 },
+    frameRate: { ideal: 30 }
+  }
+});
+\end{verbatim}
+
+\subsubsection{Interface Components}
+The candidate interface includes:
+\begin{itemize}
+\item Local video preview window
+\item Start/Stop session controls
+\item Audio activity indicator
+\item Connection status display
+\item Session timer
+\item Role confirmation display
+\end{itemize}
+
+\subsubsection{Track Identification}
+Candidate tracks are labeled as:
+\begin{itemize}
+\item \texttt{candidate\_audio}: Audio stream from candidate microphone
+\item \texttt{candidate\_video}: Video stream from candidate camera
+\end{itemize}
+
+\subsection{Interviewer Interface}
+
+\subsubsection{Media Capture Requirements}
+The interviewer interface captures audio only:
+\begin{verbatim}
+const stream = await navigator.mediaDevices.getUserMedia({
+  audio: {
+    sampleRate: 48000,
+    channelCount: 1
+  },
+  video: false
+});
+\end{verbatim}
+
+\subsubsection{Interface Components}
+The interviewer interface provides:
+\begin{itemize}
+\item Remote candidate video display
+\item Start/Stop session controls
+\item Dual audio activity indicators (self and remote)
+\item Connection status for all participants
+\item Session information display
+\end{itemize}
+
+\subsubsection{Track Identification}
+Interviewer tracks are labeled as:
+\begin{itemize}
+\item \texttt{interviewer\_audio}: Audio stream from interviewer microphone
+\end{itemize}
+
+\section{WebRTC Architecture}
+
+\subsection{Connection Model}
+The system implements a client-server topology:
+\begin{verbatim}
+Browser Client 1 (Candidate)      Browser Client 2 (Interviewer)
+        |                                   |
+        | WebRTC Connection                  | WebRTC Connection
+        |                                   |
+        +-------------------+---------------+
+                            |
+                    FastAPI + aiortc Backend
+                            |
+                    Media Storage & Track Registration
+\end{verbatim}
+
+\subsection{Signaling Protocol}
+Signaling occurs over WebSocket with defined message types:
+\begin{itemize}
+\item \texttt{join}: Session initiation with role and metadata
+\item \texttt{offer}: SDP offer from client browser
+\item \texttt{answer}: SDP response from server
+\item \texttt{ice-candidate}: ICE negotiation messages
+\item \texttt{track\_meta}: Track metadata for registration
+\item \texttt{session\_control}: Start/stop/termination signals
+\end{itemize}
+
+\subsection{Track Management Protocol}
+Each media track is registered with comprehensive metadata:
+\begin{verbatim}
+{
+  "type": "track_meta",
+  "role": "candidate",
+  "kind": "audio",
+  "track_id": "track_abc123def456",
+  "timestamp": 1704067200,
+  "sample_rate": 48000,
+  "codec": "opus"
+}
+\end{verbatim}
+
+\section{Media Capture and Separation}
+
+\subsection{Audio Processing Specifications}
+\begin{itemize}
+\item Separate audio tracks eliminate need for diarization
+\item Independent sample rate and format handling
+\item Backend receives raw PCM audio frames
+\item Timestamps applied at capture time for synchronization
+\item Buffer size: 20ms for low latency
+\end{itemize}
+
+\subsection{Video Processing Specifications}
+\begin{itemize}
+\item Video captured at 30fps, 1280x720 resolution
+\item H.264 codec for bandwidth efficiency
+\item Frame timestamps aligned with audio timeline
+\item Keyframe interval: 2 seconds
+\item Bitrate: 2 Mbps target, adaptive based on network
+\end{itemize}
+
+\subsection{Quality Assurance Measures}
+\begin{itemize}
+\item Audio sample rate: 48kHz standard
+\item Audio bit depth: 16-bit PCM
+\item Video aspect ratio: 16:9 maintained
+\item Audio signal-to-noise ratio: minimum 20dB
+\end{itemize}
+
+\section{Signaling Flow Implementation}
+
+\subsection{Connection Establishment Sequence}
+\begin{enumerate}
+\item Client opens WebSocket connection to FastAPI backend
+\item Client sends \texttt{join} message with role specification
+\item Server acknowledges and assigns unique session identifier
+\item Client creates \texttt{RTCPeerConnection} with configuration
+\item Client generates and sends SDP offer
+\item Server processes offer and creates SDP answer
+\item ICE candidate exchange completes connection
+\item Media tracks are added with metadata labeling
+\item Server confirms track registration success
+\end{enumerate}
+
+\subsection{Session State Management}
+Session states tracked in backend memory:
+\begin{itemize}
+\item \texttt{INITIALIZING}: Connection establishment in progress
+\item \texttt{CONNECTING}: ICE negotiation active
+\item \texttt{ACTIVE}: Media flowing normally
+\item \texttt{PAUSED}: Temporary suspension
+\item \texttt{TERMINATED}: Session completed
+\item \texttt{ERROR}: Connection failure detected
+\end{itemize}
+
+\subsection{Error Handling and Recovery}
+\begin{itemize}
+\item Automatic reconnection for network interruptions
+\item Graceful degradation for quality issues
+\item Session timeout after 5 minutes of inactivity
+\item Connection attempt limit: 3 retries with exponential backoff
+\item Fallback to lower quality on bandwidth issues
+\end{itemize}
+
+\section{Backend Integration}
+
+\subsection{FastAPI Service Architecture}
+The FastAPI backend provides core services:
+\begin{itemize}
+\item WebSocket endpoint: \texttt{/ws} for signaling
+\item Health check endpoint: \texttt{/health}
+\item Session management endpoints for administrative control
+\item Media track registration via aiortc integration
+\item File system storage for media artifacts
+\end{itemize}
+
+\subsection{Media Storage Pipeline}
+\begin{enumerate}
+\item Incoming media tracks received by aiortc
+\item Raw audio/video frames stored in memory buffers
+\item Periodic flushing to temporary files every 30 seconds
+\item Session completion triggers final file export:
+\begin{itemize}
+\item \texttt{candidate\_audio.wav}: 48kHz mono audio
+\item \texttt{interviewer\_audio.wav}: 48kHz mono audio  
+\item \texttt{candidate\_video.mp4}: H.264 encoded video
+\end{itemize}
+\item Session metadata exported as structured JSON
+\end{enumerate}
+
+\subsection{Data Export Format}
+Session metadata includes comprehensive information:
+\begin{verbatim}
+{
+  "session_id": "session_20240115_001",
+  "start_time": 1704067200,
+  "end_time": 1704070800,
+  "duration": 3600,
+  "participants": {
+    "candidate": {
+      "audio_track": "candidate_audio.wav",
+      "video_track": "candidate_video.mp4",
+      "audio_quality_score": 0.89,
+      "video_quality_score": 0.91
+    },
+    "interviewer": {
+      "audio_track": "interviewer_audio.wav",
+      "audio_quality_score": 0.93
+    }
+  },
+  "connection_stats": {
+    "total_bytes_received": 524288000,
+    "average_latency": 0.12,
+    "packet_loss_rate": 0.001
+  }
+}
+\end{verbatim}
+
+\section{Data Artifacts and Organization}
+
+\subsection{Media Files Specification}
+Each interview session produces three media files:
+\begin{itemize}
+\item \texttt{candidate\_audio.wav}: 48kHz mono PCM audio
+\item \texttt{interviewer\_audio.wav}: 48kHz mono PCM audio
+\item \texttt{candidate\_video.mp4}: H.264 video with AAC audio
+\end{itemize}
+
+\subsection{Metadata Files}
+\begin{itemize}
+\item \texttt{session\_meta.json}: Session information and track mapping
+\item \texttt{connection\_log.txt}: Connection events and timestamps
+\item \texttt{quality\_report.json}: Audio/video quality metrics
+\end{itemize}
+
+\subsection{File System Organization}
+Media files organized in hierarchical structure:
+\begin{verbatim}
+/sessions/
+  /session_20240115_001/
+    candidate_audio.wav
+    interviewer_audio.wav
+    candidate_video.mp4
+    session_meta.json
+    connection_log.txt
+    quality_report.json
+  /session_20240115_002/
+    ...
+\end{verbatim}
+
+\section{Technical Implementation Details}
+
+\subsection{Frontend Technology Stack}
+\begin{itemize}
+\item HTML5 with semantic markup and accessibility features
+\item CSS3 with flexbox for responsive layout
+\item Vanilla JavaScript for WebRTC implementation
+\item WebSocket API for bidirectional communication
+\item MediaDevices API for hardware access
+\end{itemize}
+
+\subsection{Backend Technology Stack}
+\begin{itemize}
+\item Python 3.10+ for compatibility with ML ecosystem
+\item FastAPI framework for async web services
+\item aiortc library for Python WebRTC implementation
+\item uvicorn ASGI server for production deployment
+\item AsyncIO for concurrent connection handling
+\end{itemize}
+
+\subsection{Network Configuration}
+\begin{itemize}
+\item Same Wi-Fi network for all participants (192.168.x.x subnet)
+\item Port 8000 for FastAPI service (configurable)
+\item No TURN server required for LAN deployment
+\item STUN server optional: \texttt{stun.l.google.com:19302}
+\item Network bandwidth requirement: minimum 5 Mbps upload per client
+\end{itemize}
+
+\section{Performance Requirements}
+
+\subsection{Latency Specifications}
+\begin{itemize}
+\item Audio end-to-end latency: under 200ms
+\item Video latency: under 300ms
+\item Connection establishment: under 5 seconds
+\item Session startup time: under 10 seconds
+\end{itemize}
+
+\subsection{Throughput Requirements}
+\begin{itemize}
+\item Audio bitrate: 64-128 kbps (Opus codec)
+\item Video bitrate: 1-3 Mbps (H.264 codec)
+\item Concurrent sessions: up to 5 on single machine
+\item Session duration support: up to 2 hours
+\end{itemize}
+
+\subsection{Reliability Metrics}
+\begin{itemize}
+\item Connection success rate: 99\% on LAN
+\item Media quality preservation: 95\% or higher
+\item Session completion rate: 98\% or higher
+\item Mean time between failures: 24 hours
+\end{itemize}
+
+\section{Limitations and Known Constraints}
+
+\subsection{Technical Limitations}
+\begin{itemize}
+\item No mobile device support
+\item Requires WebRTC-compatible browsers
+\item Limited to exactly 2 participants
+\item No automatic bandwidth optimization beyond basic adaptation
+\end{itemize}
+
+\subsection{Scope Boundaries}
+The interface explicitly does not handle:
+\begin{itemize}
+\item Audio/video transcoding or format conversion
+\item Real-time transcription or analysis
+\item User authentication or authorization systems
+\item Session recording management or archival
+\item Cloud deployment or multi-region scaling
+\end{itemize}
+
+\subsection{Deployment Constraints}
+\begin{itemize}
+\item Network latency affects synchronization quality
+\item Browser permissions required for media access
+\item File system space requirements: 1GB per hour of recording
+\item Processing overhead increases with session duration
+\end{itemize}
+
+\section{Success Criteria and Validation}
+
+\subsection{Functional Validation}
+The interface is considered successful when:
+\begin{itemize}
+\item Two laptops connect successfully on same network
+\item Candidate video appears clearly on interviewer screen
+\item Separate audio tracks maintained without mixing
+\item Media files saved correctly with proper labeling
+\item Backend logs confirm accurate track registration
+\item Session metadata captures all required information
+\end{itemize}
+
+\subsection{Quality Validation}
+\begin{itemize}
+\item Audio clarity sufficient for speech recognition
+\item Video quality adequate for behavioral analysis
+\item Timestamps synchronized within 100ms accuracy
+\item File corruption rate below 0.1\%
+\item Connection recovery time under 30 seconds
+\end{itemize}
+
+\section{Conclusion}
+
+The interview interface provides a robust foundation for media capture with precise separation of audio tracks and comprehensive metadata handling. The WebRTC-based architecture ensures low-latency communication while the FastAPI backend enables clean integration with downstream processing systems. The role-based interface design addresses the specific requirements of interview scenarios while maintaining technical simplicity appropriate for the project scope and constraints.
+
+The system successfully balances real-time performance requirements with production reliability, establishing a solid platform for interview intelligence applications. Clear separation of concerns between media capture and processing enables independent development and testing of system components while maintaining data integrity throughout the pipeline.
+
+\end{document}
