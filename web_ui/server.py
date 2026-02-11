@@ -4,22 +4,87 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import json
 import asyncio
-from aiortc import RTCPeerConnection, RTCSessionDescription, MediaStreamTrack, RTCIceCandidate
-from aiortc.contrib.media import MediaRecorder, MediaBlackhole
+from aiortc import (
+    RTCPeerConnection,
+    RTCSessionDescription,
+    MediaStreamTrack,
+    RTCIceCandidate,
+)
+from aiortc.contrib.media import MediaRecorder, MediaRelay
 from pathlib import Path
 import uuid
 import av
+import time
+from typing import Optional
+from fractions import Fraction
 
 app = FastAPI()
 
 recordings_dir = Path("recordings")
 recordings_dir.mkdir(exist_ok=True)
 
+
+class SynchronizedVideoTrack(MediaStreamTrack):
+    """
+    A video track that uses frame count for perfectly consistent timing.
+    """
+
+    kind = "video"
+
+    def __init__(self, track: MediaStreamTrack):
+        super().__init__()
+        self.track = track
+        self.frame_count = 0
+        self.fps = 30
+        self.time_base = Fraction(1, 90000)  # 90kHz for video
+
+    async def recv(self):
+        frame = await self.track.recv()
+
+        # Set PTS based on frame count for perfect 30fps timing
+        frame.pts = int(self.frame_count * 90000 / self.fps)
+        frame.time_base = self.time_base
+
+        self.frame_count += 1
+        return frame
+
+
+class SynchronizedAudioTrack(MediaStreamTrack):
+    """
+    An audio track that uses sample count for perfectly consistent timing.
+    """
+
+    kind = "audio"
+
+    def __init__(self, track: MediaStreamTrack):
+        super().__init__()
+        self.track = track
+        self.sample_count = 0
+        self.sample_rate = 48000
+        self.time_base = Fraction(1, 48000)  # 48kHz for audio
+
+    async def recv(self):
+        frame = await self.track.recv()
+
+        # Set PTS based on sample count
+        frame.pts = self.sample_count
+        frame.time_base = self.time_base
+
+        # Increment by actual samples in this frame
+        if hasattr(frame, "samples"):
+            self.sample_count += frame.samples
+        else:
+            self.sample_count += 960  # Default 20ms frame at 48kHz
+
+        return frame
+
+
 class RoomState:
     IDLE = "IDLE"
     INTERVIEWER_CONNECTED = "INTERVIEWER_CONNECTED"
     BOTH_CONNECTED = "BOTH_CONNECTED"
     RECORDING = "RECORDING"
+
 
 class Room:
     def __init__(self):
@@ -34,8 +99,12 @@ class Room:
         self.interviewer_audio_track = None
         self.candidate_audio_track = None
         self.candidate_video_track = None
+        self.normalized_candidate_video_track = None
+        self.normalized_interviewer_audio_track = None
+        self.normalized_candidate_audio_track = None
         self.session_id = None
         self.should_close = False
+        self.recording_start_time = None
 
     def reset(self):
         self.state = RoomState.IDLE
@@ -49,16 +118,19 @@ class Room:
         self.interviewer_audio_track = None
         self.candidate_audio_track = None
         self.candidate_video_track = None
+        self.normalized_candidate_video_track = None
+        self.normalized_interviewer_audio_track = None
+        self.normalized_candidate_audio_track = None
         self.session_id = None
         self.should_close = False
+        self.recording_start_time = None
+
 
 room = Room()
 
+
 async def broadcast_state():
-    state_msg = json.dumps({
-        "type": "state-update",
-        "state": room.state
-    })
+    state_msg = json.dumps({"type": "state-update", "state": room.state})
     if room.interviewer_ws:
         try:
             await room.interviewer_ws.send_text(state_msg)
@@ -70,11 +142,12 @@ async def broadcast_state():
         except:
             pass
 
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     role = None
-    
+
     try:
         while True:
             data = await websocket.receive_text()
@@ -83,53 +156,69 @@ async def websocket_endpoint(websocket: WebSocket):
 
             if msg_type == "join-interviewer":
                 if room.state != RoomState.IDLE:
-                    await websocket.send_text(json.dumps({"type": "error", "message": "Room occupied"}))
+                    await websocket.send_text(
+                        json.dumps({"type": "error", "message": "Room occupied"})
+                    )
                     await websocket.close()
                     return
-                
+
                 role = "interviewer"
                 room.interviewer_ws = websocket
                 room.interviewer_pc = RTCPeerConnection()
-                
+
                 @room.interviewer_pc.on("track")
                 def on_track(track):
                     if track.kind == "audio":
                         room.interviewer_audio_track = track
-                
+
                 @room.interviewer_pc.on("connectionstatechange")
                 async def on_conn_state():
-                    if room.interviewer_pc.connectionState == "failed":
+                    if (
+                        room.interviewer_pc
+                        and room.interviewer_pc.connectionState == "failed"
+                    ):
                         await cleanup_interviewer()
-                
+
                 room.state = RoomState.INTERVIEWER_CONNECTED
                 await broadcast_state()
-                await websocket.send_text(json.dumps({"type": "joined", "role": "interviewer"}))
+                await websocket.send_text(
+                    json.dumps({"type": "joined", "role": "interviewer"})
+                )
 
             elif msg_type == "join-candidate":
                 if room.state != RoomState.INTERVIEWER_CONNECTED:
-                    await websocket.send_text(json.dumps({"type": "error", "message": "Interviewer not connected"}))
+                    await websocket.send_text(
+                        json.dumps(
+                            {"type": "error", "message": "Interviewer not connected"}
+                        )
+                    )
                     await websocket.close()
                     return
-                
+
                 role = "candidate"
                 room.candidate_ws = websocket
                 room.candidate_pc = RTCPeerConnection()
-                
+
                 @room.candidate_pc.on("track")
                 def on_track(track):
                     if track.kind == "audio":
                         room.candidate_audio_track = track
                     elif track.kind == "video":
                         room.candidate_video_track = track
-                
+
                 @room.candidate_pc.on("connectionstatechange")
                 async def on_conn_state():
-                    if room.candidate_pc.connectionState == "failed":
+                    if (
+                        room.candidate_pc
+                        and room.candidate_pc.connectionState == "failed"
+                    ):
                         await cleanup_candidate()
-                
+
                 room.state = RoomState.BOTH_CONNECTED
                 await broadcast_state()
-                await websocket.send_text(json.dumps({"type": "joined", "role": "candidate"}))
+                await websocket.send_text(
+                    json.dumps({"type": "joined", "role": "candidate"})
+                )
 
             elif msg_type == "offer":
                 if role == "interviewer" and room.interviewer_pc:
@@ -137,31 +226,42 @@ async def websocket_endpoint(websocket: WebSocket):
                     await room.interviewer_pc.setRemoteDescription(offer)
                     answer = await room.interviewer_pc.createAnswer()
                     await room.interviewer_pc.setLocalDescription(answer)
-                    await websocket.send_text(json.dumps({
-                        "type": "answer",
-                        "sdp": room.interviewer_pc.localDescription.sdp,
-                        "sdpType": room.interviewer_pc.localDescription.type
-                    }))
+                    await websocket.send_text(
+                        json.dumps(
+                            {
+                                "type": "answer",
+                                "sdp": room.interviewer_pc.localDescription.sdp,
+                                "sdpType": room.interviewer_pc.localDescription.type,
+                            }
+                        )
+                    )
                 elif role == "candidate" and room.candidate_pc:
                     offer = RTCSessionDescription(sdp=msg["sdp"], type=msg["sdpType"])
                     await room.candidate_pc.setRemoteDescription(offer)
                     answer = await room.candidate_pc.createAnswer()
                     await room.candidate_pc.setLocalDescription(answer)
-                    await websocket.send_text(json.dumps({
-                        "type": "answer",
-                        "sdp": room.candidate_pc.localDescription.sdp,
-                        "sdpType": room.candidate_pc.localDescription.type
-                    }))
+                    await websocket.send_text(
+                        json.dumps(
+                            {
+                                "type": "answer",
+                                "sdp": room.candidate_pc.localDescription.sdp,
+                                "sdpType": room.candidate_pc.localDescription.type,
+                            }
+                        )
+                    )
 
             elif msg_type == "ice-candidate":
                 candidate_data = msg.get("candidate")
                 if candidate_data and candidate_data.get("candidate"):
                     try:
                         from aiortc.sdp import candidate_from_sdp
+
                         ice_candidate = candidate_from_sdp(candidate_data["candidate"])
                         ice_candidate.sdpMid = candidate_data.get("sdpMid")
-                        ice_candidate.sdpMLineIndex = candidate_data.get("sdpMLineIndex")
-                        
+                        ice_candidate.sdpMLineIndex = candidate_data.get(
+                            "sdpMLineIndex"
+                        )
+
                         if role == "interviewer" and room.interviewer_pc:
                             await room.interviewer_pc.addIceCandidate(ice_candidate)
                         elif role == "candidate" and room.candidate_pc:
@@ -174,77 +274,140 @@ async def websocket_endpoint(websocket: WebSocket):
                     existing_files = list(recordings_dir.glob("*"))
                     interview_numbers = []
                     for f in existing_files:
-                        parts = f.stem.split('-')
+                        parts = f.stem.split("-")
                         if len(parts) >= 1 and parts[0].isdigit():
                             interview_numbers.append(int(parts[0]))
-                    
+
                     next_interview_number = max(interview_numbers, default=0) + 1
-                    room.session_id = str(uuid.uuid4())[:8]
-                    
+
+                    # Use consistent timestamp format matching client-side
+                    from datetime import datetime
+
+                    now = datetime.now()
+                    timestamp = now.strftime("%Y%m%d_%H%M%S")
+                    room.session_id = timestamp
+
+                    # Set global recording start time
+                    room.recording_start_time = time.time()
+
+                    # Create synchronized tracks (NO recording_start_time parameter needed)
                     if room.interviewer_audio_track:
-                        filename = f"{next_interview_number}-interviewer-{room.session_id}.wav"
-                        room.interviewer_recorder = MediaRecorder(
-                            str(recordings_dir / filename),
-                            format="wav"
+                        room.normalized_interviewer_audio_track = (
+                            SynchronizedAudioTrack(room.interviewer_audio_track)
                         )
-                        room.interviewer_recorder.addTrack(room.interviewer_audio_track)
-                        await room.interviewer_recorder.start()
-                    
+
                     if room.candidate_audio_track:
+                        room.normalized_candidate_audio_track = SynchronizedAudioTrack(
+                            room.candidate_audio_track
+                        )
+
+                    if room.candidate_video_track:
+                        # room.normalized_candidate_video_track = SynchronizedVideoTrack(
+                        #     room.candidate_video_track
+                        # )
+                        room.normalized_candidate_video_track = (
+                            room.candidate_video_track
+                        )
+
+                    # Prepare all recorders
+                    recorders_to_start = []
+
+                    if room.normalized_interviewer_audio_track:
+                        filename = (
+                            f"{next_interview_number}-interviewer-{room.session_id}.wav"
+                        )
+                        room.interviewer_recorder = MediaRecorder(
+                            str(recordings_dir / filename)
+                        )
+                        room.interviewer_recorder.addTrack(
+                            room.normalized_interviewer_audio_track
+                        )
+                        recorders_to_start.append(room.interviewer_recorder)
+
+                    if room.normalized_candidate_audio_track:
                         filename = f"{next_interview_number}-candidate-audio-{room.session_id}.wav"
                         room.candidate_audio_recorder = MediaRecorder(
-                            str(recordings_dir / filename),
-                            format="wav"
+                            str(recordings_dir / filename)
                         )
-                        room.candidate_audio_recorder.addTrack(room.candidate_audio_track)
-                        await room.candidate_audio_recorder.start()
-                    
-                    if room.candidate_video_track:
+                        room.candidate_audio_recorder.addTrack(
+                            room.normalized_candidate_audio_track
+                        )
+                        recorders_to_start.append(room.candidate_audio_recorder)
+
+                    if room.normalized_candidate_video_track:
                         filename = f"{next_interview_number}-candidate-video-{room.session_id}.mp4"
+
+                        # Create custom container for video with proper options
+                        # room.candidate_video_recorder = MediaRecorder(
+                        #     str(recordings_dir / filename)
+                        # )
                         room.candidate_video_recorder = MediaRecorder(
                             str(recordings_dir / filename),
                             format="mp4",
                             options={
-                                "video_bitrate": "5000k",
-                                "audio_bitrate": "128k"
-                            }
+                                "video_codec": "libx264",
+                                "video_bitrate": "2000k",
+                                "video_framerate": "30",
+                            },
                         )
-                        room.candidate_video_recorder.addTrack(room.candidate_video_track)
-                        await room.candidate_video_recorder.start()
-                    
+
+                        room.candidate_video_recorder.addTrack(
+                            room.normalized_candidate_video_track
+                        )
+                        recorders_to_start.append(room.candidate_video_recorder)
+
+                    # Start all recorders simultaneously
+                    if recorders_to_start:
+                        await asyncio.gather(
+                            *[recorder.start() for recorder in recorders_to_start]
+                        )
+                        print(f"Started recording session: {room.session_id}")
+
                     room.state = RoomState.RECORDING
                     await broadcast_state()
 
             elif msg_type == "stop-recording":
                 if role == "interviewer" and room.state == RoomState.RECORDING:
+                    print(f"Stopping recording session: {room.session_id}")
+
+                    # Stop all recorders
+                    stop_tasks = []
                     if room.interviewer_recorder:
-                        await room.interviewer_recorder.stop()
+                        stop_tasks.append(room.interviewer_recorder.stop())
                     if room.candidate_audio_recorder:
-                        await room.candidate_audio_recorder.stop()
+                        stop_tasks.append(room.candidate_audio_recorder.stop())
                     if room.candidate_video_recorder:
-                        await room.candidate_video_recorder.stop()
-                    
+                        stop_tasks.append(room.candidate_video_recorder.stop())
+
+                    if stop_tasks:
+                        await asyncio.gather(*stop_tasks)
+
                     if room.interviewer_ws:
                         try:
-                            await room.interviewer_ws.send_text(json.dumps({"type": "stopped"}))
+                            await room.interviewer_ws.send_text(
+                                json.dumps({"type": "stopped"})
+                            )
                         except:
                             pass
                     if room.candidate_ws:
                         try:
-                            await room.candidate_ws.send_text(json.dumps({"type": "stopped"}))
+                            await room.candidate_ws.send_text(
+                                json.dumps({"type": "stopped"})
+                            )
                         except:
                             pass
-                    
+
                     room.should_close = True
-                    
+
                     if room.interviewer_pc:
                         await room.interviewer_pc.close()
                     if room.candidate_pc:
                         await room.candidate_pc.close()
-                    
+
+                    print(f"Recording session {room.session_id} completed")
                     room.reset()
                     await broadcast_state()
-                    
+
                     return
 
     except WebSocketDisconnect:
@@ -257,11 +420,13 @@ async def websocket_endpoint(websocket: WebSocket):
         elif role == "candidate":
             await cleanup_candidate()
 
+
 async def cleanup_interviewer():
     if room.interviewer_pc:
         await room.interviewer_pc.close()
     room.reset()
     await broadcast_state()
+
 
 async def cleanup_candidate():
     if room.candidate_pc:
@@ -270,31 +435,39 @@ async def cleanup_candidate():
     room.candidate_pc = None
     room.candidate_audio_track = None
     room.candidate_video_track = None
+    room.normalized_candidate_video_track = None
+    room.normalized_candidate_audio_track = None
     if room.state == RoomState.BOTH_CONNECTED or room.state == RoomState.RECORDING:
         room.state = RoomState.INTERVIEWER_CONNECTED
     await broadcast_state()
+
 
 @app.get("/")
 async def index():
     return FileResponse("index.html")
 
+
 @app.get("/interviewer")
 async def interviewer():
     return FileResponse("interviewer.html")
+
 
 @app.get("/candidate")
 async def candidate():
     return FileResponse("candidate.html")
 
+
 @app.get("/interviewer.js")
 async def interviewer_js():
     return FileResponse("interviewer.js")
+
 
 @app.get("/candidate.js")
 async def candidate_js():
     return FileResponse("candidate.js")
 
+
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
 
+    uvicorn.run(app, host="0.0.0.0", port=8000)

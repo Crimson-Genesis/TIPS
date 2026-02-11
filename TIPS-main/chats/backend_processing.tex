@@ -1,0 +1,626 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+
+\geometry{a4paper, margin=1in}
+\hypersetup{colorlinks=true, urlcolor=blue, linkcolor=black}
+
+\title{Backend Processing Pipeline: Interview Intelligence System}
+\author{MCA Minor Project}
+\date{January 2024}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+
+\subsection{Processing Philosophy}
+The backend implements an offline processing approach that prioritizes accuracy and traceability over real-time performance. Media artifacts from the interview interface are processed through deterministic pipeline stages, with each stage producing structured outputs for subsequent analysis. This methodology ensures reproducible results with explicit uncertainty quantification, essential for academic evaluation systems.
+
+\subsection{System Scope}
+The backend processing pipeline is responsible for:
+\begin{itemize}
+\item Audio-to-text transcription with word-level timing accuracy
+\item Conversation reconstruction and temporal alignment
+\item Question-answer pair extraction with confidence scoring
+\item Job description processing and skill weighting
+\item Incremental candidate profiling with Bayesian updating
+\item Behavioral signal integration from video analysis
+\item Final verdict generation with uncertainty quantification
+\end{itemize}
+
+The pipeline does not handle:
+\begin{itemize}
+\item Real-time media streaming or live capture
+\item Interactive inference during interview sessions
+\item Model training or fine-tuning from collected data
+\item User interface rendering or client-side interactions
+\end{itemize}
+
+\subsection{Technical Constraints}
+\begin{itemize}
+\item Processing performed offline after interview completion
+\item Deterministic algorithms for reproducible results
+\item Explicit confidence intervals for all numerical outputs
+\item Maximum session duration: 2 hours of audio/video
+\item Processing time: under 30 minutes for 1-hour session
+\end{itemize}
+
+\section{Django Architecture}
+
+\subsection{Application Structure}
+The backend is organized as a Django project with modular applications:
+\begin{verbatim}
+interview_backend/
+|-- processing/
+|   |-- models.py      # Core data models
+|   |-- views.py       # Processing orchestration
+|   |-- tasks.py       # Async processing tasks
+|   `-- pipeline.py    # Main processing pipeline
+|-- transcripts/
+|   |-- models.py      # Transcription data
+|   |-- asr.py         # Speech recognition
+|   `-- alignment.py   # Forced alignment
+|-- profiling/
+|   |-- models.py      # Profile data
+|   |-- profiler.py    # Candidate evaluation
+|   `-- verdict.py     # Final evaluation
+`-- dashboard/
+    |-- views.py       # Read-only data access
+    `-- serializers.py # API data formatting
+\end{verbatim}
+
+\subsection{Data Management Strategy}
+\begin{itemize}
+\item PostgreSQL with JSONB fields for flexible score storage
+\item File system storage for media artifacts
+\item Redis for caching and temporary state management
+\item Celery for asynchronous task processing and monitoring
+\item Database connections with connection pooling
+\end{itemize}
+
+\subsection{Processing Orchestration}
+Processing triggered through Django signals and Celery tasks:
+\begin{enumerate}
+\item Media file completion detected by file system watcher
+\item Django signal initiates processing pipeline
+\item Celery creates task with session identifier
+\item Sequential stage execution with dependency tracking
+\item Progress monitoring through task state updates
+\item Error handling with retry mechanisms
+\end{enumerate}
+
+\section{Data Models}
+
+\subsection{Core Entity Models}
+
+\subsubsection{InterviewSession Model}
+\begin{verbatim}
+session_id: CharField(unique=True)
+start_time: DateTimeField()
+end_time: DateTimeField()
+jd_text: TextField()
+jd_processed: JSONField(default=dict)
+status: CharField(choices=['processing', 'completed', 'error'])
+created_at: DateTimeField(auto_now_add=True)
+updated_at: DateTimeField(auto_now=True)
+metadata: JSONField(default=dict)
+\end{verbatim}
+
+\subsubsection{MediaAsset Model}
+\begin{verbatim}
+session: ForeignKey(InterviewSession)
+asset_type: CharField(choices=['candidate_audio', 
+                              'interviewer_audio', 
+                              'candidate_video'])
+file_path: CharField(max_length=500)
+duration: FloatField()
+sample_rate: IntegerField(null=True)
+bit_rate: IntegerField(null=True)
+quality_score: FloatField(default=0.0)
+\end{verbatim}
+
+\subsubsection{TranscriptWord Model}
+\begin{verbatim}
+session: ForeignKey(InterviewSession)
+speaker: CharField(choices=['candidate', 'interviewer'])
+word: CharField(max_length=100)
+start_time: FloatField()
+end_time: FloatField()
+confidence: FloatField()
+speaker_confidence: FloatField()
+\end{verbatim}
+
+\subsubsection{ScriptTurn Model}
+\begin{verbatim}
+session: ForeignKey(InterviewSession)
+speaker: CharField(choices=['candidate', 'interviewer'])
+start_time: FloatField()
+end_time: FloatField()
+text: TextField()
+word_count: IntegerField()
+average_confidence: FloatField()
+emotion_score: FloatField(null=True)
+\end{verbatim}
+
+\subsubsection{QuestionAnswer Model}
+\begin{verbatim}
+session: ForeignKey(InterviewSession)
+question: TextField()
+answer: TextField()
+question_start: FloatField()
+answer_start: FloatField()
+question_end: FloatField()
+answer_end: FloatField()
+confidence: FloatField()
+semantic_similarity: FloatField()
+question_type: CharField(choices=['technical', 
+                           'behavioral', 
+                           'situational'])
+\end{verbatim}
+
+\subsubsection{CandidateProfileSnapshot Model}
+\begin{verbatim}
+session: ForeignKey(InterviewSession)
+timestamp: FloatField()
+technical_depth: FloatField()
+jd_relevance: FloatField()
+clarity: FloatField()
+consistency: FloatField()
+confidence: FloatField()
+risk_flags: JSONField(default=list)
+evidence_summary: JSONField(default=dict)
+\end{verbatim}
+
+\subsubsection{FinalVerdict Model}
+\begin{verbatim}
+session: OneToOneField(InterviewSession)
+hire_probability: FloatField()
+confidence: FloatField()
+risk_flags: JSONField(default=list)
+jd_alignment_score: FloatField()
+final_score: FloatField()
+evidence_weights: JSONField(default=dict)
+processing_time: FloatField()
+created_at: DateTimeField(auto_now_add=True)
+\end{verbatim}
+
+\section{Audio Processing Pipeline}
+
+\subsection{Preprocessing Stage}
+Audio files undergo standardized preprocessing to ensure quality:
+\begin{enumerate}
+\item Format validation (WAV, mono, 48kHz)
+\item Duration verification and synchronization check
+\item Silence detection and removal (segments below 0.1 amplitude)
+\item Normalization to -3dB peak amplitude
+\item Quality assessment for signal-to-noise ratio
+\end{enumerate}
+
+\subsection{Quality Metrics Implementation}
+\begin{itemize}
+\item Signal-to-noise ratio threshold: minimum 20dB for inclusion
+\item Peak amplitude normalization to -3dB target
+\item Silent segment removal: gaps longer than 2 seconds
+\item Artifact detection for clipping and distortion
+\item Sample rate consistency verification
+\end{itemize}
+
+\subsection{ASR with Word Timestamps}
+Whisper model implementation with forced alignment:
+\begin{itemize}
+\item Model selection: Whisper-base for accuracy/speed balance
+\item Forced alignment using Montreal Forced Aligner principles
+\item Confidence scoring calculated per word and turn
+\item Language auto-detection with English as default
+\end{itemize}
+
+\subsection{Processing Parameters}
+\begin{itemize}
+\item Chunk size: 30 seconds segments for optimal accuracy
+\item Overlap between chunks: 2 seconds for boundary continuity
+\item Beam size: 5 for transcription quality
+\item Temperature: 0.0 for deterministic output
+\item Word confidence threshold: 0.3 for inclusion
+\end{itemize}
+
+\subsection{Output Format Specification}
+Each transcribed word generates a TranscriptWord record with:
+\begin{itemize}
+\item Word text and speaker identification
+\item Precise start and end timestamps (milliseconds)
+\item Confidence score (0.0 to 1.0)
+\item Speaker confidence for diarization validation
+\end{itemize}
+
+\subsection{Forced Alignment Implementation}
+Word boundaries refined using duration models:
+\begin{itemize}
+\item Hidden Markov Model alignment for phoneme timing
+\item Silence gap detection for word boundary detection
+\item Prosody analysis for sentence boundary inference
+\item Context-dependent duration models
+\end{itemize}
+
+\section{Natural Language Processing}
+
+\subsection{Sentence Framing Algorithm}
+Sentences inferred using deterministic rule-based approach:
+\begin{enumerate}
+\item Primary rule: Silence gaps longer than 0.8 seconds
+\item Secondary rule: Question intonation pattern detection
+\item Tertiary rule: Punctuation prediction using language models
+\item Constraint: Maximum duration limit of 15 seconds per segment
+\item Minimum word count: 3 words per segment for inclusion
+\end{enumerate}
+
+\subsection{Quality Assurance Metrics}
+\begin{itemize}
+\item Confidence threshold: 0.7 for segment inclusion
+\item Maximum segment duration: 15 seconds enforced
+\item Minimum word count: 3 words per segment
+\item Overlap resolution: prefer shorter segments
+\end{itemize}
+
+\subsection{Conversation Script Construction}
+Script turns assembled from word sequences using:
+\begin{enumerate}
+\item Sort all words by chronological start time
+\item Group consecutive words by same speaker within 2-second gaps
+\item Merge overlapping segments with speaker priority rules
+\item Assign turn boundaries using silence detection
+\item Calculate turn-level confidence as average of constituent words
+\end{enumerate}
+
+\section{Question-Answer Extraction}
+
+\subsection{Question Detection Algorithm}
+Interviewer turns classified as questions using multi-factor analysis:
+\begin{itemize}
+\item Interrogative word detection (what, how, why, when, where, who)
+\item Sentence structure analysis (subject-verb-object patterns)
+\item Semantic intent classification using transformer models
+\item Intonation pattern analysis from audio prosody
+\item Confidence threshold: 0.75 for classification
+\end{itemize}
+
+\subsection{Answer Matching Algorithm}
+Candidate answers linked to questions using scoring function:
+\[
+\text{AnswerScore} = \alpha \cdot \text{TempSim} + \beta \cdot \text{SemSim} + \gamma \cdot \text{ContSim}
+\]
+where:
+\begin{itemize}
+\item TempSim = Temporal proximity score (within 60 seconds)
+\item SemSim = Semantic similarity using BERT embeddings
+\item ContSim = Content relevance using cosine similarity
+\item $\alpha = 0.4$, $\beta = 0.35$, $\gamma = 0.25$
+\end{itemize}
+
+\subsection{Confidence Calculation}
+Q/A pair confidence computed as weighted combination:
+\begin{itemize}
+\item Question detection confidence: 40\% weight
+\item Semantic similarity score: 35\% weight
+\item Temporal alignment score: 25\% weight
+\end{itemize}
+
+\section{Job Description Processing}
+
+\subsection{JD Ingestion Pipeline}
+Raw job description processed through text analysis stages:
+\begin{enumerate}
+\item Text cleaning and normalization
+\item Section identification (requirements, responsibilities, qualifications)
+\item Skill keyword extraction using Named Entity Recognition
+\item Experience level detection (entry, mid, senior, expert)
+\item Tool/technology requirement extraction
+\end{enumerate}
+
+\subsection{Skill Extraction Methods}
+Skills identified using multiple approaches:
+\begin{itemize}
+\item NER models trained on technical job descriptions
+\item Common skill dictionary matching with 5000+ entries
+\item Context-aware classification using sentence embeddings
+\item Industry-specific terminology recognition
+\end{itemize}
+
+\subsection{Weight Assignment Algorithm}
+Skill importance weights calculated using:
+\begin{itemize}
+\item Frequency analysis within JD text
+\item Position importance (requirements section weighted higher)
+\item Industry standard skill classification
+\item Experience level alignment
+\end{itemize}
+
+\subsection{Weight Distribution Example}
+\begin{verbatim}
+{
+  "skills": {
+    "distributed systems": 0.30,
+    "python": 0.25,
+    "system design": 0.20,
+    "communication": 0.15,
+    "problem solving": 0.10
+  },
+  "experience_level": "mid-senior",
+  "total_weight": 1.0,
+  "processing_confidence": 0.82
+}
+\end{verbatim}
+
+\section{Candidate Profiling System}
+
+\subsection{Profile Dimensions Definition}
+Five key dimensions evaluated throughout interview:
+\begin{enumerate}
+\item \textbf{Technical Depth}: Domain knowledge and expertise level
+\item \textbf{JD Relevance}: Alignment with job requirements
+\item \textbf{Clarity}: Communication effectiveness and structure
+\item \textbf{Consistency}: Logical coherence across multiple answers
+\item \textbf{Confidence}: Linguistic certainty and assertiveness
+\end{enumerate}
+
+\subsection{Incremental Update Framework}
+Profile updates implemented using Bayesian updating:
+\[
+P(\theta|D) = \frac{P(D|\theta) \cdot P(\theta)}{P(D)}
+\]
+where $\theta$ represents the candidate's true capability vector and $D$ is observed evidence from answers.
+
+\subsection{Update Rules Implementation}
+After each answer, profiles updated using:
+\begin{enumerate}
+\item Compute answer-specific feature vector $f_i$
+\item Calculate likelihood $P(f_i|\theta_{current})$
+\item Apply Bayesian update with decay factor $\lambda = 0.95$
+\item Store timestamped snapshot with uncertainty bounds
+\end{enumerate}
+
+\subsection{Decay Mechanism}
+Old evidence receives exponential decay to prioritize recent performance:
+\[
+w_{old} = w_{initial} \cdot e^{-t/\tau}
+\]
+where $t$ is time since observation and $\tau$ is decay constant (default: 300 seconds).
+
+\subsection{Feature Extraction Methods}
+
+\subsubsection{Technical Depth Features}
+\begin{itemize}
+\item Technical terminology usage frequency compared to baseline
+\item Domain-specific concept accuracy validation
+\item Problem-solving methodology quality assessment
+\item Depth vs. breadth analysis in explanations
+\item Technology stack familiarity indicators
+\end{itemize}
+
+\subsubsection{Clarity Features}
+\begin{itemize}
+\item Sentence complexity metrics using Flesch-Kincaid readability
+\item Filler word frequency analysis (um, uh, like, etc.)
+\item Response structure organization evaluation
+\item Explanation coherence and logical flow assessment
+\end{itemize}
+
+\section{Video Analysis Pipeline}
+
+\subsection{Frame Extraction Strategy}
+Video processing implemented with efficient sampling:
+\begin{itemize}
+\item Sampling rate: 1 frame per second for analysis
+\item Face detection using Multi-task Cascaded Convolutional Networks
+\item 68-point facial landmark extraction for feature calculation
+\item GPU acceleration when available for batch processing
+\end{itemize}
+
+\subsection{Behavioral Signal Detection}
+
+\subsubsection{Stress Indicators}
+\begin{itemize}
+\item Facial muscle tension patterns around eyes and mouth
+\item Eye contact frequency and duration measurement
+\item Head movement variance and speed analysis
+\item Speaking rhythm disruption detection
+\item Micro-expression analysis for emotional states
+\end{itemize}
+
+\subsubsection{Engagement Metrics}
+\begin{itemize}
+\item Gaze direction consistency estimation
+\item Nod frequency and timing in response to questions
+\item Responsive gesture pattern detection
+\item Attention span duration measurement
+\item Posture and position stability analysis
+\end{itemize}
+
+\subsection{Signal Integration Protocol}
+Behavioral signals weighted as supporting evidence:
+\begin{itemize}
+\item Overall weight: 20\% of total profile score
+\item Confidence adjustment factor: $\pm 0.1$ max deviation
+\item Risk flag threshold: stress indicator $> 0.7$ triggers flag
+\item Engagement threshold: engagement $< 0.4$ reduces clarity score
+\end{itemize}
+
+\section{Fusion and Verdict Engine}
+
+\subsection{Feature Aggregation Method}
+All evidence sources combined using weighted linear combination:
+\[
+S_{final} = \sum_{i=1}^{n} w_i \cdot s_i + \epsilon
+\]
+where $s_i$ are normalized scores, $w_i$ are calibrated weights, and $\epsilon$ is noise term.
+
+\subsection{Evidence Weights}
+\begin{itemize}
+\item Q/A quality scores: 40\% weight
+\item JD alignment metrics: 30\% weight
+\item Profile trajectory: 20\% weight
+\item Behavioral signals: 10\% weight
+\end{itemize}
+
+\subsection{Uncertainty Quantification}
+Final verdict includes comprehensive uncertainty metrics:
+\begin{itemize}
+\item Epistemic uncertainty: Model confidence limits and parameters
+\item Aleatoric uncertainty: Data variability and measurement noise
+\item Total confidence: Combined uncertainty bounds using interval arithmetic
+\item Calibration: Reliability diagram validation against expert judgments
+\end{itemize}
+
+\subsection{Verdict Generation Algorithm}
+
+\subsubsection{Hire Probability Calculation}
+\[
+P_{hire} = \sigma\left(\sum_{i} w_i \cdot s_i - \beta\right)
+\]
+where $\sigma$ is sigmoid function, $s_i$ are normalized scores, $w_i$ are weights, and $\beta$ is calibrated threshold.
+
+\subsubsection{Risk Flag Detection}
+Risk conditions trigger specific flags using threshold analysis:
+\begin{itemize}
+\item Inconsistency: Contradictory statements detected across answers
+\item Overclaiming: Unrealistic skill assertions compared to experience
+\item Communication issues: Clarity score below 0.5 consistently
+\item Behavioral concerns: Stress indicator above 0.7 for extended periods
+\end{itemize}
+
+\subsubsection{Output Format Specification}
+Final verdict includes comprehensive evaluation data:
+\begin{verbatim}
+{
+  "hire_probability": 0.63,
+  "confidence": 0.58,
+  "confidence_interval": [0.51, 0.75],
+  "risk_flags": ["overgeneralization", "inconsistency"],
+  "jd_alignment_score": 0.71,
+  "final_score": 0.66,
+  "evidence_summary": {
+    "qa_quality": 0.68,
+    "profile_stability": 0.72,
+    "behavioral_consistency": 0.51,
+    "technical_accuracy": 0.74
+  },
+  "processing_metadata": {
+    "total_processing_time": 1247.5,
+    "stages_completed": 8,
+    "error_count": 0
+  }
+}
+\end{verbatim}
+
+\section{API Design and Data Access}
+
+\subsection{Internal Processing APIs}
+Processing pipeline exposed through Django REST endpoints:
+\begin{itemize}
+\item \texttt{POST /api/processing/start}: Trigger pipeline for session
+\item \texttt{GET /api/processing/status/\{session\_id\}}: Check pipeline progress
+\item \texttt{POST /api/processing/retry}: Restart failed processing stages
+\item \texttt{GET /api/processing/logs/\{session\_id\}}: Access processing logs
+\end{itemize}
+
+\subsection{Dashboard Data APIs}
+Read-only data access for dashboard consumption:
+\begin{itemize}
+\item \texttt{GET /api/session/\{id\}/script}: Conversation timeline data
+\item \texttt{GET /api/session/\{id\}/qa}: Question-answer pairs with metadata
+\item \texttt{GET /api/session/\{id\}/profile}: Profile evolution over time
+\item \texttt{GET /api/session/\{id\}/verdict}: Final evaluation results
+\end{itemize}
+
+\subsection{Data Serialization Standards}
+All API responses include standardized metadata:
+\begin{itemize}
+\item Timestamp for data freshness indication
+\item Confidence intervals where applicable
+\item Links to related data entities using HATEOAS principles
+\item Metadata for data lineage and traceability
+\item Processing status and completion percentages
+\end{itemize}
+
+\section{Implementation Sequence and Dependencies}
+
+\subsection{Module Dependency Graph}
+Processing stages depend on specific prerequisites:
+\begin{verbatim}
+Audio Preprocessing (independent)
+|-- ASR and Alignment (depends on preprocessing)
+|   `-- Script Construction (depends on ASR)
+|       `-- Q/A Extraction (depends on script)
+|-- JD Processing (independent)
+|   `-- Profiling (depends on Q/A and JD)
+`-- Video Analysis (independent)
+    `-- Verdict Generation (depends on all above)
+\end{verbatim}
+
+\subsection{Testing Strategy}
+Comprehensive testing approach implemented:
+\begin{itemize}
+\item Unit tests for individual processing functions (pytest framework)
+\item Integration tests for pipeline stage interactions
+\item End-to-end tests with complete sample interviews
+\item Performance tests with large datasets (benchmarking)
+\item Validation tests against expert-labeled ground truth
+\end{itemize}
+
+\subsection{Performance Optimization}
+\begin{itemize}
+\item Whisper model loading with memory optimization
+\item Database query optimization using indexes and connection pooling
+\item Caching for repeated computations using Redis
+\item Resource monitoring during processing for bottleneck identification
+\item Parallel processing where pipeline independence allows
+\end{itemize}
+
+\section{Quality Assurance and Validation}
+
+\subsection{Validation Criteria}
+Each processing stage includes comprehensive validation:
+\begin{itemize}
+\item ASR confidence $>$ 0.7 for word inclusion
+\item Q/A pair confidence $>$ 0.6 for analysis inclusion
+\item Profile dimension bounds enforced: [0.0, 1.0] range
+\item Final verdict uncertainty $<$ 0.3 for high-confidence decisions
+\item Consistency checks across processing stages
+\end{itemize}
+
+\subsection{Error Handling Strategy}
+\begin{itemize}
+\item Graceful degradation for partial processing failures
+\item Automatic retry mechanisms for transient errors with exponential backoff
+\item Manual override capabilities for edge cases
+\item Comprehensive logging with structured error information
+\item Recovery procedures for common failure scenarios
+\end{itemize}
+
+\subsection{Data Integrity Measures}
+\begin{itemize}
+\item Input validation for all data processing stages
+\item Output validation to ensure data format consistency
+\item Checksum verification for large file processing
+\item Atomic operations for database transactions
+\item Rollback capabilities for failed processing stages
+\end{itemize}
+
+\section{Conclusion}
+
+The backend processing pipeline implements a comprehensive and explainable approach to interview intelligence analysis. By using deterministic algorithms with explicit uncertainty quantification, the system provides defensible evaluations suitable for academic and professional contexts. The modular architecture enables independent development and testing of components while maintaining clear data flow and dependency management.
+
+The offline processing philosophy ensures accuracy and reproducibility, critical for evaluation systems where decision transparency is paramount. Bayesian updating for candidate profiles and comprehensive uncertainty quantification provide statistically sound foundations for evaluation outcomes. The system successfully balances technical complexity with operational reliability, establishing a robust foundation for interview intelligence applications.
+
+\end{document}

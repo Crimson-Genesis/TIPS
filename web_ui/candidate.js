@@ -10,6 +10,12 @@ let analyser;
 let dataArray;
 let animationId;
 
+// Local recording variables
+let mediaRecorder;
+let recordedChunks = [];
+let isLocalRecording = false;
+let recordingStartTime = null;
+
 const joinBtn = document.getElementById("joinBtn");
 const cameraSelect = document.getElementById("cameraSelect");
 const localVideo = document.getElementById("localVideo");
@@ -17,9 +23,14 @@ const statusConnection = document.getElementById("statusConnection");
 const statusRecording = document.getElementById("statusRecording");
 const audioCanvas = document.getElementById("audioCanvas");
 const canvasCtx = audioCanvas.getContext("2d");
+const localRecordBtn = document.getElementById("localRecordBtn");
+const localRecordingIndicator = document.getElementById(
+  "localRecordingIndicator",
+);
 
 joinBtn.onclick = join;
 cameraSelect.onchange = handleCameraChange;
+localRecordBtn.onclick = toggleLocalRecording;
 
 function setupAudioVisualization() {
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -34,41 +45,6 @@ function setupAudioVisualization() {
 
   drawWaveform();
 }
-
-// function drawWaveform() {
-//     animationId = requestAnimationFrame(drawWaveform);
-//
-//     analyser.getByteTimeDomainData(dataArray);
-//
-//     audioCanvas.width = audioCanvas.offsetWidth;
-//     audioCanvas.height = audioCanvas.offsetHeight;
-//
-//     canvasCtx.fillStyle = 'rgb(0, 0, 0)';
-//     canvasCtx.fillRect(0, 0, audioCanvas.width, audioCanvas.height);
-//
-//     canvasCtx.lineWidth = 2;
-//     canvasCtx.strokeStyle = 'rgb(0, 255, 0)';
-//     canvasCtx.beginPath();
-//
-//     const sliceWidth = audioCanvas.width / dataArray.length;
-//     let x = 0;
-//
-//     for (let i = 0; i < dataArray.length; i++) {
-//         const v = dataArray[i] / 128.0;
-//         const y = v * audioCanvas.height / 2;
-//
-//         if (i === 0) {
-//             canvasCtx.moveTo(x, y);
-//         } else {
-//             canvasCtx.lineTo(x, y);
-//         }
-//
-//         x += sliceWidth;
-//     }
-//
-//     canvasCtx.lineTo(audioCanvas.width, audioCanvas.height / 2);
-//     canvasCtx.stroke();
-// }
 
 function drawWaveform() {
   animationId = requestAnimationFrame(drawWaveform);
@@ -113,6 +89,7 @@ async function loadCameras() {
       cameraSelect.innerHTML =
         '<option value="">Browser not supported</option>';
       joinBtn.disabled = true;
+      localRecordBtn.disabled = true;
       return;
     }
 
@@ -144,32 +121,6 @@ async function loadCameras() {
   }
 }
 
-// Load saved theme
-const savedTheme = localStorage.getItem("theme");
-if (savedTheme === "dark") {
-  document.body.classList.add("dark-mode");
-  updateToggleButton(true);
-}
-
-function toggleTheme() {
-  const isDark = document.body.classList.toggle("dark-mode");
-  localStorage.setItem("theme", isDark ? "dark" : "light");
-  updateToggleButton(isDark);
-}
-
-function updateToggleButton(isDark) {
-  const icon = document.querySelector(".theme-toggle-icon");
-  const text = document.querySelector(".theme-toggle-text");
-
-  if (isDark) {
-    icon.textContent = "☀️";
-    text.textContent = "Light";
-  } else {
-    icon.textContent = "🌙";
-    text.textContent = "Dark";
-  }
-}
-
 async function startPreview() {
   try {
     if (localStream) {
@@ -182,6 +133,7 @@ async function startPreview() {
       audioContext.close();
     }
 
+    // Optimized constraints for consistent recording
     const constraints = {
       audio: {
         echoCancellation: true,
@@ -192,14 +144,19 @@ async function startPreview() {
       },
       video: {
         deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined,
-        width: { ideal: 1920 },
-        height: { ideal: 1080 },
-        frameRate: { ideal: 30 },
+        width: { ideal: 1920, max: 1920 },
+        height: { ideal: 1080, max: 1080 },
+        frameRate: { ideal: 30, max: 30 }, // Lock framerate to 30fps
       },
     };
 
     localStream = await navigator.mediaDevices.getUserMedia(constraints);
     localVideo.srcObject = localStream;
+
+    // Verify the actual settings
+    const videoTrack = localStream.getVideoTracks()[0];
+    const settings = videoTrack.getSettings();
+    console.log("Video settings:", settings);
 
     setupAudioVisualization();
   } catch (err) {
@@ -209,7 +166,144 @@ async function startPreview() {
 
 async function handleCameraChange() {
   selectedDeviceId = cameraSelect.value;
+
+  // Stop local recording if active
+  if (isLocalRecording) {
+    stopLocalRecording();
+  }
+
   await startPreview();
+}
+
+function toggleLocalRecording() {
+  if (!localStream) {
+    alert("Please wait for camera to load");
+    return;
+  }
+
+  if (!isLocalRecording) {
+    startLocalRecording();
+  } else {
+    stopLocalRecording();
+  }
+}
+
+function startLocalRecording() {
+  recordedChunks = [];
+  recordingStartTime = Date.now();
+
+  // Use more conservative bitrates for stable recording
+  let options;
+  if (MediaRecorder.isTypeSupported("video/webm;codecs=h264,opus")) {
+    // H.264 is more stable and widely supported
+    options = {
+      mimeType: "video/webm;codecs=h264,opus",
+      videoBitsPerSecond: 8000000, // 8 Mbps for 1080p30
+      audioBitsPerSecond: 192000, // 192 kbps
+    };
+  } else if (MediaRecorder.isTypeSupported("video/webm;codecs=vp9,opus")) {
+    options = {
+      mimeType: "video/webm;codecs=vp9,opus",
+      videoBitsPerSecond: 6000000, // 6 Mbps for VP9
+      audioBitsPerSecond: 192000,
+    };
+  } else if (MediaRecorder.isTypeSupported("video/webm;codecs=vp8,opus")) {
+    options = {
+      mimeType: "video/webm;codecs=vp8,opus",
+      videoBitsPerSecond: 8000000, // 8 Mbps for VP8
+      audioBitsPerSecond: 192000,
+    };
+  } else {
+    // Fallback to default codec
+    options = {
+      videoBitsPerSecond: 8000000,
+      audioBitsPerSecond: 192000,
+    };
+  }
+
+  try {
+    mediaRecorder = new MediaRecorder(localStream, options);
+
+    mediaRecorder.ondataavailable = (event) => {
+      if (event.data && event.data.size > 0) {
+        recordedChunks.push(event.data);
+        console.log(`Chunk received: ${event.data.size} bytes at ${Date.now() - recordingStartTime}ms`);
+      }
+    };
+
+    mediaRecorder.onstop = () => {
+      if (recordedChunks.length === 0) {
+        console.error("No data recorded");
+        alert("Recording failed: No data captured");
+        return;
+      }
+
+      const mimeType = options.mimeType || "video/webm";
+      const blob = new Blob(recordedChunks, { type: mimeType });
+      
+      console.log(`Recording stopped. Total size: ${blob.size} bytes, Duration: ${Date.now() - recordingStartTime}ms`);
+      
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      
+      // Use consistent timestamp format
+      const now = new Date();
+      const timestamp = now.getFullYear() + 
+                       String(now.getMonth() + 1).padStart(2, '0') + 
+                       String(now.getDate()).padStart(2, '0') + '_' +
+                       String(now.getHours()).padStart(2, '0') + 
+                       String(now.getMinutes()).padStart(2, '0') + 
+                       String(now.getSeconds()).padStart(2, '0');
+      
+      const extension = mimeType.includes('webm') ? 'webm' : 'mp4';
+      a.download = `interview-recording-${timestamp}.${extension}`;
+      
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      // Clean up
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+      recordedChunks = [];
+    };
+
+    mediaRecorder.onerror = (event) => {
+      console.error("MediaRecorder error:", event.error);
+      alert("Recording error: " + event.error);
+      stopLocalRecording();
+    };
+
+    // Start recording with NO timeslice parameter to avoid chunking issues
+    // This ensures continuous recording without frame drops
+    mediaRecorder.start();
+    
+    isLocalRecording = true;
+
+    localRecordBtn.textContent = "Stop Local Recording";
+    localRecordBtn.classList.add("recording");
+    localRecordingIndicator.classList.add("active");
+
+    console.log("Local recording started with options:", options);
+    console.log("MediaRecorder state:", mediaRecorder.state);
+  } catch (err) {
+    alert("Failed to start local recording: " + err.message);
+    console.error("Recording error:", err);
+  }
+}
+
+function stopLocalRecording() {
+  if (mediaRecorder && mediaRecorder.state !== "inactive") {
+    console.log("Stopping recording...");
+    mediaRecorder.stop();
+    isLocalRecording = false;
+
+    localRecordBtn.textContent = "Start Local Recording";
+    localRecordBtn.classList.remove("recording");
+    localRecordingIndicator.classList.remove("active");
+
+    console.log("Local recording stopped");
+  }
 }
 
 async function join() {
@@ -325,6 +419,9 @@ function reset() {
   if (audioContext) {
     audioContext.close();
   }
+  if (isLocalRecording) {
+    stopLocalRecording();
+  }
   if (localStream) {
     localStream.getTracks().forEach((track) => track.stop());
     localStream = null;
@@ -348,6 +445,32 @@ function reset() {
   cameraSelect.disabled = false;
 
   loadCameras();
+}
+
+// Theme toggle functions
+const savedTheme = localStorage.getItem("theme");
+if (savedTheme === "dark") {
+  document.body.classList.add("dark-mode");
+  updateToggleButton(true);
+}
+
+function toggleTheme() {
+  const isDark = document.body.classList.toggle("dark-mode");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+  updateToggleButton(isDark);
+}
+
+function updateToggleButton(isDark) {
+  const icon = document.querySelector(".theme-toggle-icon");
+  const text = document.querySelector(".theme-toggle-text");
+
+  if (isDark) {
+    icon.textContent = "☀️";
+    text.textContent = "Light";
+  } else {
+    icon.textContent = "🌙";
+    text.textContent = "Dark";
+  }
 }
 
 loadCameras();

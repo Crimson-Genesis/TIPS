@@ -1,0 +1,231 @@
+\documentclass[11pt,a4paper]{article}
+
+% --------------------
+% Packages
+% --------------------
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{parskip}
+
+% --------------------
+% Fonts & spacing
+% --------------------
+\setstretch{1.15}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --------------------
+% Header / Footer
+% --------------------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Principal Engineer Interview}}
+\rhead{\textbf{Google}}
+\cfoot{\thepage}
+
+% --------------------
+% Custom commands
+% --------------------
+\newcommand{\interviewer}{\textbf{Interviewer:}}
+\newcommand{\candidate}{\textbf{Candidate:}}
+
+% --------------------
+% Document
+% --------------------
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Principal Engineer Oral Interview Conversation}}\\
+    \vspace{0.5em}
+    {\large Deep Technical and Architectural Evaluation}
+\end{center}
+
+\vspace{1em}
+
+\interviewer\\
+Give me an overview of your career and what qualifies you as a Principal Engineer.
+
+\candidate\\
+I have \textbf{12 years of experience} building large-scale distributed systems. For the last \textbf{6 years}, I have operated at Staff and Principal levels, leading architecture across multiple teams. My scope has included systems serving over \textbf{300 million users}, global infrastructure, and long-term technical strategy. My role has been less about writing features and more about shaping systems, preventing failure modes, and making irreversible decisions correctly.
+
+\vspace{1em}
+
+\interviewer\\
+What is the difference between a Senior Engineer and a Principal Engineer?
+
+\candidate\\
+A Senior Engineer executes well within a defined problem space. A Principal Engineer defines the problem space itself, identifies hidden constraints, and makes decisions whose consequences persist for years. The primary output is architectural direction, not code volume.
+
+\vspace{1em}
+
+\interviewer\\
+Describe the largest system you have architected.
+
+\candidate\\
+I led the redesign of a global event ingestion and processing platform handling \textbf{over 5 million events per second} sustained. The system spanned \textbf{six regions}, supported strict latency SLOs, and provided both real-time and batch processing guarantees. The redesign reduced operational incidents by \textbf{over 60 percent} within the first year.
+
+\vspace{1em}
+
+\interviewer\\
+What were the hardest constraints in that system?
+
+\candidate\\
+Unpredictable traffic spikes, strict correctness guarantees for a subset of events, and the need to evolve schemas without downtime. Organizational constraints were equally difficult: multiple teams, conflicting priorities, and legacy assumptions.
+
+\vspace{1em}
+
+\interviewer\\
+How do you approach system design at Principal scope?
+
+\candidate\\
+I start by identifying invariants: what must never break. Then I enumerate failure modes, not features. Only after that do I consider technology choices. Design at this level is primarily about risk elimination.
+
+\vspace{1em}
+
+\interviewer\\
+Design a globally distributed system for user-generated content moderation.
+
+\candidate\\
+The system must ingest content, apply automated classification, support human review, and enforce decisions consistently. The architecture separates ingestion, analysis, decisioning, and enforcement. Each stage is independently scalable and observable, with strict auditability guarantees.
+
+\vspace{1em}
+
+\interviewer\\
+How do you handle consistency across regions?
+
+\candidate\\
+Decisions are written through a globally replicated control plane with quorum writes. Enforcement is eventually consistent but bounded. Strong consistency is reserved for policy decisions, not content distribution.
+
+\vspace{1em}
+
+\interviewer\\
+Where do you accept eventual consistency?
+
+\candidate\\
+Everywhere it does not violate safety, security, or legal guarantees. Eventual consistency is a performance tool, not a default.
+
+\vspace{1em}
+
+\interviewer\\
+How do you evaluate new technologies at this level?
+
+\candidate\\
+I evaluate failure modes first, not features. If a technology complicates debugging, recovery, or incident response, it is rejected regardless of performance benefits.
+
+\vspace{1em}
+
+\interviewer\\
+Tell me about a major architectural mistake you made.
+
+\candidate\\
+Early in my career, I over-optimized for scalability while ignoring operability. The system performed well under load but was opaque during failures. We eventually rewrote critical components to make behavior observable. That experience permanently changed how I design systems.
+
+\vspace{1em}
+
+\interviewer\\
+How do you prevent similar mistakes today?
+
+\candidate\\
+By requiring that every design include failure scenarios, rollback strategies, and clear ownership. If those are missing, the design is incomplete.
+
+\vspace{1em}
+
+\interviewer\\
+How do you handle technical disagreement with other senior engineers?
+
+\candidate\\
+By grounding discussions in concrete failure modes and measurable outcomes. If disagreement persists, I document trade-offs and push for reversible decisions whenever possible.
+
+\vspace{1em}
+
+\interviewer\\
+When do you allow irreversible decisions?
+
+\candidate\\
+Only when delaying the decision is more costly than choosing imperfectly. Irreversibility must be explicit and justified.
+
+\vspace{1em}
+
+\interviewer\\
+How do you scale yourself across many teams?
+
+\candidate\\
+Through design documents, architectural reviews, and setting clear technical principles. My goal is to make teams successful without my direct involvement.
+
+\vspace{1em}
+
+\interviewer\\
+What role does coding play for you now?
+
+\candidate\\
+I still write code, but selectively. I focus on prototypes, critical paths, and reference implementations. Coding is a tool for clarity, not validation.
+
+\vspace{1em}
+
+\interviewer\\
+How do you think about operational excellence?
+
+\candidate\\
+Operational excellence is achieved when incidents are unsurprising. Systems should fail in ways that engineers have already anticipated and practiced.
+
+\vspace{1em}
+
+\interviewer\\
+How do you design for on-call engineers?
+
+\candidate\\
+Assume the on-call engineer is unfamiliar with the system and under stress. The system must explain itself through metrics, logs, and safe defaults.
+
+\vspace{1em}
+
+\interviewer\\
+How do you mentor Staff and Senior Engineers?
+
+\candidate\\
+By reviewing their designs, challenging assumptions, and helping them see second- and third-order effects. Mentorship at this level is about judgment, not syntax.
+
+\vspace{1em}
+
+\interviewer\\
+How do you measure your own impact?
+
+\candidate\\
+By the absence of repeated incidents, the longevity of architectural decisions, and the growth of engineers around me.
+
+\vspace{1em}
+
+\interviewer\\
+What does technical leadership mean to you?
+
+\candidate\\
+It means taking responsibility for outcomes, especially failures, regardless of who wrote the code.
+
+\vspace{1em}
+
+\interviewer\\
+What trade-offs do you most often manage?
+
+\candidate\\
+Velocity versus correctness, decentralization versus control, and innovation versus stability. These trade-offs never disappear; they are continuously balanced.
+
+\vspace{1em}
+
+\interviewer\\
+What defines a well-architected system at Google scale?
+
+\candidate\\
+A system that can evolve without rewrites, absorb unexpected load, and recover from failures automatically. Most importantly, it must be understandable by engineers who did not design it.
+
+\vspace{2em}
+
+\interviewer\\
+That concludes the interview. Thank you.
+
+\candidate\\
+Thank you.
+
+\end{document}
+

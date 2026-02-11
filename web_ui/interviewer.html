@@ -1,4 +1,3 @@
-<!-- interviewer.html -->
 <!DOCTYPE html>
 <html>
   <head>
@@ -52,6 +51,19 @@
           color: #155724;
           border-left-color: #28a745;
       }
+      
+      .status.recording-active {
+          background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+          color: #721c24;
+          border-left-color: #dc3545;
+          font-weight: 700;
+          animation: pulse 1.5s infinite;
+      }
+      
+      @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.8; }
+      }
 
       .button-container {
           display: flex;
@@ -89,16 +101,6 @@
           transform: translateY(0);
       }
 
-      .connect {
-          background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-          box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-      }
-
-      .connect:hover:not(:disabled) {
-          background: linear-gradient(135deg, #218838 0%, #1aa179 100%);
-          box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
-      }
-
       .start {
           background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
           box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
@@ -133,6 +135,14 @@
           font-weight: 600;
           margin-bottom: 12px;
           text-align: center;
+      }
+      
+      .visualizer-note {
+          color: #aaa;
+          font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+          text-align: center;
+          margin-top: 8px;
+          font-style: italic;
       }
 
       #audioCanvas {
@@ -229,6 +239,11 @@
           background: linear-gradient(135deg, #2d5a3d 0%, #25503b 100%);
           color: #a8f5a8;
       }
+      
+      body.dark-mode .status.recording-active {
+          background: linear-gradient(135deg, #5a2d2d 0%, #503b3b 100%);
+          color: #f5a8a8;
+      }
 
       .theme-toggle {
           position: fixed;
@@ -270,17 +285,16 @@
     </div>
     <div class="container">
       <h1>Interviewer Control Panel</h1>
-      <div id="statusConnection" class="status">Not Connected</div>
-      <div id="statusCandidate" class="status">Candidate Not Joined</div>
+      <div id="statusCandidate" class="status">Waiting for candidate...</div>
       <div id="statusRecording" class="status">Not Recording</div>
       <div class="button-container">
-        <button id="connectBtn" class="connect">Connect</button>
         <button id="startBtn" class="start" disabled>START Recording</button>
         <button id="stopBtn" class="stop" disabled>STOP Recording</button>
       </div>
       <div class="audio-visualizer">
-        <div class="visualizer-label">Audio Level</div>
+        <div class="visualizer-label">Audio Level Monitor</div>
         <canvas id="audioCanvas"></canvas>
+        <div class="visualizer-note">This visualizer shows your microphone input - NOT recording status</div>
       </div>
     </div>
     <script src="/interviewer.js"></script>

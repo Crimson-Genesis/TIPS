@@ -8,17 +8,15 @@ let audioContext;
 let analyser;
 let dataArray;
 let animationId;
+let isActuallyRecording = false; // Track actual recording state
 
-const connectBtn = document.getElementById('connectBtn');
 const startBtn = document.getElementById('startBtn');
 const stopBtn = document.getElementById('stopBtn');
-const statusConnection = document.getElementById('statusConnection');
 const statusCandidate = document.getElementById('statusCandidate');
 const statusRecording = document.getElementById('statusRecording');
 const audioCanvas = document.getElementById('audioCanvas');
 const canvasCtx = audioCanvas.getContext('2d');
 
-connectBtn.onclick = connect;
 startBtn.onclick = startRecording;
 stopBtn.onclick = stopRecording;
 
@@ -33,6 +31,7 @@ function setupAudioVisualization() {
     const bufferLength = analyser.frequencyBinCount;
     dataArray = new Uint8Array(bufferLength);
     
+    console.log('✅ Audio visualizer started - THIS IS NOT RECORDING');
     drawWaveform();
 }
 
@@ -65,13 +64,14 @@ function drawWaveform() {
     }
 }
 
-async function connect() {
+async function autoConnect() {
     try {
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             alert('Your browser does not support media devices. Please use Chrome, Firefox, or Safari over HTTPS.');
             return;
         }
         
+        console.log('🎤 Requesting microphone access...');
         localStream = await navigator.mediaDevices.getUserMedia({ 
             audio: {
                 echoCancellation: true,
@@ -82,18 +82,21 @@ async function connect() {
             }
         });
         
+        console.log('✅ Microphone access granted');
         setupAudioVisualization();
         
         const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
         ws = new WebSocket(`${protocol}//${location.host}/ws`);
         
         ws.onopen = () => {
+            console.log('🔌 WebSocket connected, joining as interviewer...');
             ws.send(JSON.stringify({ type: 'join-interviewer' }));
         };
         
         ws.onmessage = handleMessage;
         
         ws.onclose = () => {
+            console.log('🔌 WebSocket disconnected');
             reset();
         };
         
@@ -104,12 +107,12 @@ async function connect() {
 
 async function handleMessage(event) {
     const msg = JSON.parse(event.data);
+    console.log('📨 Received message:', msg);
     
     if (msg.type === 'joined') {
         await setupPeerConnection();
-        statusConnection.textContent = 'Connected';
-        statusConnection.classList.add('active');
-        connectBtn.disabled = true;
+        statusCandidate.textContent = 'Waiting for candidate...';
+        console.log('✅ Joined as interviewer, waiting for candidate...');
     }
     
     if (msg.type === 'answer') {
@@ -131,6 +134,7 @@ async function handleMessage(event) {
     }
     
     if (msg.type === 'stopped') {
+        console.log('⏹️ Recording stopped by server');
         reset();
     }
 }
@@ -164,31 +168,61 @@ async function setupPeerConnection() {
 }
 
 function updateState(state) {
+    console.log('📊 State updated to:', state);
+    
     if (state === 'BOTH_CONNECTED') {
-        statusCandidate.textContent = 'Candidate Joined';
+        statusCandidate.textContent = 'Candidate Joined ✓';
         statusCandidate.classList.add('active');
         startBtn.disabled = false;
+        stopBtn.disabled = true;
+        statusRecording.textContent = 'Not Recording';
+        statusRecording.classList.remove('active');
+        statusRecording.classList.remove('recording-active');
+        isActuallyRecording = false;
+        console.log('✅ Candidate joined - START button now enabled');
     }
     
     if (state === 'RECORDING') {
-        statusRecording.textContent = 'RECORDING';
-        statusRecording.classList.add('active');
+        statusRecording.textContent = '🔴 RECORDING TO SERVER';
+        statusRecording.classList.add('recording-active');
+        statusRecording.classList.remove('active');
         startBtn.disabled = true;
         stopBtn.disabled = false;
+        isActuallyRecording = true;
+        console.log('🔴 RECORDING STARTED - Files are being saved to server');
     }
     
     if (state === 'INTERVIEWER_CONNECTED') {
-        statusCandidate.textContent = 'Candidate Not Joined';
+        statusCandidate.textContent = 'Waiting for candidate...';
         statusCandidate.classList.remove('active');
         startBtn.disabled = true;
+        stopBtn.disabled = true;
+        statusRecording.textContent = 'Not Recording';
+        statusRecording.classList.remove('active');
+        statusRecording.classList.remove('recording-active');
+        isActuallyRecording = false;
+        console.log('⏳ Waiting for candidate to join...');
+    }
+    
+    if (state === 'IDLE') {
+        statusCandidate.textContent = 'No one connected';
+        statusCandidate.classList.remove('active');
+        startBtn.disabled = true;
+        stopBtn.disabled = true;
+        statusRecording.textContent = 'Not Recording';
+        statusRecording.classList.remove('active');
+        statusRecording.classList.remove('recording-active');
+        isActuallyRecording = false;
     }
 }
 
 function startRecording() {
+    console.log('🔴 START RECORDING button clicked - sending start command to server');
     ws.send(JSON.stringify({ type: 'start-recording' }));
 }
 
 function stopRecording() {
+    console.log('⏹️ STOP RECORDING button clicked - sending stop command to server');
     ws.send(JSON.stringify({ type: 'stop-recording' }));
 }
 
@@ -211,16 +245,22 @@ function reset() {
     
     canvasCtx.clearRect(0, 0, audioCanvas.width, audioCanvas.height);
     
-    statusConnection.textContent = 'Not Connected';
-    statusConnection.classList.remove('active');
-    statusCandidate.textContent = 'Candidate Not Joined';
+    statusCandidate.textContent = 'Disconnected';
     statusCandidate.classList.remove('active');
     statusRecording.textContent = 'Not Recording';
     statusRecording.classList.remove('active');
+    statusRecording.classList.remove('recording-active');
     
-    connectBtn.disabled = false;
     startBtn.disabled = true;
     stopBtn.disabled = true;
+    isActuallyRecording = false;
+    
+    console.log('🔄 Connection reset, reconnecting in 2 seconds...');
+    
+    // Auto-reconnect after 2 seconds
+    setTimeout(() => {
+        autoConnect();
+    }, 2000);
 }
 
 // Load saved theme
@@ -248,3 +288,7 @@ function updateToggleButton(isDark) {
         text.textContent = 'Dark';
     }
 }
+
+console.log('🚀 Interviewer page loaded - Auto-connecting...');
+// Auto-connect when page loads
+autoConnect();
