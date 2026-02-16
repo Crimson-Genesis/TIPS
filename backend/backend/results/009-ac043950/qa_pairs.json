@@ -1,0 +1,210 @@
+{
+  "dataset_id": "2",
+  "qa_pairs": [
+    {
+      "question_id": "Q1",
+      "question_text": "Give me a brief overview of your background in machine learning.",
+      "question_start_time": 0.0,
+      "question_end_time": 3.98,
+      "answer": {
+        "start_time": 4.31,
+        "end_time": 22.06,
+        "segment_ids": [],
+        "text": "I have seven years of experience working in machine learning and data-driven systems. For the last four years, I worked as a senior machine learning engineer on large-scale production models serving over 80 million users. My work focused on model development, deployment, monitoring, and failures in real-world environments."
+      }
+    },
+    {
+      "question_id": "Q2",
+      "question_text": "Describe a machine learning system which you built end to end.",
+      "question_start_time": 24.57,
+      "question_end_time": 28.09,
+      "answer": {
+        "start_time": 29.51,
+        "end_time": 56.32,
+        "segment_ids": [],
+        "text": "I designed and deployed a recommendation system for content ranking. It ingested user interaction events in real-time, time, performed feature extraction using a mix of batch and streaming pipelines, trained gradient boosted and deep learning models, and served a prediction with latency rate under 30 milliseconds. The system proceeded approximately 1.5 million events per second a week."
+      }
+    },
+    {
+      "question_id": "Q3",
+      "question_text": "How did you define success for that model?",
+      "question_start_time": 59.52,
+      "question_end_time": 62.66,
+      "answer": {
+        "start_time": 64.64,
+        "end_time": 82.94,
+        "segment_ids": [],
+        "text": "Success was measured using online metrics rather than offline accuracy alone. We tracked a click-through rate, long-term engagement, and regression metrics tied to business outcomes. Offline metrics were used only as getting checks, not final decision criteria."
+      }
+    },
+    {
+      "question_id": "Q4",
+      "question_text": "How did you handle the training serving skills?",
+      "question_start_time": 84.69,
+      "question_end_time": 88.15,
+      "answer": {
+        "start_time": 90.12,
+        "end_time": 107.64,
+        "segment_ids": [],
+        "text": "The same feature generation logic is shared between training and serving through a unified feature show. Features are versioned and statistical checks compare training and serving distribution continuously. Any detected drift trigger alert and automated rollbacks."
+      }
+    },
+    {
+      "question_id": "Q5",
+      "question_text": "Explain the difference between bias and the variance in practical terms.",
+      "question_start_time": 109.84,
+      "question_end_time": 114.82,
+      "answer": {
+        "start_time": 116.66,
+        "end_time": 135.7,
+        "segment_ids": [],
+        "text": "Bias represents systematic error caused by over-lie simplistic assumption in the model. Variance represents sensitivity to noise in the training data. In production, high bias lead to consistently wrong predictions, while high variance causes unstable behavior under slight data changes."
+      }
+    },
+    {
+      "question_id": "Q6",
+      "question_text": "How do you decide which model to repair?",
+      "question_start_time": 137.07,
+      "question_end_time": 139.11,
+      "answer": {
+        "start_time": 141.34,
+        "end_time": 157.11,
+        "segment_ids": [],
+        "text": "Model selection is based on offline validation followed by controlled online experiments. A model is deployed only if it shows statistically a significant improvement in primary metrics without degrading secondary metrics such as latency or stability."
+      }
+    },
+    {
+      "question_id": "Q7",
+      "question_text": "How do you handle corrupt drift?",
+      "question_start_time": 159.44,
+      "question_end_time": 162.06,
+      "answer": {
+        "start_time": 164.94,
+        "end_time": 183.2,
+        "segment_ids": [],
+        "text": "We monitor feature distribution and prediction confidence over time. Retraining is scheduled regularly but we also trigger retraining when drift exit defined thresholds. For several drifts, the system falls back to previously stable model."
+      }
+    },
+    {
+      "question_id": "Q8",
+      "question_text": "Describe your approach to feature engine. How",
+      "question_start_time": 185.44,
+      "question_end_time": 188.72,
+      "answer": {
+        "start_time": 190.38,
+        "end_time": 207.83,
+        "segment_ids": [],
+        "text": "I prioritize is features that are stable, interpretable, and cheap to compute complex feature are introduced only when they demonstrate clear incremental value. Feature importance and ablation studies guide pruning decisions."
+      }
+    },
+    {
+      "question_id": "Q9",
+      "question_text": "do you ensure modern are explainable?",
+      "question_start_time": 209.5,
+      "question_end_time": 211.78,
+      "answer": {
+        "start_time": 213.62,
+        "end_time": 231.46,
+        "segment_ids": [],
+        "text": "For inherently complex models, we use post hoc explanation techniques such as feature attribution and sensitivity analysis. For high-risk decisions, we favor simpler models even if they are marginally less accurate."
+      }
+    },
+    {
+      "question_id": "Q10",
+      "question_text": "What happens when our deployed models start degrading silently?",
+      "question_start_time": 233.13,
+      "question_end_time": 236.93,
+      "answer": {
+        "start_time": 239.25,
+        "end_time": 256.11,
+        "segment_ids": [],
+        "text": "Silent Degradation is detected through monitoring of downstream metrics rather than models scores alone. When detected, traffic is shifted to a fallback model while the root cause is investigated. Models are never treated as static artifacts."
+      }
+    },
+    {
+      "question_id": "Q11",
+      "question_text": "How do you think about fairness in the machine learning system?",
+      "question_start_time": 257.77,
+      "question_end_time": 261.73,
+      "answer": {
+        "start_time": 263.68,
+        "end_time": 279.74,
+        "segment_ids": [],
+        "text": "Fairness constraints are defined at the problem level, not added afterward. world. We measured disparities across relevant subgroups and enforced thresholds during training and evolution. Traits of are documented explicitly."
+      }
+    },
+    {
+      "question_id": "Q12",
+      "question_text": "What is the biggest mistake teams make with the machine learning systems?",
+      "question_start_time": 281.14,
+      "question_end_time": 286.68,
+      "answer": {
+        "start_time": 289.72,
+        "end_time": 300.22,
+        "segment_ids": [],
+        "text": "Over-optimizing offline metrics while ignoring deployment, monitoring and failure modes. Most ML failures are system failures, not algorithmic ones."
+      }
+    },
+    {
+      "question_id": "Q13",
+      "question_text": "How do you develop a model behaving unexpectedly in production?",
+      "question_start_time": 301.4,
+      "question_end_time": 305.88,
+      "answer": {
+        "start_time": 307.53,
+        "end_time": 319.67,
+        "segment_ids": [],
+        "text": "I start by checking data freshness, feature distribution, and serving logs. If When data is correct, I impact recent changes through training data or code. Model parameter are rarely the first suspect."
+      }
+    },
+    {
+      "question_id": "Q14",
+      "question_text": "How do you vision and roll back a model?",
+      "question_start_time": 321.07,
+      "question_end_time": 325.51,
+      "answer": {
+        "start_time": 327.1,
+        "end_time": 339.02,
+        "segment_ids": [],
+        "text": "Every model artifact, feature schema, and data set snapshot is wasn't. Rollbacks are automated and reversible within minutes. No model is deployed without a known good fallback."
+      }
+    },
+    {
+      "question_id": "Q15",
+      "question_text": "What redox would do you commonly face in ML system design?",
+      "question_start_time": 339.9,
+      "question_end_time": 344.62,
+      "answer": {
+        "start_time": 346.17,
+        "end_time": 358.83,
+        "segment_ids": [],
+        "text": "Accuracy versus latency, model complexity versus interpretability, and automation versus control. role. These trade-offs are resolved based on system constraints, not theoretical optimality."
+      }
+    },
+    {
+      "question_id": "Q16",
+      "question_text": "What defines a valid engineering machine learning system?",
+      "question_start_time": 360.62,
+      "question_end_time": 364.1,
+      "answer": {
+        "start_time": 365.21,
+        "end_time": 378.09,
+        "segment_ids": [],
+        "text": "A system where models can fail without causing outage. Performance degrades gracefully and behavior is observable and explainable. If engineer can reason about it under pressure, it will well engineer."
+      }
+    },
+    {
+      "question_id": "Q17",
+      "question_text": "That's it. Thank you.",
+      "question_start_time": 380.02,
+      "question_end_time": 381.08,
+      "answer": {
+        "start_time": 383.12,
+        "end_time": 383.54,
+        "segment_ids": [],
+        "text": "Thank you."
+      }
+    }
+  ],
+  "total_pairs": 17
+}

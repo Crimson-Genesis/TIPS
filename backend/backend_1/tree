@@ -1,0 +1,181 @@
+.
+├── config
+├── output
+│   ├── candidate_behavior_metrics.json
+│   ├── candidate_video_raw.json
+│   ├── interviewer_transcript.json
+│   ├── qa_pairs.json
+│   ├── relevance_scores.json
+│   ├── speaking_segments.json
+│   └── timeline.json
+├── src
+│   ├── stage0_timebase
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   │   ├── __init__.cpython-311.pyc
+│   │   │   └── timebase.cpython-311.pyc
+│   │   └── timebase.py
+│   ├── stage1_extraction
+│   │   ├── candidate_audio.py
+│   │   ├── candidate_video.py
+│   │   ├── __init__.py
+│   │   └── interviewer_audio.py
+│   ├── stage2_temporal
+│   │   ├── __init__.py
+│   │   └── segmentation.py
+│   ├── stage3_behavior
+│   │   ├── __init__.py
+│   │   └── metrics.py
+│   ├── stage4_semantic
+│   │   ├── __init__.py
+│   │   ├── relevance-backup-2.py
+│   │   ├── relevance-backup.py
+│   │   └── relevance.py
+│   └── stage5_aggregation
+│       └── __init__.py
+└── tree
+
+11 directories, 25 files
+.
+├── config
+├── jd
+│   ├── machine_leaning_engineer.md
+│   ├── product_manager.md
+│   └── system_architect.md
+├── main.py
+├── output
+│   ├── candidate_audio_raw.json
+│   ├── candidate_behavior_metrics.json
+│   ├── candidate_video_raw.json
+│   ├── interviewer_transcript.json
+│   ├── qa_pairs.json
+│   ├── speaking_segments.json
+│   └── timeline.json
+├── results
+│   ├── 001-6a3145c2
+│   │   ├── candidate_audio_raw.json
+│   │   ├── candidate_behavior_metrics.json
+│   │   ├── candidate_score_timeline.json
+│   │   ├── candidate_video_raw.json
+│   │   ├── interviewer_transcript.json
+│   │   ├── qa_pairs.json
+│   │   ├── relevance_scores.json
+│   │   ├── speaking_segments.json
+│   │   └── timeline.json
+│   ├── 002-ed135b10
+│   │   ├── candidate_audio_raw.json
+│   │   ├── candidate_behavior_metrics.json
+│   │   ├── candidate_score_timeline.json
+│   │   ├── candidate_video_raw.json
+│   │   ├── interviewer_transcript.json
+│   │   ├── qa_pairs.json
+│   │   ├── relevance_scores.json
+│   │   ├── speaking_segments.json
+│   │   └── timeline.json
+│   ├── 003-b3499ce5
+│   │   ├── candidate_audio_raw.json
+│   │   ├── candidate_behavior_metrics.json
+│   │   ├── candidate_score_timeline.json
+│   │   ├── candidate_video_raw.json
+│   │   ├── interviewer_transcript.json
+│   │   ├── qa_pairs.json
+│   │   ├── relevance_scores.json
+│   │   ├── speaking_segments.json
+│   │   └── timeline.json
+│   ├── 004-2e175eb6
+│   │   ├── candidate_audio_raw.json
+│   │   ├── candidate_behavior_metrics.json
+│   │   ├── candidate_score_timeline.json
+│   │   ├── candidate_video_raw.json
+│   │   ├── interviewer_transcript.json
+│   │   ├── qa_pairs.json
+│   │   ├── relevance_scores.json
+│   │   ├── speaking_segments.json
+│   │   └── timeline.json
+│   ├── 005-12159dde
+│   │   ├── candidate_audio_raw.json
+│   │   ├── candidate_behavior_metrics.json
+│   │   ├── candidate_score_timeline.json
+│   │   ├── candidate_video_raw.json
+│   │   ├── interviewer_transcript.json
+│   │   ├── qa_pairs.json
+│   │   ├── relevance_scores.json
+│   │   ├── speaking_segments.json
+│   │   └── timeline.json
+│   ├── 006-d04ed4c1
+│   │   ├── candidate_audio_raw.json
+│   │   ├── candidate_behavior_metrics.json
+│   │   ├── candidate_score_timeline.json
+│   │   ├── candidate_video_raw.json
+│   │   ├── interviewer_transcript.json
+│   │   ├── qa_pairs.json
+│   │   ├── relevance_scores.json
+│   │   ├── speaking_segments.json
+│   │   └── timeline.json
+│   ├── 007-234b14a2
+│   │   ├── candidate_audio_raw.json
+│   │   ├── candidate_behavior_metrics.json
+│   │   ├── candidate_video_raw.json
+│   │   ├── interviewer_transcript.json
+│   │   ├── qa_pairs.json
+│   │   ├── speaking_segments.json
+│   │   └── timeline.json
+│   └── 008-77996d54
+│       └── timeline.json
+├── src
+│   ├── stage0_timebase
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   │   ├── __init__.cpython-311.pyc
+│   │   │   └── timebase.cpython-311.pyc
+│   │   └── timebase.py
+│   ├── stage1_extraction
+│   │   ├── candidate_audio.py
+│   │   ├── candidate_video.py
+│   │   ├── __init__.py
+│   │   ├── interviewer_audio.py
+│   │   └── __pycache__
+│   │       ├── candidate_audio.cpython-311.pyc
+│   │       ├── candidate_video.cpython-311.pyc
+│   │       ├── __init__.cpython-311.pyc
+│   │       └── interviewer_audio.cpython-311.pyc
+│   ├── stage2_temporal
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   │   ├── __init__.cpython-311.pyc
+│   │   │   └── segmentation.cpython-311.pyc
+│   │   └── segmentation.py
+│   ├── stage3_behavior
+│   │   ├── __init__.py
+│   │   ├── metrics.py
+│   │   └── __pycache__
+│   │       ├── __init__.cpython-311.pyc
+│   │       └── metrics.cpython-311.pyc
+│   ├── stage4+5
+│   │   ├── 4+5_1.py
+│   │   ├── 4+5.py
+│   │   ├── __init__.py
+│   │   └── __pycache__
+│   │       └── 4+5.cpython-311.pyc
+│   ├── stage4_semantic
+│   │   ├── __init__.py
+│   │   ├── relevance_1.py
+│   │   └── relevance.py
+│   └── stage5_aggregation
+│       ├── aggregate_1.py
+│       ├── aggregate.py
+│       └── __init__.py
+├── temp_input
+│   ├── 2_candidate_audio.wav -> /run/media/nico/nova/projects/micro_project_mca_3_sem/backend/backend/trans/2_candidate_audio.wav
+│   ├── 2_candidate_video.mp4 -> /run/media/nico/nova/projects/micro_project_mca_3_sem/backend/backend/trans/2_candidate_video.mp4
+│   └── 2_interviewer_audio.wav -> /run/media/nico/nova/projects/micro_project_mca_3_sem/backend/backend/trans/2_interviewer_audio.wav
+├── trans
+│   ├── 1_candidate_audio.wav
+│   ├── 1_candidate_video.mp4
+│   ├── 1_interviewer_audio.wav
+│   ├── 2_candidate_audio.wav
+│   ├── 2_candidate_video.mp4
+│   └── 2_interviewer_audio.wav
+└── tree
+
+28 directories, 113 files

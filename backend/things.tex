@@ -1,0 +1,378 @@
+\documentclass[11pt,a4paper]{article}
+
+% -------------------------
+% Page & core packages
+% -------------------------
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{longtable}
+
+\hypersetup{hidelinks}
+
+
+% -------------------------
+% Listings setup (PLAIN TEXT ONLY)
+% -------------------------
+\lstset{
+  basicstyle=\ttfamily\small,
+  frame=single,
+  breaklines=true,
+  showstringspaces=false,
+  numbers=left,
+  numberstyle=\tiny,
+  numbersep=8pt
+}
+
+% -------------------------
+% Document metadata
+% -------------------------
+\title{Backend Machine Learning Pipeline\\Automated Interview Analysis}
+\author{System Architecture Document}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+\newpage
+
+% =================================================
+\section{Purpose and Scope}
+
+This document defines the backend machine learning pipeline for an automated interview analysis system.
+
+The interview user interface (UI) is assumed to be complete and provides pre-separated modalities:
+\begin{itemize}
+  \item Candidate audio only
+  \item Interviewer audio only
+  \item Candidate video only (no audio)
+\end{itemize}
+
+The backend processes these inputs to produce structured, time-aligned, explainable evaluation outputs.
+
+No model training is performed. All inference relies on pretrained models and deterministic logic.
+
+% =================================================
+\section{Input Data Contract}
+
+Each interview session provides the following files:
+
+\begin{verbatim}
+candidate_audio.wav
+candidate_video.mp4
+interviewer_audio.wav
+job_description.txt
+\end{verbatim}
+
+\subsection{Assumptions}
+
+\begin{itemize}
+  \item Speaker separation is already complete
+  \item Candidate video contains only the candidate
+  \item All files belong to a single interview session
+  \item Audio can be aligned to the video timeline
+\end{itemize}
+
+The candidate video timeline is treated as the canonical time base.
+
+% =================================================
+\section{Technology Stack}
+
+\subsection{Programming Language}
+\begin{itemize}
+  \item Python 3.11
+\end{itemize}
+
+\subsection{Audio Processing}
+\begin{itemize}
+  \item ffmpeg
+  \item librosa
+  \item webrtcvad
+  \item faster-whisper
+\end{itemize}
+
+\subsection{Video Processing}
+\begin{itemize}
+  \item opencv-python
+  \item mediapipe
+\end{itemize}
+
+\subsection{Language Models}
+\begin{itemize}
+  \item Local LLM: Qwen 2.5 3B
+  \item Sentence-BERT–compatible embedding model
+\end{itemize}
+
+\subsection{Data Handling}
+\begin{itemize}
+  \item numpy, scipy
+  \item pydantic
+  \item JSON for all intermediate and final artifacts
+\end{itemize}
+
+% =================================================
+\section{Pipeline Overview}
+
+\begin{verbatim}
+Input Files
+  ↓
+Stage 0: Canonical Time Base
+  ↓
+Stage 1: Signal Extraction
+  ↓
+Stage 2: Temporal Grouping
+  ↓
+Stage 3: Behavioral Metrics
+  ↓
+Stage 4: Semantic Relevance Scoring
+  ↓
+Stage 5: JD-Conditioned Aggregation
+  ↓
+Final Output (output.json)
+\end{verbatim}
+
+Each stage produces explicit artifacts consumed by the next stage.
+
+% =================================================
+\section{Stage 0: Canonical Time Base}
+
+\subsection{Objective}
+
+Unify all modalities onto a single authoritative timeline.
+
+\subsection{Process}
+
+\begin{itemize}
+  \item Extract FPS and duration from candidate video
+  \item Normalize audio timestamps
+  \item Align audio streams to video time
+\end{itemize}
+
+\subsection{Internal Metadata}
+
+\begin{lstlisting}
+{
+  "timebase": "video",
+  "fps": 30,
+  "duration_sec": 1832.4
+}
+\end{lstlisting}
+
+% =================================================
+\section{Stage 1: Signal Extraction}
+
+This stage performs measurement only. No semantic interpretation.
+
+\subsection{Candidate Audio}
+
+Extracted features (timestamped):
+\begin{itemize}
+  \item RMS energy
+  \item Fundamental frequency (pitch)
+  \item Pitch variance
+  \item Speech rate
+  \item Pause duration
+  \item Voice activity detection
+\end{itemize}
+
+Additionally:
+\begin{itemize}
+  \item Speech-to-text transcription with word-level timestamps
+\end{itemize}
+
+\subsection{Interviewer Audio}
+
+\begin{itemize}
+  \item Speech-to-text transcription with timestamps
+\end{itemize}
+
+\subsection{Candidate Video}
+
+Frames sampled at every 10th frame.
+
+Per-frame features:
+\begin{itemize}
+  \item Face presence
+  \item Face bounding box size
+  \item Eye gaze direction
+  \item Head pose (yaw, pitch, roll)
+  \item Facial landmark movement
+\end{itemize}
+
+\subsection{Outputs}
+
+\begin{itemize}
+  \item candidate\_audio\_raw.json
+  \item interviewer\_transcript.json
+  \item candidate\_video\_raw.json
+\end{itemize}
+
+% =================================================
+\section{Stage 2: Temporal Grouping}
+
+\subsection{Speaking Segmentation}
+
+Candidate voice activity defines speaking vs non-speaking intervals.
+
+\begin{lstlisting}
+{
+  "segment_id": "S4",
+  "type": "speaking",
+  "start": 112.3,
+  "end": 129.7,
+  "video_frames": [3370, 3380, 3390]
+}
+\end{lstlisting}
+
+\subsection{Question--Answer Mapping}
+
+Rules:
+\begin{itemize}
+  \item Interviewer speech defines questions
+  \item Subsequent candidate speaking defines answers
+  \item Short silences are merged
+\end{itemize}
+
+\subsection{Outputs}
+
+\begin{itemize}
+  \item speaking\_segments.json
+  \item qa\_pairs.json
+\end{itemize}
+
+% =================================================
+\section{Stage 3: Behavioral Metrics}
+
+Derived metrics are computed per answer or per speaking segment.
+
+\subsection{Audio-Based Metrics}
+
+\begin{itemize}
+  \item Confidence proxy
+  \item Fluency score
+  \item Stress proxy
+  \item Consistency / evasiveness proxy
+\end{itemize}
+
+\subsection{Video-Based Metrics}
+
+\begin{itemize}
+  \item Face presence ratio
+  \item Eye contact stability
+  \item Head movement entropy
+  \item Micro-movement intensity
+\end{itemize}
+
+\subsection{Output}
+
+\begin{itemize}
+  \item candidate\_behavior\_metrics.json
+\end{itemize}
+
+% =================================================
+\section{Stage 4: Semantic Relevance Scoring}
+
+\subsection{LLM Role}
+
+The LLM evaluates semantic alignment only.
+
+Inputs:
+\begin{itemize}
+  \item Question text
+  \item Answer text
+  \item Relevant job description excerpt
+\end{itemize}
+
+\subsection{Constraints}
+
+\begin{itemize}
+  \item Low temperature
+  \item Forced structured output
+  \item No free-form prose
+\end{itemize}
+
+\subsection{Output}
+
+\begin{lstlisting}
+{
+  "qa_id": "QA7",
+  "relevance": 0.84,
+  "coverage": 0.79,
+  "off_topic": false
+}
+\end{lstlisting}
+
+Stored as:
+\begin{itemize}
+  \item relevance\_scores.json
+\end{itemize}
+
+% =================================================
+\section{Stage 5: JD-Conditioned Aggregation}
+
+\subsection{JD Decomposition}
+
+The job description is parsed into:
+\begin{itemize}
+  \item Required skills
+  \item Soft skills
+  \item Weight vectors
+\end{itemize}
+
+\subsection{Chronological Scoring}
+
+Scores are updated incrementally per QA pair:
+\begin{itemize}
+  \item Skill confidence
+  \item Communication effectiveness
+  \item Behavioral consistency
+\end{itemize}
+
+\subsection{Output}
+
+\begin{itemize}
+  \item candidate\_score\_timeline.json
+\end{itemize}
+
+% =================================================
+\section{Final Output}
+
+The final backend artifact is:
+
+\begin{verbatim}
+output.json
+\end{verbatim}
+
+It contains:
+\begin{itemize}
+  \item Aggregated scores
+  \item Chronological performance evolution
+  \item Evidence-backed explanations
+\end{itemize}
+
+% =================================================
+\section{Explicit Non-Goals}
+
+The system does not attempt:
+\begin{itemize}
+  \item Emotion detection
+  \item Lie detection
+  \item Psychological diagnosis
+  \item Human replacement
+\end{itemize}
+
+All outputs are evidence-based proxies.
+
+% =================================================
+\section{Conclusion}
+
+This backend architecture is modular, deterministic, explainable, and auditable.  
+Strict separation between measurement, interpretation, and aggregation prevents hallucination and ensures reliability.
+
+\end{document}
+
