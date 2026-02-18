@@ -1,0 +1,663 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{titlesec}
+\usepackage{enumitem}
+
+% Color definitions
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+
+% Listing settings
+\lstset{
+    backgroundcolor=\color{codebg},
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    tabsize=2,
+    basicstyle=\ttfamily\small
+}
+
+% Title formatting
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+% Title
+\title{\textbf{Interview Analysis System: Frontend Implementation Specification}}
+\author{System Architecture Document}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ==============================================================================
+\section{Overview}
+% ==============================================================================
+
+This document specifies the implementation requirements for a frontend user interface that exposes the outputs of the backend interview analysis pipeline. The frontend must provide temporal evidence inspection, analytical visualization, and pipeline execution control while adhering to strict data integrity constraints.
+
+The backend pipeline consists of six processing stages that analyze video interviews, extract behavioral metrics, transcribe speech, identify question-answer pairs, and generate LLM-based assessments. The frontend must faithfully render all outputs produced by these stages without modification or recomputation.
+
+% ==============================================================================
+\section{Project Structure}
+% ==============================================================================
+
+\subsection{Directory Layout}
+
+\begin{verbatim}
+frontend/
+|-- index.html              # Main application entry point
+|-- css/
+|   |-- styles.css         # Global styles
+|-- js/
+|   |-- app.js             # Main application controller
+|   |-- data-loader.js     # JSON data loading module
+|   |-- timeline-view.js   # Temporal evidence view
+|   |-- analytics-view.js  # Analytical visualization
+|   |-- pipeline-view.js   # Execution control view
+|   |-- utils.js           # Utility functions
+|-- assets/
+|   |-- icons/             # UI icons (SVG)
+|-- package.json           # Dependencies
+\end{verbatim}
+
+\subsection{Technology Stack}
+
+\begin{itemize}
+    \item \textbf{Framework}: Vanilla JavaScript ES6+ (no heavy frameworks)
+    \item \textbf{UI Components}: Custom Web Components for reusability
+    \item \textbf{Data Visualization}: Canvas API for timeline, SVG for charts
+    \item \textbf{Build Tool}: Vite for development and bundling
+    \item \textbf{Testing}: Playwright for E2E tests
+\end{itemize}
+
+% ==============================================================================
+\section{Data Loading Module}
+% ==============================================================================
+
+\subsection{Module Purpose}
+
+The data loader is responsible for fetching and validating all JSON artifacts produced by the backend pipeline. It must enforce strict schema compliance and fail explicitly on malformed data.
+
+\subsection{API Specification}
+
+The data loader exposes the following methods:
+\begin{enumerate}
+    \item \texttt{constructor(basePath)} - Initialize with path to backend output
+    \item \texttt{loadAll()} - Load all pipeline outputs, returns Promise
+    \item \texttt{loadFile(filename, schema)} - Load single JSON with validation
+    \item \texttt{validate(data, schema)} - Validate against expected schema
+\end{enumerate}
+
+State properties:
+\begin{itemize}
+    \item \texttt{basePath} - Path to JSON files
+    \item \texttt{cache} - Map of loaded data
+    \item \texttt{loadingState} - 'idle' | 'loading' | 'loaded' | 'error'
+    \item \texttt{error} - Error message if failed
+\end{itemize}
+
+\subsection{Schema Definitions}
+
+The following schemas define the expected structure of each JSON output:
+
+\begin{longtable}{|l|p{6cm}|p{4cm}|}
+\hline
+\textbf{File} & \textbf{Key Fields} & \textbf{Type} \\
+\hline
+\endfirsthead
+\hline
+\textbf{File} & \textbf{Key Fields} & \textbf{Type} \\
+\hline
+\endhead
+\hline
+timeline.json & timebase, dataset\_id, video.fps, video.duration\_sec, audio.candidate.duration\_sec & Object \\
+\hline
+speaking\_segments.json & segments[].segment\_id, start\_time, end\_time, type & Array \\
+\hline
+qa\_pairs.json & qa\_pairs[].question\_id, question\_text, answer.text, answer.start\_time & Array \\
+\hline
+interviewer\_transcript.json & transcription.segments[].start\_sec, end\_sec, text, words[] & Object \\
+\hline
+candidate\_behavior\_metrics.json & segments[].segment\_id, audio\_metrics, video\_metrics & Array \\
+\hline
+candidate\_audio\_raw.json & features[].timestamp\_sec, rms\_energy, pitch\_hz & Array \\
+\hline
+candidate\_video\_raw.json & frames[].timestamp\_sec, face\_detected, head\_pose, gaze & Array \\
+\hline
+relevance\_scores.json & qa\_id, relevance\_score, matched\_keywords[], justification & Array \\
+\hline
+candidate\_score\_timeline.json & checkpoint\_entry.checkpoint, competency\_scores, incremental\_verdict & Array \\
+\hline
+\end{longtable}
+
+% ==============================================================================
+\section{Temporal Evidence View}
+% ==============================================================================
+
+\subsection{Purpose}
+
+The temporal evidence view provides synchronized playback of video, audio activity indicators, transcript text, and question-answer boundaries. This is the primary interface for inspecting raw evidence.
+
+\subsection{Component Architecture}
+
+\begin{enumerate}
+    \item \textbf{Video/Audio Player}: Primary playback component
+    \item \textbf{Timeline Canvas}: Visual timeline with markers
+    \item \textbf{Transcript Panel}: Scrolling transcript with time alignment
+    \item \textbf{QA Navigator}: Question-answer pair navigation
+    \item \textbf{Metrics Overlay}: Behavioral metrics display
+\end{enumerate}
+
+All components synchronize to a common timebase defined in timeline.json.
+
+\subsection{Timeline Visualization}
+
+The timeline canvas must render:
+
+\begin{enumerate}
+    \item \textbf{Video progress bar}: Current playback position
+    \item \textbf{Speaking segments}: Colored spans indicating candidate speech
+    \item \textbf{Question markers}: Vertical lines with question IDs
+    \item \textbf{Answer spans}: Highlighted regions for each answer
+    \item \textbf{Score indicators}: Color-coded badges for LLM judgments
+\end{enumerate}
+
+\subsection{Time Synchronization Rules}
+
+All temporal elements must use the canonical timebase defined in timeline.json:
+
+\begin{itemize}
+    \item Time unit: seconds (float with millisecond precision)
+    \item Reference: video timeline (24fps for dataset 1)
+    \item Offset: video-to-audio offset is 0.0 (assumed synchronized)
+    \item All timestamps in JSON files use this unified timebase
+\end{itemize}
+
+\subsection{Interaction Specifications}
+
+\begin{longtable}{|l|l|p{5cm}|}
+\hline
+\textbf{Action} & \textbf{Target} & \textbf{Result} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Action} & \textbf{Target} & \textbf{Result} \\
+\hline
+\endhead
+\hline
+Click & Timeline & Seek video to position, update all views \\
+\hline
+Click & Question marker & Jump to question start time, expand QA panel \\
+\hline
+Click & Answer span & Jump to answer start time, highlight transcript segment \\
+\hline
+Hover & QA pair & Show tooltip with scores, keywords, reasoning \\
+\hline
+Scroll & Transcript & Navigate through interview chronologically \\
+\hline
+Play/Pause & Video player & Toggle playback, sync timeline position \\
+\hline
+\end{longtable}
+
+% ==============================================================================
+\section{Analytics View}
+% ==============================================================================
+
+\subsection{Purpose}
+
+The analytics view renders aggregated and per-question assessments derived from LLM analysis. This includes behavioral metrics, semantic relevance, and candidate progression.
+
+\subsection{Component Structure}
+
+\begin{enumerate}
+    \item \textbf{Summary Dashboard}: High-level metrics and final verdict
+    \item \textbf{Per-Question Analysis}: Individual QA pair evaluations
+    \item \textbf{Behavioral Trends}: Charts showing metrics over time
+    \item \textbf{JD Relevance}: Keyword matching results
+\end{enumerate}
+
+\subsection{Summary Dashboard}
+
+\begin{longtable}{|l|l|p{5cm}|}
+\hline
+\textbf{Metric} & \textbf{Source} & \textbf{Display} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Metric} & \textbf{Source} & \textbf{Display} \\
+\hline
+\endhead
+\hline
+Final Verdict & candidate\_score\_timeline.json & Badge: STRONG\_HIRE / ADEQUATE / WEAK \\
+\hline
+Overall Score & candidate\_score\_timeline.json & 0.0-1.0 progress bar \\
+\hline
+Confidence & candidate\_score\_timeline.json & HIGH / MEDIUM / LOW \\
+\hline
+Total Questions & qa\_pairs.json & Count with progress indicator \\
+\hline
+Avg Relevance & relevance\_scores.json & 0.0-1.0 with trend arrow \\
+\hline
+\end{longtable}
+
+\subsection{Per-Question Analysis Panel}
+
+For each question-answer pair, display:
+
+\begin{itemize}
+    \item Question text (from qa\_pairs.json)
+    \item Answer text (from qa\_pairs.json)
+    \item Relevance score (from relevance\_scores.json)
+    \item Matched keywords (from relevance\_scores.json)
+    \item Competency scores (from candidate\_score\_timeline.json):
+        \begin{itemize}
+            \item technical\_depth
+            \item system\_design
+            \item production\_experience
+            \item communication\_clarity
+            \item problem\_solving
+        \end{itemize}
+    \item Incremental verdict (from candidate\_score\_timeline.json)
+    \item Reasoning (from candidate\_score\_timeline.json)
+\end{itemize}
+
+Clicking any question navigates to the temporal evidence view at that question's timestamp.
+
+\subsection{Behavioral Metrics Charts}
+
+Using data from candidate\_behavior\_metrics.json:
+
+\begin{longtable}{|l|l|p{5cm}|}
+\hline
+\textbf{Metric} & \textbf{Source Field} & \textbf{Chart Type} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Metric} & \textbf{Source Field} & \textbf{Chart Type} \\
+\hline
+\endhead
+\hline
+Speech Rate & audio\_metrics.speech\_rate & Line chart over time \\
+\hline
+Pitch Variance & audio\_metrics.pitch\_variance & Area chart \\
+\hline
+Face Presence & video\_metrics.face\_presence\_ratio & Stacked bar \\
+\hline
+Head Motion & video\_metrics.head\_motion\_mean & Line chart \\
+\hline
+Gaze Stability & video\_metrics.gaze\_stability & Line chart \\
+\hline
+Energy & audio\_metrics.energy\_mean & Waveform visualization \\
+\hline
+\end{longtable}
+
+% ==============================================================================
+\section{Pipeline Execution View}
+% ==============================================================================
+
+\subsection{Purpose}
+
+The pipeline view provides controlled invocation of the backend analysis pipeline with real-time feedback.
+
+\subsection{Input Requirements}
+
+The UI must accept the following inputs:
+
+\begin{enumerate}
+    \item \textbf{Video file}: MP4 format, candidate video recording
+    \item \textbf{Candidate audio}: WAV format, extracted candidate audio
+    \item \textbf{Interviewer audio}: WAV format, extracted interviewer audio
+    \item \textbf{Job Description}: Markdown file containing JD text
+\end{enumerate}
+
+Input files must be validated before submission:
+\begin{itemize}
+    \item File existence check
+    \item Format validation
+    \item Naming convention: number\_candidate\_video.mp4, number\_candidate\_audio.wav, number\_interviewer\_audio.wav
+\end{itemize}
+
+\subsection{Execution States}
+
+\begin{longtable}{|l|l|p{5cm}|}
+\hline
+\textbf{State} & \textbf{Trigger} & \textbf{UI Response} \\
+\hline
+\endfirsthead
+\hline
+\textbf{State} & \textbf{Trigger} & \textbf{UI Response} \\
+\hline
+\endhead
+\hline
+idle & Initial state & Show input form, disabled run button \\
+\hline
+validating & Input files selected & Show spinner, disable inputs \\
+\hline
+running & User clicks Run & Show progress, stream logs, disable inputs \\
+\hline
+completed & Exit code 0 & Show success message, enable results view \\
+\hline
+failed & Exit code != 0 & Show error message, enable retry \\
+\hline
+\end{longtable}
+
+\subsection{Subprocess Invocation}
+
+The pipeline execution uses Node.js child\_process.spawn to invoke main.py:
+
+\begin{enumerate}
+    \item Construct argument array from user inputs
+    \item Spawn python process with cwd set to backend directory
+    \item Attach stdout and stderr listeners to stream logs to UI
+    \item On process close, check exit code and update state
+    \item On success, call discoverOutputs() to scan for new JSON files
+\end{enumerate}
+
+Key code points:
+\begin{itemize}
+    \item Main script path: './backend/main.py'
+    \item Working directory: './backend'
+    \item Arguments: --video, --candidate-audio, --interviewer-audio, --jd
+    \item Output directory scanning: './backend/output/'
+\end{itemize}
+
+\subsection{Output Discovery}
+
+After successful completion:
+
+\begin{enumerate}
+    \item Scan ./backend/output/ for JSON files
+    \item Parse each file to verify validity
+    \item Update data loader cache
+    \item Enable temporal and analytics views
+    \item Display run summary with file list
+\end{enumerate}
+
+% ==============================================================================
+\section{UI-JSON Mapping Tables}
+% ==============================================================================
+
+\subsection{Temporal Evidence Mapping}
+
+\begin{longtable}{|l|l|l|p{4cm}|}
+\hline
+\textbf{UI Component} & \textbf{JSON File} & \textbf{Fields Used} & \textbf{Alignment} \\
+\hline
+\endfirsthead
+\hline
+\textbf{UI Component} & \textbf{JSON File} & \textbf{Fields Used} & \textbf{Alignment} \\
+\hline
+\endhead
+\hline
+Video Player & timeline.json & video.file, video.duration\_sec & Primary timebase \\
+\hline
+Timeline Bar & speaking\_segments.json & start\_time, end\_time & Matches video position \\
+\hline
+Segment Colors & speaking\_segments.json & type (speaking/silence) & Visual coding \\
+\hline
+Transcript Panel & interviewer\_transcript.json & segments[].text, start\_sec, end\_sec & Scroll sync \\
+\hline
+QA Navigator & qa\_pairs.json & question\_start\_time, answer.start\_time & Jump navigation \\
+\hline
+Metrics Overlay & candidate\_behavior\_metrics.json & segment\_id, timestamps & Frame sync \\
+\hline
+Audio Waveform & candidate\_audio\_raw.json & timestamp\_sec, rms\_energy & Canvas render \\
+\hline
+Face Video & candidate\_video\_raw.json & timestamp\_sec, face\_detected & Frame render \\
+\hline
+\end{longtable}
+
+\subsection{Analytics Mapping}
+
+\begin{longtable}{|l|l|l|p{4cm}|}
+\hline
+\textbf{UI Component} & \textbf{JSON File} & \textbf{Fields Used} & \textbf{Update Rule} \\
+\hline
+\endfirsthead
+\hline
+\textbf{UI Component} & \textbf{JSON File} & \textbf{Fields Used} & \textbf{Update Rule} \\
+\hline
+\endhead
+\hline
+Verdict Badge & candidate\_score\_timeline.json & final\_verdict.verdict & On load \\
+\hline
+Score Gauge & candidate\_score\_timeline.json & final\_verdict.overall\_score & On load \\
+\hline
+Confidence Label & candidate\_score\_timeline.json & final\_verdict.confidence & On load \\
+\hline
+Question Cards & qa\_pairs.json & qa\_pairs[] & On load \\
+\hline
+Relevance Scores & relevance\_scores.json & relevance\_score & Per question \\
+\hline
+Matched Keywords & relevance\_scores.json & matched\_keywords[] & Per question \\
+\hline
+Competency Bars & candidate\_score\_timeline.json & competency\_scores & Per question \\
+\hline
+Progress Timeline & candidate\_score\_timeline.json & checkpoint\_entry & Sequential \\
+\hline
+Behavioral Chart & candidate\_behavior\_metrics.json & audio/video\_metrics & Aggregation \\
+\hline
+\end{longtable}
+
+% ==============================================================================
+\section{State Management}
+% ==============================================================================
+
+\subsection{Application States}
+
+The application maintains the following state object:
+
+\begin{longtable}{|l|l|p{5cm}|}
+\hline
+\textbf{State Property} & \textbf{Type} & \textbf{Purpose} \\
+\hline
+\endfirsthead
+\hline
+\textbf{State Property} & \textbf{Type} & \textbf{Purpose} \\
+\hline
+\endhead
+\hline
+dataLoading & string & 'idle' | 'loading' | 'loaded' | 'error' \\
+\hline
+dataError & object & Error details if loading failed \\
+\hline
+pipeline & string & 'idle' | 'validating' | 'running' | 'completed' | 'failed' \\
+\hline
+runLogs & array & Lines from stdout/stderr during execution \\
+\hline
+exitCode & number & Process exit code after completion \\
+\hline
+currentView & string & 'timeline' | 'analytics' | 'pipeline' \\
+\hline
+selectedQA & string & Currently selected question ID or null \\
+\hline
+currentTime & number & Current playback time in seconds \\
+\hline
+isPlaying & boolean & Video playback state \\
+\hline
+outputs & object & Cached pipeline output data \\
+\hline
+\end{longtable}
+
+\subsection{State Transitions}
+
+\begin{enumerate}
+    \item Initial load: dataLoading = 'idle', pipeline = 'idle'
+    \item User selects inputs: pipeline = 'validating'
+    \item Validation passes: pipeline = 'running', start subprocess
+    \item Subprocess completes:
+        \begin{itemize}
+            \item code = 0: pipeline = 'completed', dataLoading = 'loading'
+            \item code != 0: pipeline = 'failed'
+        \end{itemize}
+    \item Data loads successfully: dataLoading = 'loaded'
+    \item User navigates: currentView updates, components re-render
+\end{enumerate}
+
+% ==============================================================================
+\section{Error Handling}
+% ==============================================================================
+
+\subsection{Error Categories}
+
+\begin{longtable}{|l|l|p{5cm}|}
+\hline
+\textbf{Category} & \textbf{Examples} & \textbf{UI Response} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Category} & \textbf{Examples} & \textbf{UI Response} \\
+\hline
+\endhead
+\hline
+File Missing & timeline.json not found & Show error banner, disable views \\
+\hline
+Schema Invalid & Wrong JSON structure & Show field-level error details \\
+\hline
+Pipeline Failed & Non-zero exit code & Show stderr, enable retry \\
+\hline
+Network Error & Failed to fetch JSON & Show retry button \\
+\hline
+Video Error & Corrupt video file & Show player error state \\
+\hline
+\end{longtable}
+
+\subsection{Error Display Requirements}
+
+\begin{itemize}
+    \item All errors must be visible, not silent
+    \item Error messages must be specific and actionable
+    \item Error state must prevent further interaction until resolved
+    \item Errors must be logged to console for debugging
+\end{itemize}
+
+% ==============================================================================
+\section{Execution Flow}
+% ==============================================================================
+
+\subsection{User Workflow}
+
+\begin{enumerate}
+    \item \textbf{Launch}: User opens index.html
+    \item \textbf{Input Selection}:
+        \begin{enumerate}
+            \item Click file input for video
+            \item Click file input for candidate audio
+            \item Click file input for interviewer audio
+            \item Click file input for JD markdown
+        \end{enumerate}
+    \item \textbf{Validation}: System validates all inputs
+    \item \textbf{Execution}:
+        \begin{enumerate}
+            \item Click "Run Analysis"
+            \item Watch live logs scroll
+            \item Wait for completion
+        \end{enumerate}
+    \item \textbf{Analysis}:
+        \begin{enumerate}
+            \item View timeline and playback video
+            \item Click questions to navigate
+            \item Hover for detailed scores
+            \item Switch to analytics view
+            \item Review summary and per-question details
+        \end{enumerate}
+\end{enumerate}
+
+% ==============================================================================
+\section{Local Run Instructions}
+% ==============================================================================
+
+\subsection{Development Setup}
+
+\begin{enumerate}
+    \item Clone and navigate to project directory
+    \item Run: npm install
+    \item Run: npm run dev
+    \item Open browser to: http://localhost:3000
+\end{enumerate}
+
+\subsection{Backend Prerequisites}
+
+\begin{itemize}
+    \item Python 3.8 or higher installed
+    \item Required packages: opencv-python, librosa, whisper, etc.
+    \item Video files location: ./backend/trans/
+    \item JD files location: ./backend/jd/
+\end{itemize}
+
+% ==============================================================================
+\section{Assumptions and Limitations}
+% ==============================================================================
+
+\subsection{Assumptions}
+
+\begin{enumerate}
+    \item \textbf{Data Integrity}: JSON files are produced correctly by the backend
+    \item \textbf{Timebase}: All timestamps use video as canonical timebase
+    \item \textbf{File Naming}: Input files follow number\_*.ext convention
+    \item \textbf{Web Environment}: Modern browser with ES6+ support
+    \item \textbf{No Auth}: Single-user local deployment
+\end{enumerate}
+
+\subsection{Limitations}
+
+\begin{enumerate}
+    \item \textbf{No Offline Processing}: Requires backend to be available
+    \item \textbf{Static JD}: Cannot edit JD after pipeline runs
+    \item \textbf{Read-Only}: Cannot modify analysis results
+    \item \textbf{Single Session}: No multi-interview comparison
+    \item \textbf{No Export}: Cannot download reports (future feature)
+\end{enumerate}
+
+% ==============================================================================
+\section{Validation Checklist}
+% ==============================================================================
+
+Before deployment, verify:
+
+\begin{itemize}
+    \item[ ] All JSON schemas match actual backend output
+    \item[ ] Timeline synchronization is accurate within 100ms
+    \item[ ] Pipeline execution handles all exit codes correctly
+    \item[ ] Error states display appropriate messages
+    \item[ ] Per-question navigation jumps to correct timestamps
+    \item[ ] Analytics charts render with correct data
+    \item[ ] No console errors on normal operation
+    \item[ ] Works in Chrome, Firefox, Safari (latest versions)
+\end{itemize}
+
+% ==============================================================================
+\section{References}
+% ==============================================================================
+
+\begin{itemize}
+    \item Backend main.py: ./backend/main.py
+    \item Output schemas: See JSON files in ./backend/output/
+    \item Design document: Previous system design specification
+    \item Example run results: ./backend/results/006-d04ed4c1/
+\end{itemize}
+
+\end{document}
