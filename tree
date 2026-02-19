@@ -1060,3 +1060,287 @@
     └── server.py
 
 87 directories, 351 files
+.
+├── backend
+│   ├── backend
+│   │   ├── jd
+│   │   │   ├── machine_leaning_engineer.md
+│   │   │   ├── product_manager.md
+│   │   │   └── system_architect.md
+│   │   ├── main_1.py
+│   │   ├── main.py
+│   │   ├── output
+│   │   │   ├── candidate_audio_raw.json
+│   │   │   ├── candidate_behavior_metrics.json
+│   │   │   ├── candidate_score_timeline.json
+│   │   │   ├── candidate_video_raw.json
+│   │   │   ├── interviewer_transcript.json
+│   │   │   ├── qa_pairs.json
+│   │   │   ├── relevance_scores.json
+│   │   │   ├── speaking_segments.json
+│   │   │   └── timeline.json
+│   │   ├── __pycache__
+│   │   │   └── main.cpython-311.pyc
+│   │   ├── results
+│   │   │   ├── 001-6a3145c2
+│   │   │   │   ├── candidate_audio_raw.json
+│   │   │   │   ├── candidate_behavior_metrics.json
+│   │   │   │   ├── candidate_score_timeline.json
+│   │   │   │   ├── candidate_video_raw.json
+│   │   │   │   ├── interviewer_transcript.json
+│   │   │   │   ├── qa_pairs.json
+│   │   │   │   ├── relevance_scores.json
+│   │   │   │   ├── speaking_segments.json
+│   │   │   │   └── timeline.json
+│   │   │   ├── 002-ed135b10
+│   │   │   │   ├── candidate_audio_raw.json
+│   │   │   │   ├── candidate_behavior_metrics.json
+│   │   │   │   ├── candidate_score_timeline.json
+│   │   │   │   ├── candidate_video_raw.json
+│   │   │   │   ├── interviewer_transcript.json
+│   │   │   │   ├── qa_pairs.json
+│   │   │   │   ├── relevance_scores.json
+│   │   │   │   ├── speaking_segments.json
+│   │   │   │   └── timeline.json
+│   │   │   ├── 003-b3499ce5
+│   │   │   │   ├── candidate_audio_raw.json
+│   │   │   │   ├── candidate_behavior_metrics.json
+│   │   │   │   ├── candidate_score_timeline.json
+│   │   │   │   ├── candidate_video_raw.json
+│   │   │   │   ├── interviewer_transcript.json
+│   │   │   │   ├── qa_pairs.json
+│   │   │   │   ├── relevance_scores.json
+│   │   │   │   ├── speaking_segments.json
+│   │   │   │   └── timeline.json
+│   │   │   ├── 004-2e175eb6
+│   │   │   │   ├── candidate_audio_raw.json
+│   │   │   │   ├── candidate_behavior_metrics.json
+│   │   │   │   ├── candidate_score_timeline.json
+│   │   │   │   ├── candidate_video_raw.json
+│   │   │   │   ├── interviewer_transcript.json
+│   │   │   │   ├── qa_pairs.json
+│   │   │   │   ├── relevance_scores.json
+│   │   │   │   ├── speaking_segments.json
+│   │   │   │   └── timeline.json
+│   │   │   ├── 005-12159dde
+│   │   │   │   ├── candidate_audio_raw.json
+│   │   │   │   ├── candidate_behavior_metrics.json
+│   │   │   │   ├── candidate_score_timeline.json
+│   │   │   │   ├── candidate_video_raw.json
+│   │   │   │   ├── interviewer_transcript.json
+│   │   │   │   ├── qa_pairs.json
+│   │   │   │   ├── relevance_scores.json
+│   │   │   │   ├── speaking_segments.json
+│   │   │   │   └── timeline.json
+│   │   │   ├── 006-d04ed4c1
+│   │   │   │   ├── candidate_audio_raw.json
+│   │   │   │   ├── candidate_behavior_metrics.json
+│   │   │   │   ├── candidate_score_timeline.json
+│   │   │   │   ├── candidate_video_raw.json
+│   │   │   │   ├── interviewer_transcript.json
+│   │   │   │   ├── qa_pairs.json
+│   │   │   │   ├── relevance_scores.json
+│   │   │   │   ├── speaking_segments.json
+│   │   │   │   └── timeline.json
+│   │   │   ├── 007-234b14a2
+│   │   │   │   ├── candidate_audio_raw.json
+│   │   │   │   ├── candidate_behavior_metrics.json
+│   │   │   │   ├── candidate_video_raw.json
+│   │   │   │   ├── interviewer_transcript.json
+│   │   │   │   ├── qa_pairs.json
+│   │   │   │   ├── speaking_segments.json
+│   │   │   │   └── timeline.json
+│   │   │   ├── 008-77996d54
+│   │   │   │   └── timeline.json
+│   │   │   ├── 009-ac043950
+│   │   │   │   ├── candidate_audio_raw.json
+│   │   │   │   ├── candidate_behavior_metrics.json
+│   │   │   │   ├── candidate_video_raw.json
+│   │   │   │   ├── interviewer_transcript.json
+│   │   │   │   ├── qa_pairs.json
+│   │   │   │   ├── speaking_segments.json
+│   │   │   │   └── timeline.json
+│   │   │   ├── 010-bb2cb2fe
+│   │   │   │   └── timeline.json
+│   │   │   ├── 011-2261c67e
+│   │   │   │   └── timeline.json
+│   │   │   ├── 012-0ad1cfcd
+│   │   │   │   └── timeline.json
+│   │   │   ├── 013-61ce129b
+│   │   │   │   └── timeline.json
+│   │   │   ├── 014-cef2fa58
+│   │   │   │   └── timeline.json
+│   │   │   ├── 015-c06a6154
+│   │   │   │   └── timeline.json
+│   │   │   ├── 016-2c5ac94a
+│   │   │   │   └── timeline.json
+│   │   │   ├── 017-09309da2
+│   │   │   │   ├── candidate_audio_raw.json
+│   │   │   │   ├── candidate_behavior_metrics.json
+│   │   │   │   ├── candidate_score_timeline.json
+│   │   │   │   ├── candidate_video_raw.json
+│   │   │   │   ├── interviewer_transcript.json
+│   │   │   │   ├── qa_pairs.json
+│   │   │   │   ├── relevance_scores.json
+│   │   │   │   ├── speaking_segments.json
+│   │   │   │   └── timeline.json
+│   │   │   ├── 018-8367368d
+│   │   │   │   ├── candidate_audio_raw.json
+│   │   │   │   ├── candidate_behavior_metrics.json
+│   │   │   │   ├── candidate_video_raw.json
+│   │   │   │   ├── interviewer_transcript.json
+│   │   │   │   ├── qa_pairs.json
+│   │   │   │   ├── speaking_segments.json
+│   │   │   │   └── timeline.json
+│   │   │   └── 019-562bcb00
+│   │   │       ├── candidate_audio_raw.json
+│   │   │       ├── candidate_behavior_metrics.json
+│   │   │       ├── candidate_score_timeline.json
+│   │   │       ├── candidate_video_raw.json
+│   │   │       ├── interviewer_transcript.json
+│   │   │       ├── qa_pairs.json
+│   │   │       ├── relevance_scores.json
+│   │   │       ├── speaking_segments.json
+│   │   │       └── timeline.json
+│   │   ├── src
+│   │   │   ├── stage0_timebase
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-311.pyc
+│   │   │   │   │   └── timebase.cpython-311.pyc
+│   │   │   │   └── timebase.py
+│   │   │   ├── stage1_extraction
+│   │   │   │   ├── candidate_audio.py
+│   │   │   │   ├── candidate_video.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── interviewer_audio.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── candidate_audio.cpython-311.pyc
+│   │   │   │       ├── candidate_video.cpython-311.pyc
+│   │   │   │       ├── __init__.cpython-311.pyc
+│   │   │   │       └── interviewer_audio.cpython-311.pyc
+│   │   │   ├── stage2_temporal
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-311.pyc
+│   │   │   │   │   └── segmentation.cpython-311.pyc
+│   │   │   │   └── segmentation.py
+│   │   │   ├── stage3_behavior
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── metrics.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-311.pyc
+│   │   │   │       └── metrics.cpython-311.pyc
+│   │   │   ├── stage4+5
+│   │   │   │   ├── 4+5_1.py
+│   │   │   │   ├── 4+5.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       └── 4+5.cpython-311.pyc
+│   │   │   ├── stage4_semantic
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── relevance_1.py
+│   │   │   │   └── relevance.py
+│   │   │   └── stage5_aggregation
+│   │   │       ├── aggregate_1.py
+│   │   │       ├── aggregate.py
+│   │   │       └── __init__.py
+│   │   ├── trans
+│   │   │   ├── 1_candidate_audio.wav
+│   │   │   ├── 1_candidate_video.mp4
+│   │   │   ├── 1_interviewer_audio.wav
+│   │   │   ├── 2_candidate_audio.wav
+│   │   │   ├── 2_candidate_video.mp4
+│   │   │   └── 2_interviewer_audio.wav
+│   │   └── tree
+│   ├── chats
+│   │   ├── 1_chat.md
+│   │   ├── backend_processing.pdf
+│   │   ├── backend_processing.tex
+│   │   ├── dashboard.pdf
+│   │   ├── dashboard.tex
+│   │   ├── frontend_implementation_spec.pdf
+│   │   ├── frontend_implementation_spec.tex
+│   │   ├── interview_ui.pdf
+│   │   ├── interview_ui.tex
+│   │   ├── system_integration.pdf
+│   │   ├── system_integration.tex
+│   │   ├── talk.md
+│   │   ├── things.pdf
+│   │   └── things.tex
+│   ├── config
+│   │   └── __init__.py
+│   ├── instruction.md
+│   ├── jd
+│   │   ├── machine_leaning_engineer.md
+│   │   ├── product_manager.md
+│   │   └── system_architect.md
+│   ├── logs
+│   │   └── install.log
+│   ├── PROJECT_STATE.md
+│   ├── README.md
+│   ├── requirements.txt
+│   ├── trans
+│   │   ├── 1_candidate_audio.wav
+│   │   ├── 1_candidate_video.mp4
+│   │   ├── 1_interviewer_audio.wav
+│   │   ├── 2_candidate_audio.wav
+│   │   ├── 2_candidate_video.mp4
+│   │   └── 2_interviewer_audio.wav
+│   └── tree
+├── dashboard
+├── docs
+│   ├── dfd.py
+│   ├── Front_page.docx
+│   ├── TIPS_Body.pdf
+│   ├── TIPS_Body.tex
+│   ├── tips_dfd.pdf
+│   ├── tips_dfd.png
+│   ├── tips_dfd.svg
+│   ├── TIPS-front-page.pdf
+│   ├── TIPS_Presentation.pdf
+│   ├── TIPS_Presentation.tex
+│   └── TIPS-report.pdf
+├── Interview_scripts
+│   ├── machine_learning_engineer.aux
+│   ├── machine_learning_engineer.log
+│   ├── machine_learning_engineer.out
+│   ├── machine_learning_engineer.pdf
+│   ├── machine_learning_engineer.tex
+│   ├── principe_engineer.aux
+│   ├── principe_engineer.log
+│   ├── principe_engineer.out
+│   ├── principe_engineer.pdf
+│   ├── principe_engineer.tex
+│   ├── product_manager.aux
+│   ├── product_manager.log
+│   ├── product_manager.out
+│   ├── product_manager.pdf
+│   ├── product_manager.tex
+│   ├── system_architectonic.aux
+│   ├── system_architectonic.log
+│   ├── system_architectonic.out
+│   ├── system_architectonic.pdf
+│   └── system_architectonic.tex
+├── LICENSE
+├── README.md
+├── tree
+└── web_ui
+    ├── candidate.html
+    ├── candidate.js
+    ├── index.html
+    ├── interviewer.html
+    ├── interviewer.js
+    ├── __pycache__
+    │   └── server.cpython-311.pyc
+    ├── recordings
+    │   └── trans
+    │       ├── 1_candidate_audio.wav
+    │       ├── 1_candidate_video.mp4
+    │       ├── 1_interviewer_audio.wav
+    │       ├── 2_candidate_audio.wav
+    │       ├── 2_candidate_video.mp4
+    │       └── 2_interviewer_audio.wav
+    └── server.py
+
+52 directories, 230 files

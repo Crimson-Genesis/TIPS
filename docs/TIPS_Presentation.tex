@@ -1,0 +1,227 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage[landscape,margin=1in]{geometry}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,
+    urlcolor=black,
+}
+
+\titleformat*{\section}{\LARGE\bfseries}
+\titleformat*{\subsection}{\large\bfseries}
+\titleformat*{\subsubsection}{\normalsize\bfseries\itshape}
+
+\titlespacing\section{0pt}{12pt}{6pt}
+\titlespacing\subsection{0pt}{10pt}{4pt}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\begin{document}
+
+\pagenumbering{arabic}
+
+% ============================================================================
+% SLIDE 1: TITLE SLIDE
+% ============================================================================
+
+\section{Temporal Interview Profiling System (TIPS)}
+
+\subsection{Automated Interview Analysis System}
+
+\begin{itemize}
+    \item Processes pre-recorded video interviews
+    \item Extracts behavioral signals from audio and video
+    \item Evaluates candidate responses using LLMs
+    \item Generates time-evolving performance scores
+    \item Compares answers against job descriptions
+\end{itemize}
+
+\clearpage
+
+% ============================================================================
+% SLIDE 2: ABSTRACT
+% ============================================================================
+
+\section{Abstract}
+
+\begin{itemize}
+    \item TIPS is an automated interview analysis system for video interviews
+    \item Multi-stage backend pipeline processes recordings through 6 stages
+    \item Extracts audio signals: transcription, pitch, energy, speech rate
+    \item Analyzes video signals: face detection, head pose, gaze stability
+    \item Uses Qwen2.5-3B LLM for semantic relevance scoring
+\end{itemize}
+
+\clearpage
+
+% ============================================================================
+% SLIDE 3: PROBLEM STATEMENT
+% ============================================================================
+
+\section{Problem Statement}
+
+\begin{itemize}
+    \item \textbf{Subjectivity}: Human interviewers have inherent biases and varying standards
+    \item \textbf{Limited Analysis Depth}: Manual evaluation misses vocal and temporal patterns
+    \item \textbf{Scalability Issues}: Time for evaluations grows linearly with candidate volume
+    \item \textbf{Lack of Standardization}: Comparing candidates across interviewers is difficult
+    \item \textbf{No Temporal Insights}: Traditional scoring gives only aggregate scores
+\end{itemize}
+
+\clearpage
+
+% ============================================================================
+% SLIDE 4: MOTIVATION
+% ============================================================================
+
+\section{Motivation}
+
+\begin{itemize}
+    \item Modern recruitment faces bottlenecks in interview evaluation
+    \item Organizations invest significant resources with inconsistent results
+    \item Automated systems can capture signals humans often miss
+    \item Modular design allows independent optimization of each stage
+    \item Functions as addon to existing interview platforms
+\end{itemize}
+
+\clearpage
+
+% ============================================================================
+% SLIDE 5: ARCHITECTURE DIAGRAM
+% ============================================================================
+
+\section{System Architecture}
+
+\subsection{Pipeline Flow}
+
+\begin{enumerate}
+    \item \textbf{Input}: Interview Recording + Job Description
+    \item \textbf{Stage 0}: Timebase Establishment
+    \item \textbf{Stage 1}: Parallel Signal Extraction (Audio/Video)
+    \item \textbf{Stage 2}: Temporal Segmentation (Q\&A Pairing)
+    \item \textbf{Stage 3}: Behavioral Metrics Computation
+    \item \textbf{Stage 4-5}: LLM Semantic Scoring + Verdict
+\end{enumerate}
+
+\subsection{Components}
+\begin{itemize}
+    \item Interview UI Layer (WebRTC Recording)
+    \item Backend Pipeline (6-Stage Processing)
+    \item Dashboard (Visualization - Planned)
+\end{itemize}
+
+\clearpage
+
+% ============================================================================
+% SLIDE 6: METHODOLOGY - PIPELINE OVERVIEW
+% ============================================================================
+
+\section{Methodology}
+
+\subsection{Pipeline Overview}
+
+\begin{itemize}
+    \item \textbf{Stage 0}: Establishes canonical timebase from video metadata
+    \item \textbf{Stage 1}: Parallel extraction of audio features, video features, transcription
+    \item \textbf{Stage 2}: Identifies speaking segments and pairs Q\&A
+    \item \textbf{Stage 3}: Computes behavioral metrics (confidence, fluency, eye contact)
+    \item \textbf{Stage 4-5}: LLM scoring and final verdict aggregation
+\end{itemize}
+
+\clearpage
+
+% ============================================================================
+% SLIDE 7: METHODOLOGY - KEY STAGES
+% ============================================================================
+
+\subsection{Key Processing Stages}
+
+\begin{itemize}
+    \item \textbf{Faster-Whisper}: Speech-to-text with word-level timestamps
+    \item \textbf{WebRTC VAD}: Voice activity detection for speech segments
+    \item \textbf{MediaPipe}: Face detection, landmark tracking, head pose estimation
+    \item \textbf{Librosa}: Audio features (pitch, energy, speech rate)
+    \item \textbf{Qwen2.5-3B}: 4-bit quantized LLM for semantic evaluation
+\end{itemize}
+
+\clearpage
+
+% ============================================================================
+% SLIDE 8: RESULTS
+% ============================================================================
+
+\section{Results}
+
+\subsection{Output Artifacts}
+
+\begin{itemize}
+    \item \textbf{timeline.json}: Master timebase synchronization
+    \item \textbf{qa\_pairs.json}: Question-answer mappings with timing
+    \item \textbf{candidate\_behavior\_metrics.json}: Confidence, fluency metrics
+    \item \textbf{relevance\_scores.json}: LLM-evaluated relevance per Q\&A
+    \item \textbf{candidate\_score\_timeline.json}: Time-evolving performance scores
+\end{itemize}
+
+\clearpage
+
+% ============================================================================
+% SLIDE 9: EVALUATION AND VALIDATION
+% ============================================================================
+
+\section{Evaluation and Validation}
+
+\begin{itemize}
+    \item Verdict categories: STRONG\_HIRE, HIRE, BORDERLINE, NO\_HIRE
+    \item 5 competency dimensions: Technical depth, System design, Production experience, Communication clarity, Problem solving
+    \item Matched keywords extraction from job description
+    \item Incremental verdict progression throughout interview
+    \item Confidence level provided with final recommendation
+\end{itemize}
+
+\clearpage
+
+% ============================================================================
+% SLIDE 10: FUTURE ENHANCEMENTS
+% ============================================================================
+
+\section{Future Enhancements}
+
+\begin{itemize}
+    \item Dashboard visualization for result presentation
+    \item Real-time streaming analysis capability
+    \item Multi-language support for transcription
+    \item Enhanced video analytics (micro-expressions, body language)
+    \item Integration with existing ATS platforms
+\end{itemize}
+
+\clearpage
+
+% ============================================================================
+% SLIDE 11: CONCLUSION
+% ============================================================================
+
+\section{Conclusion}
+
+\begin{itemize}
+    \item TIPS provides objective, data-driven candidate assessment
+    \item Multi-stage pipeline enables comprehensive interview analysis
+    \item LLM integration allows semantic evaluation against job requirements
+    \item Temporal tracking shows candidate performance evolution
+    \item Modular design facilitates future enhancements and optimizations
+\end{itemize}
+
+\end{document}
