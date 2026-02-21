@@ -1,6 +1,6 @@
 {
-  "dataset_id": "1",
-  "source_file": "trans/1_candidate_video.mp4",
+  "dataset_id": "805c5b63",
+  "source_file": "/run/media/nico/nova/projects/micro_project_mca_3_sem/backend/backend/temp_input/805c5b63_candidate_video.mp4",
   "video_fps": 24.0,
   "extraction": {
     "total_frames": 15355,

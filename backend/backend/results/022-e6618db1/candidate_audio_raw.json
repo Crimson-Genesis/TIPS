@@ -1,6 +1,6 @@
 {
-  "dataset_id": "1",
-  "source_file": "trans/1_candidate_audio.wav",
+  "dataset_id": "6b2729ff",
+  "source_file": "/run/media/nico/nova/projects/micro_project_mca_3_sem/backend/backend/temp_input/6b2729ff_candidate_audio.wav",
   "sample_rate": 48000,
   "features": [
     {
