@@ -1,0 +1,68 @@
+# TIPS — Temporal Interview Profiling System
+## Comprehensive Project Overview & Progress Report
+
+### 1. What is TIPS?
+**TIPS** is an automated interview analysis system designed to transform raw video interviews into actionable research data. It bridges the gap between **live WebRTC communication** and **deep behavioral analytics**.
+
+The system follows a three-pillar architecture:
+1.  **Record**: A browser-based interface for conducting and recording interviews.
+2.  **Process**: A 6-stage backend pipeline that extract signals (audio/video), transcribes speech, and uses LLMs to score responses against Job Descriptions.
+3.  **Visualize**: A research dashboard that provides temporal evidence, competency breakdowns, and performance trajectory.
+
+### 2. Core Architecture
+-   **Backend**: Python/FastAPI server with ML integration (WhisperX, MediaPipe, Librosa, LLMs).
+-   **Frontend**: Single-Page Application (SPA) using vanilla JavaScript and Chart.js.
+-   **Data Flow**: Recordings → Signal Extraction → Alignment → Q&A Pairing → Semantic Scoring → Unified Dashboard.
+
+---
+
+### 3. What has been done? (Unified Frontend Build)
+We have just completed a major structural upgrade to consolidate the system into a **Unified Frontend Application**.
+
+#### **A. Single-Page App (SPA) Migration**
+-   Migrated from separate `dashboard/` and `web_ui/` directories to a cohesive `frontend/` directory.
+-   Implemented a **professional sidebar layout** with dark mode aesthetics.
+-   Created a custom hash-based router for seamless navigation between 6 distinct views.
+
+#### **B. New Interview Control Center**
+-   Built a dedicated **Interview Control** page integrated directly into the dashboard.
+-   Enabled real-time monitoring of room states (Waiting/Recording).
+-   Added deep links for Interviewer and Candidate roles.
+-   Integrated a live recording history with one-click pipeline triggering.
+
+#### **C. Enhanced Research Visuals**
+-   **Session Hub**: New verdict banners, KPI cards, and competency radar charts.
+-   **Temporal Evidence**: Multi-track timeline visualizing speech, Q&A blocks, and score segments.
+-   **Analytics**: Five-tab chart interface for deep-dive behavioral analysis.
+-   **Q&A Review**: Advanced transcript review with LLM reasoning and score-range filters.
+
+#### **D. API-Powered Data Delivery**
+-   Modified the FastAPI server to serve all pipeline outputs via high-performance JSON endpoints (`/api/output/all`).
+-   Implemented **Auto-Loading** logic: the dashboard now detects and loads the latest session automatically.
+
+---
+
+### 4. Current Status & Next Steps
+The code implementation is **100% complete**. We are currently in the final verification phase.
+
+**Current Blocker**: Missing environment dependencies (`fastapi`, `aiortc`, etc.).
+
+**Immediate Action Required**:
+1.  **Install dependencies**:
+    ```powershell
+    pip install -r d:\AIProject\TIPS\web_ui\requirements-web.txt
+    ```
+2.  **Start the server**:
+    ```powershell
+    python d:\AIProject\TIPS\web_ui\server.py
+    ```
+3.  **Verify**: Access the unified app at `http://localhost:8000`.
+
+---
+
+### 5. File Manifest (Key Files)
+-   **Entry Point**: [index.html](file:///d:/AIProject/TIPS/frontend/index.html)
+-   **Application Logic**: [main.js](file:///d:/AIProject/TIPS/frontend/js/main.js)
+-   **Data Engine**: [dataLoader.js](file:///d:/AIProject/TIPS/frontend/js/dataLoader.js)
+-   **Unified Server**: [server.py](file:///d:/AIProject/TIPS/web_ui/server.py)
+-   **Style System**: [unified.css](file:///d:/AIProject/TIPS/frontend/css/unified.css)

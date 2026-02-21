@@ -1,7 +1,8 @@
 # server.py
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 import json
 import asyncio
 from aiortc import (
@@ -20,7 +21,18 @@ from fractions import Fraction
 
 app = FastAPI()
 
-recordings_dir = Path("recordings")
+# Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Get the directory where server.py is located
+_BASE_DIR = Path(__file__).parent
+recordings_dir = _BASE_DIR / "recordings"
 recordings_dir.mkdir(exist_ok=True)
 
 
@@ -442,29 +454,150 @@ async def cleanup_candidate():
     await broadcast_state()
 
 
-@app.get("/")
-async def index():
-    return FileResponse("index.html")
-
-
+# ─── WebRTC + original web_ui pages ────────────────────────────
 @app.get("/interviewer")
 async def interviewer():
-    return FileResponse("interviewer.html")
+    return FileResponse(_BASE_DIR / "interviewer.html")
 
 
 @app.get("/candidate")
 async def candidate():
-    return FileResponse("candidate.html")
+    return FileResponse(_BASE_DIR / "candidate.html")
+
+
+@app.get("/interviewer.html")
+async def interviewer_html():
+    return FileResponse(_BASE_DIR / "interviewer.html")
+
+
+@app.get("/candidate.html")
+async def candidate_html():
+    return FileResponse(_BASE_DIR / "candidate.html")
 
 
 @app.get("/interviewer.js")
 async def interviewer_js():
-    return FileResponse("interviewer.js")
+    return FileResponse(_BASE_DIR / "interviewer.js")
 
 
 @app.get("/candidate.js")
 async def candidate_js():
-    return FileResponse("candidate.js")
+    return FileResponse(_BASE_DIR / "candidate.js")
+
+
+# ─── API Endpoints (read-only, used by the unified frontend) ────
+_OUTPUT_DIR = Path("../backend/backend/output")
+
+OUTPUT_FILES = {
+    "timeline":           "timeline.json",
+    "qa_pairs":           "qa_pairs.json",
+    "score_timeline":     "candidate_score_timeline.json",
+    "relevance_scores":   "relevance_scores.json",
+    "behavior_metrics":   "candidate_behavior_metrics.json",
+    "speaking_segments":  "speaking_segments.json",
+    "audio_raw":          "candidate_audio_raw.json",
+    "video_raw":          "candidate_video_raw.json",
+    "interviewer":        "interviewer_transcript.json",
+}
+
+
+@app.get("/api/status")
+async def api_status():
+    """Return current room state for the control page."""
+    return JSONResponse({
+        "state": room.state.name,
+        "interviewer_connected": room.interviewer is not None,
+        "candidate_connected": room.candidate is not None,
+        "is_recording": room.is_recording,
+    })
+
+
+@app.get("/api/recordings")
+async def api_recordings():
+    """List recordings from the recordings directory."""
+    files = []
+    if recordings_dir.exists():
+        for f in sorted(recordings_dir.iterdir()):
+            if f.is_file() and f.suffix in (".wav", ".mp4", ".webm"):
+                files.append({"name": f.name, "size": f.stat().st_size})
+    return JSONResponse(files)
+
+
+@app.get("/api/output/{filename}")
+async def api_output_file(filename: str):
+    """Serve a single output file by name."""
+    target = _OUTPUT_DIR / filename
+    if not target.exists():
+        return JSONResponse({"error": f"File not found: {filename}"}, status_code=404)
+    try:
+        content = target.read_text(encoding="utf-8")
+        return JSONResponse(json.loads(content))
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
+@app.get("/api/output")
+async def api_output_list():
+    """List available output files."""
+    available = {}
+    for key, fname in OUTPUT_FILES.items():
+        fpath = _OUTPUT_DIR / fname
+        available[key] = {"name": fname, "available": fpath.exists()}
+    return JSONResponse(available)
+
+
+@app.get("/api/output/all")
+async def api_output_all():
+    """Return all available output files merged into one JSON object."""
+    result = {}
+    for key, fname in OUTPUT_FILES.items():
+        fpath = _OUTPUT_DIR / fname
+        if fpath.exists():
+            try:
+                text = fpath.read_text(encoding="utf-8")
+                # Handle JSONL files (one JSON object per line)
+                if text.strip().startswith('{') and '\n' in text.strip():
+                    lines = [l.strip() for l in text.strip().split('\n') if l.strip()]
+                    try:
+                        result[key] = [json.loads(l) for l in lines]
+                    except Exception:
+                        result[key] = json.loads(text)
+                else:
+                    result[key] = json.loads(text)
+            except Exception:
+                result[key] = None
+    return JSONResponse(result)
+
+
+# ─── Static file mounts ──────────────────────────────
+_FRONTEND_DIR = _BASE_DIR.parent / "frontend"
+_DASHBOARD_DIR = _BASE_DIR.parent / "dashboard"
+
+# Mount dashboard CSS and JS
+if _DASHBOARD_DIR.exists():
+    app.mount("/dashboard", StaticFiles(directory=str(_DASHBOARD_DIR)), name="dashboard")
+
+# Mount frontend static files
+if _FRONTEND_DIR.exists():
+    app.mount("/frontend", StaticFiles(directory=str(_FRONTEND_DIR)), name="frontend")
+
+
+@app.get("/")
+async def index():
+    """Serve the unified frontend SPA if available, else fall back to old index."""
+    frontend_index = _FRONTEND_DIR / "index.html"
+    if frontend_index.exists():
+        return FileResponse(str(frontend_index))
+    return FileResponse("index.html")
+
+
+@app.get("/app/{rest_of_path:path}")
+async def spa_catchall(rest_of_path: str):
+    """Catch-all: redirect sub-paths to the unified frontend SPA."""
+    frontend_index = _FRONTEND_DIR / "index.html"
+    if frontend_index.exists():
+        return FileResponse(str(frontend_index))
+    return FileResponse("index.html")
 
 
 if __name__ == "__main__":
