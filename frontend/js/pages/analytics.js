@@ -198,7 +198,22 @@ function drawScoreTimeline() {
         },
         options: {
             responsive: true, maintainAspectRatio: false,
-            scales: { y: { min: 0, max: 100, ticks: { callback: v => `${v}%` } } },
+            scales: { 
+                y: { 
+                    min: 0, 
+                    max: 100, 
+                    ticks: { 
+                        callback: v => `${v}%`,
+                        color: '#ffffff',
+                        font: { size: 10 }
+                    },
+                    grid: { color: 'rgba(255,255,255,0.1)' }
+                },
+                x: {
+                    ticks: { color: '#ffffff', font: { size: 9 } },
+                    grid: { color: 'rgba(255,255,255,0.1)' }
+                }
+            },
             plugins: { legend: { display: false } }
         }
     });
@@ -224,7 +239,22 @@ function drawCompetencyBars() {
         options: {
             indexAxis: 'y',
             responsive: true, maintainAspectRatio: false,
-            scales: { x: { min: 0, max: 100, ticks: { callback: v => `${v}%` } } },
+            scales: { 
+                x: { 
+                    min: 0, 
+                    max: 100, 
+                    ticks: { 
+                        callback: v => `${v}%`,
+                        color: '#ffffff',
+                        font: { size: 10 }
+                    },
+                    grid: { color: 'rgba(255,255,255,0.1)' }
+                },
+                y: {
+                    ticks: { color: '#ffffff', font: { size: 9 } },
+                    grid: { color: 'rgba(255,255,255,0.1)' }
+                }
+            },
             plugins: { legend: { display: false } }
         }
     });
@@ -251,51 +281,129 @@ function drawKeywordHeatmap() {
 
 function drawBehavioralDists() {
     const bm = sessionData.behavior_metrics || {};
-    const segs = bm.all_segments || bm.segments || bm.behavior_segments || [];
+    const segs = bm.segments || [];
 
-    // Confidence histogram
+    // Behavioral metrics derived from real data
     const confCtx = document.getElementById('behaviorDistChart');
     if (confCtx && segs.length) {
-        const conf = segs.map(s => (s.confidence_score ?? s.confidence ?? 0) * 100);
-        const fluency = segs.map(s => (s.fluency_score ?? s.fluency ?? 0) * 100);
+        // Sample segments to avoid overcrowding
+        const step = Math.max(1, Math.floor(segs.length / 30));
+        const samples = segs.filter((_, i) => i % step === 0).slice(0, 30);
+        
+        // Vocal energy (represents confidence)
+        const energy = samples.map(s => {
+            const e = s.audio_metrics?.energy_mean ?? 0;
+            return Math.min(100, e * 1000);
+        });
+        
+        // Speech rate (represents fluency)
+        const speechRate = samples.map(s => {
+            const rate = s.audio_metrics?.speech_rate ?? 0;
+            return Math.min(100, rate * 5);
+        });
+        
+        // Pitch variance (represents expressiveness)
+        const pitchVar = samples.map(s => {
+            const pv = s.audio_metrics?.pitch_variance ?? 0;
+            return Math.min(100, Math.sqrt(pv) / 100);
+        });
+        
         if (charts.behDist) charts.behDist.destroy();
         charts.behDist = new Chart(confCtx, {
             type: 'line',
             data: {
-                labels: segs.slice(0, 20).map((_, i) => i + 1),
+                labels: samples.map((_, i) => `${i + 1}`),
                 datasets: [
-                    { label: 'Confidence', data: conf.slice(0, 20), borderColor: '#388bfd', fill: false, tension: 0.4 },
-                    { label: 'Fluency', data: fluency.slice(0, 20), borderColor: '#39c5cf', fill: false, tension: 0.4 },
+                    { 
+                        label: 'Vocal Energy', 
+                        data: energy, 
+                        borderColor: '#388bfd', 
+                        backgroundColor: 'rgba(56,139,253,0.1)',
+                        fill: true, 
+                        tension: 0.4 
+                    },
+                    { 
+                        label: 'Speech Rate', 
+                        data: speechRate, 
+                        borderColor: '#39c5cf',
+                        backgroundColor: 'rgba(57,197,207,0.1)',
+                        fill: true, 
+                        tension: 0.4 
+                    },
+                    { 
+                        label: 'Expressiveness', 
+                        data: pitchVar, 
+                        borderColor: '#bb8cff',
+                        backgroundColor: 'rgba(187,140,255,0.1)',
+                        fill: true, 
+                        tension: 0.4 
+                    },
                 ]
             },
             options: {
-                responsive: true, maintainAspectRatio: false,
-                scales: { y: { min: 0, max: 100 } },
-                plugins: { legend: { position: 'top' } }
+                responsive: true, 
+                maintainAspectRatio: false,
+                scales: { 
+                    y: { 
+                        min: 0, 
+                        max: 100,
+                        ticks: { color: '#ffffff', font: { size: 10 } },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    x: {
+                        ticks: { color: '#ffffff', font: { size: 9 } },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
+                },
+                plugins: { 
+                    legend: { 
+                        position: 'top',
+                        labels: { color: '#ffffff', font: { size: 11 } }
+                    }
+                }
             }
         });
     }
 
-    // Audio RMS
+    // Audio/Video metrics distribution
     const audCtx = document.getElementById('audio_dist_chart');
-    const audio = sessionData.audio_summary;
-    if (audCtx) {
+    if (audCtx && segs.length) {
+        // Calculate average metrics
+        const avgEnergy = segs.reduce((a, s) => a + (s.audio_metrics?.energy_mean ?? 0), 0) / segs.length;
+        const avgPitch = segs.reduce((a, s) => a + (s.audio_metrics?.pitch_mean ?? 0), 0) / segs.length;
+        const avgGaze = segs.reduce((a, s) => a + (s.video_metrics?.gaze_stability ?? 0), 0) / segs.length;
+        const avgFacePresence = segs.reduce((a, s) => a + (s.video_metrics?.face_presence_ratio ?? 0), 0) / segs.length;
+        
         if (charts.audDist) charts.audDist.destroy();
         charts.audDist = new Chart(audCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Speaking Time', 'Silent Time'],
+                labels: ['Vocal Energy', 'Pitch Variation', 'Gaze Stability', 'Face Presence'],
                 datasets: [{
-                    data: audio
-                        ? [audio.total_speaking_sec, Math.max(0, (sessionData.timeline?.duration_seconds || 0) - audio.total_speaking_sec)]
-                        : [0, 1],
-                    backgroundColor: ['rgba(63,185,80,0.7)', 'rgba(48,54,61,0.5)'],
+                    data: [
+                        Math.min(100, avgEnergy * 1000),
+                        Math.min(100, avgPitch / 20),
+                        Math.min(100, avgGaze * 10000),
+                        avgFacePresence * 100
+                    ],
+                    backgroundColor: [
+                        'rgba(56,139,253,0.7)', 
+                        'rgba(57,197,207,0.7)',
+                        'rgba(187,140,255,0.7)',
+                        'rgba(63,185,80,0.7)'
+                    ],
                     borderWidth: 0,
                 }]
             },
             options: {
-                responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
+                responsive: true, 
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { 
+                        position: 'bottom',
+                        labels: { color: '#ffffff', font: { size: 11 } }
+                    }
+                }
             }
         });
     }
@@ -339,8 +447,28 @@ function drawTrajectory() {
         },
         options: {
             responsive: true, maintainAspectRatio: false,
-            scales: { y: { min: 0, max: 100, ticks: { callback: v => `${v}%` } } },
-            plugins: { legend: { position: 'top' } }
+            scales: { 
+                y: { 
+                    min: 0, 
+                    max: 100, 
+                    ticks: { 
+                        callback: v => `${v}%`,
+                        color: '#ffffff',
+                        font: { size: 10 }
+                    },
+                    grid: { color: 'rgba(255,255,255,0.1)' }
+                },
+                x: {
+                    ticks: { color: '#ffffff', font: { size: 9 } },
+                    grid: { color: 'rgba(255,255,255,0.1)' }
+                }
+            },
+            plugins: { 
+                legend: { 
+                    position: 'top',
+                    labels: { color: '#ffffff', font: { size: 11 } }
+                } 
+            }
         }
     });
 }

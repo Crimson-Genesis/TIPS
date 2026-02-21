@@ -716,6 +716,24 @@ body.sidebar-layout .page-view {
 .pipeline-node.complete {
     border-color: rgba(63, 185, 80, 0.4);
     background: rgba(63, 185, 80, 0.05);
+    box-shadow: 0 0 0 3px rgba(63, 185, 80, 0.08);
+}
+
+.pipeline-node.running {
+    background: rgba(56, 139, 253, 0.12);
+    border-color: var(--accent-blue);
+    border-width: 2px;
+    box-shadow: 0 0 0 3px rgba(56, 139, 253, 0.1);
+    animation: pulse-running 2s ease-in-out infinite;
+}
+
+@keyframes pulse-running {
+    0%, 100% {
+        box-shadow: 0 0 0 3px rgba(56, 139, 253, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(56, 139, 253, 0.2);
+    }
 }
 
 .pipeline-node.incomplete {
@@ -747,6 +765,12 @@ body.sidebar-layout .page-view {
 
 .pipeline-node.complete .pn-status {
     color: var(--accent-green);
+    font-weight: 600;
+}
+
+.pipeline-node.running .pn-status {
+    color: var(--accent-blue);
+    font-weight: 600;
 }
 
 .pipeline-arrow {

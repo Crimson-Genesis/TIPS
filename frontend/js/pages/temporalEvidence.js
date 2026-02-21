@@ -222,8 +222,20 @@ function setupEvidencePanels() {
             options: {
                 responsive: true, maintainAspectRatio: false,
                 scales: {
-                    y: { min: 0, max: 100, ticks: { callback: v => `${v}%` } },
-                    x: {}
+                    y: { 
+                        min: 0, 
+                        max: 100, 
+                        ticks: { 
+                            callback: v => `${v}%`,
+                            color: '#ffffff',
+                            font: { size: 10 }
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    x: {
+                        ticks: { color: '#ffffff', font: { size: 10 } },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
                 },
                 plugins: { legend: { display: false } }
             }
@@ -234,24 +246,95 @@ function setupEvidencePanels() {
     const behCtx = document.getElementById('behaviorSignalChart');
     if (behCtx) {
         const bm = sessionData.behavior_metrics || {};
-        const all = bm.all_segments || bm.segments || bm.behavior_segments || [];
-        const labels = all.slice(0, 20).map((_, i) => `${i + 1}`);
-        const confidence = all.slice(0, 20).map(s => (s.confidence_score ?? s.confidence ?? 0) * 100);
-        const fluency = all.slice(0, 20).map(s => (s.fluency_score ?? s.fluency ?? 0) * 100);
+        const all = bm.segments || [];
+        
+        // Sample every Nth segment to avoid overcrowding (max 30 points)
+        const step = Math.max(1, Math.floor(all.length / 30));
+        const samples = all.filter((_, i) => i % step === 0).slice(0, 30);
+        
+        const labels = samples.map(s => fmtTime(s.start_time ?? 0));
+        
+        // Derive behavioral metrics from raw audio/video data
+        // Energy (normalized to 0-100) - represents vocal confidence
+        const energy = samples.map(s => {
+            const e = s.audio_metrics?.energy_mean ?? 0;
+            return Math.min(100, e * 1000); // Scale energy to visible range
+        });
+        
+        // Speech rate (normalized) - represents fluency
+        const speechRate = samples.map(s => {
+            const rate = s.audio_metrics?.speech_rate ?? 0;
+            return Math.min(100, rate * 5); // Typical rate 5-15 words/sec
+        });
+        
+        // Gaze stability (normalized to 0-100) - represents engagement
+        const gaze = samples.map(s => {
+            const g = s.video_metrics?.gaze_stability ?? 0;
+            return Math.min(100, g * 10000); // Scale small values
+        });
+        
         if (chartInstances.behSignal) chartInstances.behSignal.destroy();
         chartInstances.behSignal = new Chart(behCtx, {
-            type: 'bar',
+            type: 'line',
             data: {
                 labels,
                 datasets: [
-                    { label: 'Confidence', data: confidence, backgroundColor: 'rgba(56,139,253,0.6)' },
-                    { label: 'Fluency', data: fluency, backgroundColor: 'rgba(57,197,207,0.6)' },
+                    { 
+                        label: 'Vocal Energy', 
+                        data: energy, 
+                        borderColor: 'rgba(56,139,253,0.8)',
+                        backgroundColor: 'rgba(56,139,253,0.1)',
+                        fill: true,
+                        tension: 0.3
+                    },
+                    { 
+                        label: 'Speech Rate', 
+                        data: speechRate, 
+                        borderColor: 'rgba(57,197,207,0.8)',
+                        backgroundColor: 'rgba(57,197,207,0.1)',
+                        fill: true,
+                        tension: 0.3
+                    },
+                    { 
+                        label: 'Gaze Stability', 
+                        data: gaze, 
+                        borderColor: 'rgba(187,140,255,0.8)',
+                        backgroundColor: 'rgba(187,140,255,0.1)',
+                        fill: true,
+                        tension: 0.3
+                    },
                 ]
             },
             options: {
-                responsive: true, maintainAspectRatio: false,
-                scales: { y: { min: 0, max: 100 } },
-                plugins: { legend: { position: 'top' } }
+                responsive: true, 
+                maintainAspectRatio: false,
+                scales: { 
+                    y: { 
+                        min: 0, 
+                        max: 100,
+                        ticks: { color: '#ffffff', font: { size: 10 } },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    x: { 
+                        ticks: { 
+                            color: '#ffffff', 
+                            font: { size: 9 },
+                            maxRotation: 45,
+                            minRotation: 45
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
+                },
+                plugins: { 
+                    legend: { 
+                        position: 'top',
+                        labels: { 
+                            color: '#ffffff',
+                            font: { size: 11 },
+                            boxWidth: 12
+                        }
+                    }
+                }
             }
         });
     }

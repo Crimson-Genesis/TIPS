@@ -36,7 +36,8 @@ function buildHub() {
     const verdict = fv.verdict || fv.overall_verdict || '—';
     const vcls = verdictClass(verdict);
     const nQ = qaPairs.length || checkpoints.length;
-    const dur = sessionData.timeline?.duration_seconds ?? sessionData.timeline?.duration ?? 0;
+    // Get duration from timeline.json video.duration_sec field
+    const dur = sessionData.timeline?.video?.duration_sec ?? sessionData.timeline?.audio?.candidate?.duration_sec ?? sessionData.timeline?.duration_sec ?? sessionData.timeline?.duration ?? 0;
     const summary = fv.summary || fv.recommendation || '';
 
     return `

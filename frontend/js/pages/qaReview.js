@@ -56,14 +56,22 @@ function buildQA() {
                 </div>
 
                 <div class="filter-group">
-                    <div class="filter-label">Score Range</div>
-                    <div style="display:flex;gap:8px;align-items:center">
-                        <input type="range" id="scoreRangeMin" min="0" max="100" value="0"
-                            style="flex:1;accent-color:var(--accent-blue)" />
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                        <div class="filter-label" style="margin:0">Score Range</div>
                         <span id="scoreRangeLabel" style="font-size:11px;color:var(--text-muted);
                             font-family:var(--font-mono);white-space:nowrap">0–100%</span>
-                        <input type="range" id="scoreRangeMax" min="0" max="100" value="100"
-                            style="flex:1;accent-color:var(--accent-blue)" />
+                    </div>
+                    <div style="display:flex;gap:12px;align-items:center">
+                        <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+                            <input type="range" id="scoreRangeMin" min="0" max="100" value="0"
+                                style="width:100%;accent-color:var(--accent-blue)" />
+                            <span style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono)">Min</span>
+                        </div>
+                        <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+                            <input type="range" id="scoreRangeMax" min="0" max="100" value="100"
+                                style="width:100%;accent-color:var(--accent-blue)" />
+                            <span style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono)">Max</span>
+                        </div>
                     </div>
                 </div>
 
