@@ -56,13 +56,18 @@ function buildTemporal() {
                 Your browser does not support the video tag.
             </video>
             
-            <!-- Question Display Overlay -->
+            <!-- Question/Answer Display Overlay -->
             <div id="questionOverlay" style="position:absolute;bottom:60px;left:20px;right:20px;
                 background:rgba(0,0,0,0.85);border-left:3px solid var(--accent-blue);
                 padding:12px 16px;border-radius:6px;display:none;backdrop-filter:blur(8px)">
-                <div style="font-size:10px;color:var(--accent-blue);font-weight:600;
+                <div id="overlayHeader" style="font-size:10px;color:var(--accent-blue);font-weight:600;
                     text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Current Question</div>
-                <div id="questionText" style="font-size:14px;color:#fff;line-height:1.5"></div>
+                <div id="questionText" style="font-size:14px;color:#fff;line-height:1.5;margin-bottom:0"></div>
+                <div id="answerContainer" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1)">
+                    <div style="font-size:10px;color:var(--accent-green);font-weight:600;
+                        text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Candidate's Answer</div>
+                    <div id="answerText" style="font-size:14px;color:#fff;line-height:1.5"></div>
+                </div>
             </div>
         </div>
 
@@ -259,22 +264,55 @@ async function setupVideoWaveform() {
                 )?.data;
 
                 if (pair) {
-                    // Jump to question start
-                    const targetTime = pair.question_start_time ?? 0;
-                    videoElement.currentTime = targetTime;
-                    wavesurferCandidate.seekTo(targetTime / dur);
-                    if (wavesurferInterviewer) {
-                        wavesurferInterviewer.seekTo(targetTime / dur);
+                    const overlayHeader = document.getElementById('overlayHeader');
+                    const answerContainer = document.getElementById('answerContainer');
+                    const answerText = document.getElementById('answerText');
+                    
+                    // Check if this is a question or answer region
+                    const isQuestionRegion = region.id.startsWith('question-');
+                    const isAnswerRegion = region.id.startsWith('answer-');
+                    
+                    if (isQuestionRegion) {
+                        // Clicked on question region - jump to question start
+                        const targetTime = pair.question_start_time ?? 0;
+                        videoElement.currentTime = targetTime;
+                        wavesurferCandidate.seekTo(targetTime / dur);
+                        if (wavesurferInterviewer) {
+                            wavesurferInterviewer.seekTo(targetTime / dur);
+                        }
+                        
+                        // Show only question text
+                        overlayHeader.textContent = 'Interviewer Question';
+                        overlayHeader.style.color = 'var(--accent-blue)';
+                        questionText.textContent = pair.question_text;
+                        answerContainer.style.display = 'none';
+                        questionOverlay.style.borderLeftColor = 'var(--accent-blue)';
+                        
+                    } else if (isAnswerRegion) {
+                        // Clicked on answer region - jump to answer start
+                        const targetTime = pair.answer?.start_time ?? pair.question_end_time ?? 0;
+                        videoElement.currentTime = targetTime;
+                        wavesurferCandidate.seekTo(targetTime / dur);
+                        if (wavesurferInterviewer) {
+                            wavesurferInterviewer.seekTo(targetTime / dur);
+                        }
+                        
+                        // Show both question and answer text
+                        overlayHeader.textContent = 'Question & Answer';
+                        overlayHeader.style.color = 'var(--accent-green)';
+                        questionText.textContent = pair.question_text;
+                        answerText.textContent = pair.answer?.text || 'No answer recorded';
+                        answerContainer.style.display = 'block';
+                        questionOverlay.style.borderLeftColor = 'var(--accent-green)';
                     }
                     
-                    // Show question overlay
-                    questionText.textContent = pair.question_text;
+                    // Show overlay
                     questionOverlay.style.display = 'block';
                     
-                    // Hide after 5 seconds
+                    // Hide after 8 seconds (longer because we might show both Q&A)
                     setTimeout(() => {
                         questionOverlay.style.display = 'none';
-                    }, 5000);
+                    }, 8000);
                 }
             });
         }
