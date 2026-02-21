@@ -579,6 +579,7 @@ pipeline_status = {}
 async def execute_pipeline(
     interviewer_audio: UploadFile = File(...),
     candidate_video: UploadFile = File(...),
+    jd: UploadFile = File(...),
     candidate_audio: Optional[UploadFile] = File(None)
 ):
     """Upload files and trigger pipeline execution"""
@@ -593,6 +594,7 @@ async def execute_pipeline(
         # Save uploaded files
         interviewer_path = temp_input_dir / f"{session_id}_interviewer_audio.wav"
         candidate_video_path = temp_input_dir / f"{session_id}_candidate_video.mp4"
+        jd_path = temp_input_dir / f"{session_id}_jd.md"
         
         with open(interviewer_path, "wb") as f:
             content = await interviewer_audio.read()
@@ -600,6 +602,10 @@ async def execute_pipeline(
         
         with open(candidate_video_path, "wb") as f:
             content = await candidate_video.read()
+            f.write(content)
+        
+        with open(jd_path, "wb") as f:
+            content = await jd.read()
             f.write(content)
         
         if candidate_audio:
@@ -624,6 +630,7 @@ async def execute_pipeline(
             str(interviewer_path), 
             str(candidate_video_path),
             str(candidate_audio_path) if candidate_audio_path else None,
+            str(jd_path),
             backend_dir
         ))
         
@@ -639,7 +646,7 @@ async def execute_pipeline(
         }, status_code=500)
 
 
-async def run_pipeline_async(session_id, interviewer_audio, candidate_video, candidate_audio, backend_dir):
+async def run_pipeline_async(session_id, interviewer_audio, candidate_video, candidate_audio, jd_path, backend_dir):
     """Run the pipeline in background"""
     try:
         pipeline_status[session_id]["stage"] = "Stage 1"
@@ -648,17 +655,14 @@ async def run_pipeline_async(session_id, interviewer_audio, candidate_video, can
         # Build command to run main.py
         main_py = backend_dir / "main.py"
         
-        # Prepare arguments
+        # Prepare arguments - must match main.py argparse
         cmd = [
             "python", str(main_py),
+            "--video", candidate_video,
+            "--candidate-audio", candidate_audio if candidate_audio else candidate_video,  # Use video if no separate audio
             "--interviewer-audio", interviewer_audio,
-            "--candidate-video", candidate_video
+            "--jd", jd_path
         ]
-        
-        if candidate_audio:
-            cmd.extend(["--candidate-audio", candidate_audio])
-        
-        cmd.extend(["--dataset-id", session_id])
         
         # Run pipeline
         process = subprocess.Popen(

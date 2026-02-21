@@ -4,6 +4,7 @@
 // ═══════════════════════════════════════════════════════════════
 
 const routes = {};
+let currentPage = null;
 
 export function registerPage(name, renderFn) {
     routes[name] = renderFn;
@@ -12,6 +13,14 @@ export function registerPage(name, renderFn) {
 export function navigateTo(page) {
     // Default to hub
     if (!page || !routes[page]) page = 'hub';
+    
+    // Cleanup temporal page if navigating away from it (synchronous)
+    if (currentPage === 'temporal' && page !== 'temporal') {
+        // Immediately pause all media before page transition
+        pauseAllMedia();
+    }
+    
+    currentPage = page;
 
     // Update sidebar nav items
     document.querySelectorAll('.sidebar-nav-item').forEach(item => {
@@ -62,4 +71,29 @@ export function initRouter() {
     // Hash on load
     const hash = window.location.hash.replace('#', '');
     navigateTo(hash || 'hub');
+}
+
+// Utility function to pause all media elements immediately
+function pauseAllMedia() {
+    // Pause all video elements
+    document.querySelectorAll('video').forEach(video => {
+        try {
+            video.pause();
+            video.currentTime = 0;
+            video.src = ''; // Clear source to stop loading
+        } catch (e) {
+            console.warn('Error pausing video:', e);
+        }
+    });
+    
+    // Pause all audio elements
+    document.querySelectorAll('audio').forEach(audio => {
+        try {
+            audio.pause();
+            audio.currentTime = 0;
+            audio.src = ''; // Clear source to stop loading
+        } catch (e) {
+            console.warn('Error pausing audio:', e);
+        }
+    });
 }

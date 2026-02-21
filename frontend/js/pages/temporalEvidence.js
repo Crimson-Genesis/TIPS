@@ -11,8 +11,13 @@ let wavesurferInterviewer = null;
 let videoElement = null;
 let currentRegions = [];
 let currentZoom = 50;
+let keydownHandler = null;
+let spacebarHandler = null;
 
 export function renderTemporal(el) {
+    // Clean up previous instance before rendering new one
+    cleanupTemporal();
+    
     if (!sessionData.loaded) {
         el.innerHTML = `<div class="empty-state"><div class="es-icon">⏱</div>
             <div class="es-title">No session loaded</div>
@@ -209,19 +214,62 @@ async function setupVideoWaveform() {
     }
 
     // ESC key to close overlay
-    document.addEventListener('keydown', (e) => {
+    keydownHandler = (e) => {
         if (e.key === 'Escape' && questionOverlay && questionOverlay.style.display === 'block') {
             questionOverlay.style.display = 'none';
         }
-    });
-
-    // Destroy existing instances
-    if (wavesurferCandidate) {
-        wavesurferCandidate.destroy();
+    };
+    document.addEventListener('keydown', keydownHandler);
+    
+    // Spacebar to play/pause (prevent default scroll behavior)
+    spacebarHandler = (e) => {
+        // Only handle spacebar if not typing in an input field
+        if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+            if (videoElement) {
+                if (videoElement.paused) {
+                    videoElement.play();
+                    if (wavesurferCandidate) wavesurferCandidate.play();
+                    if (wavesurferInterviewer) wavesurferInterviewer.play();
+                    if (playPauseBtn) playPauseBtn.textContent = '⏸ Pause';
+                } else {
+                    videoElement.pause();
+                    if (wavesurferCandidate) wavesurferCandidate.pause();
+                    if (wavesurferInterviewer) wavesurferInterviewer.pause();
+                    if (playPauseBtn) playPauseBtn.textContent = '▶ Play';
+                }
+            }
+        }
+    };
+    document.addEventListener('keydown', spacebarHandler);
+    
+    // Pause audio/video when tab is hidden or browser is minimized
+    const visibilityHandler = () => {
+        if (document.hidden && videoElement && !videoElement.paused) {
+            videoElement.pause();
+            if (wavesurferCandidate) wavesurferCandidate.pause();
+            if (wavesurferInterviewer) wavesurferInterviewer.pause();
+            if (playPauseBtn) playPauseBtn.textContent = '▶ Play';
+        }
+    };
+    document.addEventListener('visibilitychange', visibilityHandler);
+    
+    // Store visibility handler for cleanup
+    if (!window.temporalCleanupHandlers) {
+        window.temporalCleanupHandlers = [];
     }
-    if (wavesurferInterviewer) {
-        wavesurferInterviewer.destroy();
-    }
+    window.temporalCleanupHandlers.push({ type: 'visibilitychange', handler: visibilityHandler });
+    
+    // Cleanup on page unload/refresh
+    const beforeUnloadHandler = () => {
+        if (videoElement) {
+            videoElement.pause();
+            if (wavesurferCandidate) wavesurferCandidate.pause();
+            if (wavesurferInterviewer) wavesurferInterviewer.pause();
+        }
+    };
+    window.addEventListener('beforeunload', beforeUnloadHandler);
+    window.temporalCleanupHandlers.push({ type: 'beforeunload', handler: beforeUnloadHandler, target: 'window' });
 
     // Initialize WaveSurfer for CANDIDATE
     try {
@@ -709,4 +757,99 @@ function jumpToQA(questionId) {
             });
         }, 300);
     });
+}
+
+// Cleanup function to stop audio/video and destroy instances
+export function cleanupTemporal() {
+    console.log('Cleaning up Temporal Evidence page...');
+    
+    // Pause and reset video with error handling
+    if (videoElement) {
+        try {
+            videoElement.pause();
+            videoElement.currentTime = 0;
+            videoElement.src = ''; // Clear source to fully stop
+            videoElement.load(); // Reset the element
+        } catch (e) {
+            console.warn('Error stopping video:', e);
+        }
+    }
+    
+    // Stop and destroy WaveSurfer instances
+    if (wavesurferCandidate) {
+        try {
+            wavesurferCandidate.stop();
+            wavesurferCandidate.pause();
+            wavesurferCandidate.destroy();
+        } catch (e) {
+            console.warn('Error destroying candidate wavesurfer:', e);
+        }
+        wavesurferCandidate = null;
+    }
+    
+    if (wavesurferInterviewer) {
+        try {
+            wavesurferInterviewer.stop();
+            wavesurferInterviewer.pause();
+            wavesurferInterviewer.destroy();
+        } catch (e) {
+            console.warn('Error destroying interviewer wavesurfer:', e);
+        }
+        wavesurferInterviewer = null;
+    }
+    
+    // Remove event listeners
+    if (keydownHandler) {
+        document.removeEventListener('keydown', keydownHandler);
+        keydownHandler = null;
+    }
+    
+    if (spacebarHandler) {
+        document.removeEventListener('keydown', spacebarHandler);
+        spacebarHandler = null;
+    }
+    
+    // Remove visibility change listeners
+    if (window.temporalCleanupHandlers) {
+        window.temporalCleanupHandlers.forEach(({ type, handler, target }) => {
+            if (target === 'window') {
+                window.removeEventListener(type, handler);
+            } else {
+                document.removeEventListener(type, handler);
+            }
+        });
+        window.temporalCleanupHandlers = [];
+    }
+    
+    // Aggressively find and stop any remaining media
+    const pageContainer = document.getElementById('page-temporal');
+    if (pageContainer) {
+        pageContainer.querySelectorAll('video, audio').forEach(media => {
+            try {
+                media.pause();
+                media.currentTime = 0;
+                media.src = '';
+            } catch (e) {
+                console.warn('Error stopping media element:', e);
+            }
+        });
+    }
+    
+    // Clear references
+    videoElement = null;
+    currentRegions = [];
+    
+    // Destroy chart instances
+    Object.values(chartInstances).forEach(chart => {
+        if (chart && typeof chart.destroy === 'function') {
+            try {
+                chart.destroy();
+            } catch (e) {
+                console.warn('Error destroying chart:', e);
+            }
+        }
+    });
+    chartInstances = {};
+    
+    console.log('Temporal Evidence cleanup completed');
 }
