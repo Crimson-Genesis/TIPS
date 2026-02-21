@@ -152,6 +152,21 @@ function buildPipeline() {
             </button>
         </div>
 
+        <!-- Job Description -->
+        <div style="margin-bottom:16px">
+            <label style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:8px">
+                📋 Job Description (.md) <span style="color:var(--text-muted);font-weight:400">(Required for LLM scoring)</span>
+            </label>
+            <input type="file" id="jdInput" accept=".md,.txt" 
+                style="display:none" />
+            <button id="selectJdBtn" 
+                style="width:100%;padding:10px 16px;background:var(--bg-elevated);
+                    border:2px dashed var(--border);border-radius:8px;color:var(--text-secondary);
+                    font-size:13px;cursor:pointer;transition:all 0.2s;font-family:inherit">
+                <span id="jdFileName">Click to select file...</span>
+            </button>
+        </div>
+
         <!-- Execute Button -->
         <div style="display:flex;gap:12px;align-items:center">
             <button id="executePipelineBtn" disabled
@@ -330,7 +345,8 @@ function setupFlowClick() {
 let selectedFiles = {
     interviewerAudio: null,
     candidateVideo: null,
-    candidateAudio: null
+    candidateAudio: null,
+    jd: null
 };
 
 function setupFileSelection() {
@@ -383,11 +399,28 @@ function setupFileSelection() {
             candidateAudioBtn.style.color = 'var(--accent-green)';
         }
     });
+
+    // Job Description
+    const jdInput = document.getElementById('jdInput');
+    const jdBtn = document.getElementById('selectJdBtn');
+    const jdFileName = document.getElementById('jdFileName');
+
+    jdBtn?.addEventListener('click', () => jdInput?.click());
+    jdInput?.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            selectedFiles.jd = file;
+            jdFileName.textContent = `✓ ${file.name}`;
+            jdBtn.style.borderColor = 'var(--accent-green)';
+            jdBtn.style.color = 'var(--accent-green)';
+            checkFilesReady();
+        }
+    });
 }
 
 function checkFilesReady() {
     const executeBtn = document.getElementById('executePipelineBtn');
-    if (selectedFiles.interviewerAudio && selectedFiles.candidateVideo) {
+    if (selectedFiles.interviewerAudio && selectedFiles.candidateVideo && selectedFiles.jd) {
         executeBtn.disabled = false;
         executeBtn.style.opacity = '1';
         executeBtn.style.cursor = 'pointer';
@@ -420,6 +453,7 @@ function setupPipelineExecution() {
             const formData = new FormData();
             formData.append('interviewer_audio', selectedFiles.interviewerAudio);
             formData.append('candidate_video', selectedFiles.candidateVideo);
+            formData.append('jd', selectedFiles.jd);
             if (selectedFiles.candidateAudio) {
                 formData.append('candidate_audio', selectedFiles.candidateAudio);
             }
