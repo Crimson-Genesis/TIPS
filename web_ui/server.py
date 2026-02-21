@@ -763,6 +763,11 @@ async def get_pipeline_status(session_id: str):
 # ─── Static file mounts ──────────────────────────────
 _FRONTEND_DIR = _BASE_DIR.parent / "frontend"
 _DASHBOARD_DIR = _BASE_DIR.parent / "dashboard"
+_BACKEND_DIR = _BASE_DIR.parent / "backend"
+
+# Mount backend directory for video/audio access
+if _BACKEND_DIR.exists():
+    app.mount("/backend", StaticFiles(directory=str(_BACKEND_DIR)), name="backend")
 
 # Mount dashboard CSS and JS
 if _DASHBOARD_DIR.exists():
