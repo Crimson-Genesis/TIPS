@@ -1,5 +1,5 @@
 # server.py
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, File, UploadFile
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,6 +16,8 @@ from pathlib import Path
 import uuid
 import av
 import time
+import subprocess
+import shutil
 from typing import Optional
 from fractions import Fraction
 
@@ -569,9 +571,203 @@ async def api_output_all():
     return JSONResponse(result)
 
 
+# ─── Pipeline Execution API ──────────────────────────────
+# Store pipeline execution status
+pipeline_status = {}
+
+@app.post("/api/pipeline/execute")
+async def execute_pipeline(
+    interviewer_audio: UploadFile = File(...),
+    candidate_video: UploadFile = File(...),
+    candidate_audio: Optional[UploadFile] = File(None)
+):
+    """Upload files and trigger pipeline execution"""
+    try:
+        session_id = str(uuid.uuid4())[:8]
+        
+        # Create session directory
+        backend_dir = _BASE_DIR.parent / "backend" / "backend"
+        temp_input_dir = backend_dir / "temp_input"
+        temp_input_dir.mkdir(exist_ok=True)
+        
+        # Save uploaded files
+        interviewer_path = temp_input_dir / f"{session_id}_interviewer_audio.wav"
+        candidate_video_path = temp_input_dir / f"{session_id}_candidate_video.mp4"
+        
+        with open(interviewer_path, "wb") as f:
+            content = await interviewer_audio.read()
+            f.write(content)
+        
+        with open(candidate_video_path, "wb") as f:
+            content = await candidate_video.read()
+            f.write(content)
+        
+        if candidate_audio:
+            candidate_audio_path = temp_input_dir / f"{session_id}_candidate_audio.wav"
+            with open(candidate_audio_path, "wb") as f:
+                content = await candidate_audio.read()
+                f.write(content)
+        else:
+            candidate_audio_path = None
+        
+        # Initialize pipeline status
+        pipeline_status[session_id] = {
+            "status": "running",
+            "stage": "Stage 1",
+            "message": "Starting pipeline...",
+            "error": None
+        }
+        
+        # Start pipeline execution in background
+        asyncio.create_task(run_pipeline_async(
+            session_id, 
+            str(interviewer_path), 
+            str(candidate_video_path),
+            str(candidate_audio_path) if candidate_audio_path else None,
+            backend_dir
+        ))
+        
+        return JSONResponse({
+            "success": True,
+            "session_id": session_id,
+            "message": "Pipeline started"
+        })
+        
+    except Exception as e:
+        return JSONResponse({
+            "error": str(e)
+        }, status_code=500)
+
+
+async def run_pipeline_async(session_id, interviewer_audio, candidate_video, candidate_audio, backend_dir):
+    """Run the pipeline in background"""
+    try:
+        pipeline_status[session_id]["stage"] = "Stage 1"
+        pipeline_status[session_id]["message"] = "Ingesting files..."
+        
+        # Build command to run main.py
+        main_py = backend_dir / "main.py"
+        
+        # Prepare arguments
+        cmd = [
+            "python", str(main_py),
+            "--interviewer-audio", interviewer_audio,
+            "--candidate-video", candidate_video
+        ]
+        
+        if candidate_audio:
+            cmd.extend(["--candidate-audio", candidate_audio])
+        
+        cmd.extend(["--dataset-id", session_id])
+        
+        # Run pipeline
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            cwd=str(backend_dir)
+        )
+        
+        # Track completed stages
+        completed_stages = set()
+        
+        # Monitor output for stage updates
+        while True:
+            output = process.stdout.readline()
+            if output == '' and process.poll() is not None:
+                break
+            if output:
+                line = output.strip()
+                print(f"[Pipeline {session_id}] {line}")  # Debug logging
+                
+                # Parse stage information from output
+                if "[START]" in line:
+                    if "Stage 1" in line or "Extraction" in line or "Ingest" in line:
+                        pipeline_status[session_id]["stage"] = "Stage 1"
+                        pipeline_status[session_id]["message"] = "Audio/Video extraction"
+                    elif "Stage 2" in line or "Transcribe" in line:
+                        completed_stages.add("Stage 1")
+                        pipeline_status[session_id]["stage"] = "Stage 2"
+                        pipeline_status[session_id]["message"] = "Speech transcription"
+                    elif "Stage 3" in line or "Align" in line or "Temporal" in line:
+                        completed_stages.add("Stage 2")
+                        pipeline_status[session_id]["stage"] = "Stage 3"
+                        pipeline_status[session_id]["message"] = "Temporal alignment"
+                    elif "Stage 4" in line or "Q&A" in line or "QA" in line:
+                        completed_stages.add("Stage 3")
+                        pipeline_status[session_id]["stage"] = "Stage 4"
+                        pipeline_status[session_id]["message"] = "Q&A extraction"
+                    elif "Stage 5" in line or "Scoring" in line or "LLM" in line:
+                        completed_stages.add("Stage 4")
+                        pipeline_status[session_id]["stage"] = "Stage 5"
+                        pipeline_status[session_id]["message"] = "LLM semantic scoring"
+                    elif "Stage 6" in line or "Behavior" in line or "Aggregat" in line:
+                        completed_stages.add("Stage 5")
+                        pipeline_status[session_id]["stage"] = "Stage 6"
+                        pipeline_status[session_id]["message"] = "Behavioral analysis"
+                
+                # Track completions
+                if "[COMPLETE]" in line:
+                    for stage in ["Stage 1", "Stage 2", "Stage 3", "Stage 4", "Stage 5", "Stage 6"]:
+                        if stage in line:
+                            completed_stages.add(stage)
+                            break
+        
+        return_code = process.poll()
+        
+        if return_code == 0:
+            # Copy results to output directory
+            results_dir = backend_dir / "results"
+            output_dir = backend_dir / "output"
+            output_dir.mkdir(exist_ok=True)
+            
+            # Find the latest session directory (or specific session_id)
+            session_dirs = sorted(results_dir.glob(f"*{session_id}*")) if results_dir.exists() else []
+            if not session_dirs:
+                # Try numbered directories
+                session_dirs = sorted(results_dir.glob("*-*")) if results_dir.exists() else []
+            
+            if session_dirs:
+                latest_dir = session_dirs[-1]
+                for file in latest_dir.glob("*.json"):
+                    shutil.copy(file, output_dir / file.name)
+            
+            pipeline_status[session_id]["status"] = "completed"
+            pipeline_status[session_id]["message"] = "Pipeline completed successfully"
+            pipeline_status[session_id]["completed_stages"] = list(completed_stages)
+        else:
+            stderr = process.stderr.read()
+            pipeline_status[session_id]["status"] = "failed"
+            pipeline_status[session_id]["error"] = f"Pipeline failed: {stderr}"
+            
+    except Exception as e:
+        pipeline_status[session_id]["status"] = "failed"
+        pipeline_status[session_id]["error"] = str(e)
+
+
+@app.get("/api/pipeline/status/{session_id}")
+async def get_pipeline_status(session_id: str):
+    """Get pipeline execution status"""
+    if session_id not in pipeline_status:
+        return JSONResponse({"error": "Session not found"}, status_code=404)
+    
+    status_data = pipeline_status[session_id].copy()
+    # Ensure completed_stages exists
+    if "completed_stages" not in status_data:
+        status_data["completed_stages"] = []
+    
+    return JSONResponse(status_data)
+
+
 # ─── Static file mounts ──────────────────────────────
 _FRONTEND_DIR = _BASE_DIR.parent / "frontend"
 _DASHBOARD_DIR = _BASE_DIR.parent / "dashboard"
+_BACKEND_DIR = _BASE_DIR.parent / "backend"
+
+# Mount backend directory for video/audio access
+if _BACKEND_DIR.exists():
+    app.mount("/backend", StaticFiles(directory=str(_BACKEND_DIR)), name="backend")
 
 # Mount dashboard CSS and JS
 if _DASHBOARD_DIR.exists():

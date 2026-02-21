@@ -716,6 +716,24 @@ body.sidebar-layout .page-view {
 .pipeline-node.complete {
     border-color: rgba(63, 185, 80, 0.4);
     background: rgba(63, 185, 80, 0.05);
+    box-shadow: 0 0 0 3px rgba(63, 185, 80, 0.08);
+}
+
+.pipeline-node.running {
+    background: rgba(56, 139, 253, 0.12);
+    border-color: var(--accent-blue);
+    border-width: 2px;
+    box-shadow: 0 0 0 3px rgba(56, 139, 253, 0.1);
+    animation: pulse-running 2s ease-in-out infinite;
+}
+
+@keyframes pulse-running {
+    0%, 100% {
+        box-shadow: 0 0 0 3px rgba(56, 139, 253, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(56, 139, 253, 0.2);
+    }
 }
 
 .pipeline-node.incomplete {
@@ -747,6 +765,12 @@ body.sidebar-layout .page-view {
 
 .pipeline-node.complete .pn-status {
     color: var(--accent-green);
+    font-weight: 600;
+}
+
+.pipeline-node.running .pn-status {
+    color: var(--accent-blue);
+    font-weight: 600;
 }
 
 .pipeline-arrow {
@@ -1005,5 +1029,62 @@ body.sidebar-layout .page-view {
 
     .qa-sidebar {
         position: static;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   WAVEFORM & VIDEO PLAYER STYLES
+══════════════════════════════════════════════════════════════ */
+
+/* Waveform region styling */
+#waveformContainer,
+#waveformCandidate,
+#waveformInterviewer {
+    cursor: pointer;
+}
+
+#waveformCandidate .wavesurfer-region,
+#waveformInterviewer .wavesurfer-region {
+    cursor: pointer !important;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+#waveformCandidate .wavesurfer-region:hover,
+#waveformInterviewer .wavesurfer-region:hover {
+    opacity: 1 !important;
+    filter: brightness(1.4);
+    border: 1px solid rgba(188, 140, 255, 0.8);
+    box-shadow: 0 2px 8px rgba(188, 140, 255, 0.3);
+}
+
+#waveformCandidate .wavesurfer-region-content,
+#waveformInterviewer .wavesurfer-region-content {
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Video overlay animation */
+#questionOverlay {
+    animation: slideUpFade 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#questionOverlay #closeOverlay {
+    transition: all 0.2s ease;
+}
+
+#questionOverlay #closeOverlay:hover {
+    color: #fff !important;
+    transform: scale(1.2);
+}
+
+@keyframes slideUpFade {
+    from {
+        transform: translateY(25px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
     }
 }

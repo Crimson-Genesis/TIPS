@@ -6,6 +6,11 @@ import { sessionData, fmtTime, scoreColor } from '../dataLoader.js';
 
 let chartInstances = {};
 let playheadSec = 0;
+let wavesurferCandidate = null;
+let wavesurferInterviewer = null;
+let videoElement = null;
+let currentRegions = [];
+let currentZoom = 50;
 
 export function renderTemporal(el) {
     if (!sessionData.loaded) {
@@ -15,7 +20,7 @@ export function renderTemporal(el) {
         return;
     }
     el.innerHTML = buildTemporal();
-    setupTimeline();
+    setupVideoWaveform();
     setupEvidencePanels();
     setupTranscriptPanel();
 }
@@ -25,59 +30,112 @@ function buildTemporal() {
     const segs = sessionData.speaking_segments || [];
     const qaPairs = sessionData.qa_pairs?.qa_pairs || [];
     const checkpoints = sessionData.checkpoints || [];
+    
+    // Get video/audio file paths
+    const datasetId = sessionData.timeline?.dataset_id || '2';
+    const videoPath = `/backend/backend/trans/${datasetId}_candidate_video.mp4`;
+    const audioPath = `/backend/backend/trans/${datasetId}_candidate_audio.wav`;
 
     return `
     <div class="section-header" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
         <div>
             <div class="section-title">Temporal Evidence</div>
-            <div class="section-sub">Interview timeline, speaking segments, and score trajectory</div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center">
-            <label style="font-size:12px;color:var(--text-muted)">Filter:</label>
-            <select id="speakerFilter" style="background:var(--bg-elevated);border:1px solid var(--border);
-                color:var(--text-primary);border-radius:6px;padding:5px 10px;font-size:12px;font-family:inherit">
-                <option value="all">All Speakers</option>
-                <option value="candidate">Candidate</option>
-                <option value="interviewer">Interviewer</option>
-            </select>
+            <div class="section-sub">Interactive video timeline with synchronized dual-track audio waveforms</div>
         </div>
     </div>
 
-    <!-- Timeline ruler + tracks -->
-    <div class="stat-card" style="padding:20px;margin-bottom:20px;overflow:hidden">
-        <div class="stat-card-title" style="margin-bottom:14px">
-            Timeline
-            <span style="font-size:11px;color:var(--text-muted);font-weight:400;margin-left:8px">
-                Duration: ${fmtTime(dur)}
-            </span>
+    <!-- Video + Waveform Section -->
+    <div class="stat-card" style="padding:0;margin-bottom:20px;overflow:hidden">
+        <!-- Video Player -->
+        <div style="position:relative;background:#000;aspect-ratio:16/9">
+            <video id="interactiveVideo" 
+                src="${videoPath}" 
+                style="width:100%;height:100%;object-fit:contain"
+                controls
+                preload="metadata">
+                Your browser does not support the video tag.
+            </video>
+            
+            <!-- Question/Answer Display Overlay -->
+            <div id="questionOverlay" style="position:absolute;bottom:60px;left:20px;right:20px;
+                background:rgba(0,0,0,0.90);border-left:4px solid rgba(188, 140, 255, 1);
+                padding:14px 18px;border-radius:8px;display:none;backdrop-filter:blur(10px);
+                box-shadow:0 8px 32px rgba(0,0,0,0.5)">
+                <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:6px">
+                    <div id="overlayHeader" style="font-size:11px;color:rgba(188, 140, 255, 1);font-weight:700;
+                        text-transform:uppercase;letter-spacing:0.06em">Question & Answer</div>
+                    <button id="closeOverlay" style="background:transparent;border:none;color:rgba(255,255,255,0.5);
+                        font-size:16px;cursor:pointer;padding:0;width:20px;height:20px;line-height:1;
+                        transition:color 0.2s" title="Close (ESC)">×</button>
+                </div>
+                <div id="questionText" style="font-size:14px;color:#fff;line-height:1.6;margin-bottom:0"></div>
+                <div id="answerContainer" style="display:block;margin-top:12px;padding-top:12px;border-top:1px solid rgba(188, 140, 255, 0.3)">
+                    <div style="font-size:10px;color:rgba(63, 185, 80, 1);font-weight:600;
+                        text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">💬 Candidate's Answer</div>
+                    <div id="answerText" style="font-size:14px;color:#e6e6e6;line-height:1.6"></div>
+                </div>
+            </div>
         </div>
 
-        <!-- Ruler -->
-        <div id="timelineRuler" style="position:relative;height:22px;margin-bottom:6px;border-bottom:1px solid var(--border-subtle)"></div>
-
-        <!-- Speaking track -->
-        <div style="margin-bottom:6px">
-            <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.06em">Speaking Segments</div>
-            <div id="trackSpeaking" style="position:relative;height:24px;background:var(--bg-primary);border-radius:4px;overflow:hidden"></div>
-        </div>
-
-        <!-- Questions track -->
-        <div style="margin-bottom:6px">
-            <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.06em">Q&A Blocks</div>
-            <div id="trackQA" style="position:relative;height:24px;background:var(--bg-primary);border-radius:4px;overflow:hidden"></div>
-        </div>
-
-        <!-- Score track -->
-        <div style="margin-bottom:6px">
-            <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.06em">Relevance Score</div>
-            <div id="trackScore" style="position:relative;height:24px;background:var(--bg-primary);border-radius:4px;overflow:hidden"></div>
-        </div>
-
-        <!-- Legend -->
-        <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--text-muted)">
-            ${legendDot('#388bfd', 'Candidate speech')}
-            ${legendDot('#8b949e', 'Interviewer speech')}
-            ${legendDot('#bc8cff', 'Q&A block')}
+        <!-- Dual-Track Waveform Container -->
+        <div style="padding:20px;background:var(--bg-elevated)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                <div class="stat-card-title">Synchronized Audio Timeline</div>
+                <div style="display:flex;gap:8px;align-items:center">
+                    <button id="zoomOutBtn" title="Zoom Out" style="padding:6px 10px;background:var(--bg-secondary);
+                        border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:12px;
+                        cursor:pointer;font-family:inherit;font-weight:500;transition:all 0.2s">
+                        ➖
+                    </button>
+                    <input type="range" id="zoomSlider" min="10" max="200" value="50" 
+                        style="width:120px;cursor:pointer" title="Zoom Level">
+                    <button id="zoomInBtn" title="Zoom In" style="padding:6px 10px;background:var(--bg-secondary);
+                        border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:12px;
+                        cursor:pointer;font-family:inherit;font-weight:500;transition:all 0.2s">
+                        ➕
+                    </button>
+                    <div style="width:1px;height:20px;background:var(--border);margin:0 4px"></div>
+                    <button id="playPauseBtn" style="padding:6px 12px;background:var(--accent-blue);
+                        border:none;border-radius:6px;color:#fff;font-size:12px;cursor:pointer;
+                        font-family:inherit;font-weight:500">
+                        ▶ Play
+                    </button>
+                    <span id="currentTime" style="font-size:12px;color:var(--text-muted);
+                        font-family:var(--font-mono);min-width:90px">00:00 / ${fmtTime(dur)}</span>
+                </div>
+            </div>
+            
+            <!-- Interviewer Waveform -->
+            <div style="margin-bottom:8px">
+                <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;font-family:var(--font-mono);
+                    text-transform:uppercase;letter-spacing:0.05em;display:flex;align-items:center;gap:6px">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#8b949e"></span>
+                    Interviewer Audio
+                </div>
+                <div id="waveformInterviewer" style="position:relative;min-height:80px;
+                    background:var(--bg-primary);border-radius:8px;overflow:hidden"></div>
+            </div>
+            
+            <!-- Candidate Waveform -->
+            <div style="margin-bottom:12px">
+                <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;font-family:var(--font-mono);
+                    text-transform:uppercase;letter-spacing:0.05em;display:flex;align-items:center;gap:6px">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#388bfd"></span>
+                    Candidate Audio
+                </div>
+                <div id="waveformCandidate" style="position:relative;min-height:80px;
+                    background:var(--bg-primary);border-radius:8px;overflow:hidden"></div>
+            </div>
+            
+            <!-- Segment Legend -->
+            <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:11px;color:var(--text-muted)">
+                ${legendDot('rgba(139, 148, 158, 0.4)', 'Interviewer Audio')}
+                ${legendDot('rgba(56, 139, 253, 0.4)', 'Candidate Audio')}
+                ${legendDot('rgba(188, 140, 255, 0.5)', 'Q&A Segment (unified)')}
+                <span style="margin-left:auto;font-size:11px;color:var(--text-muted)">
+                    💡 Click any Q&A segment to view question & answer | Use zoom controls for detailed view
+                </span>
+            </div>
         </div>
     </div>
 
@@ -111,89 +169,347 @@ function legendDot(color, label) {
     </span>`;
 }
 
-function setupTimeline() {
-    const dur = sessionData.timeline?.duration_seconds ?? sessionData.timeline?.duration ?? 1;
-    const segs = sessionData.speaking_segments || [];
+async function setupVideoWaveform() {
+    const datasetId = sessionData.timeline?.dataset_id || '2';
+    const candidateAudioPath = `/backend/backend/trans/${datasetId}_candidate_audio.wav`;
+    const interviewerAudioPath = `/backend/backend/trans/${datasetId}_interviewer_audio.wav`;
     const qaPairs = sessionData.qa_pairs?.qa_pairs || [];
-    const checkpoints = sessionData.checkpoints || [];
+    const dur = sessionData.timeline?.video?.duration_sec ?? 
+                 sessionData.timeline?.duration_seconds ?? 
+                 sessionData.timeline?.duration ?? 385;
+    
+    videoElement = document.getElementById('interactiveVideo');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const currentTimeDisplay = document.getElementById('currentTime');
+    const questionOverlay = document.getElementById('questionOverlay');
+    const questionText = document.getElementById('questionText');
+    const closeOverlayBtn = document.getElementById('closeOverlay');
+    const zoomSlider = document.getElementById('zoomSlider');
+    const zoomInBtn = document.getElementById('zoomInBtn');
+    const zoomOutBtn = document.getElementById('zoomOutBtn');
+    
+    if (!videoElement || !window.WaveSurfer) {
+        console.warn('Video element or WaveSurfer not available');
+        return;
+    }
 
-    const pct = sec => `${((sec / dur) * 100).toFixed(2)}%`;
+    // Close overlay button handler
+    if (closeOverlayBtn && questionOverlay) {
+        closeOverlayBtn.addEventListener('click', () => {
+            questionOverlay.style.display = 'none';
+        });
+        
+        // Hover effect for close button
+        closeOverlayBtn.addEventListener('mouseenter', () => {
+            closeOverlayBtn.style.color = '#fff';
+        });
+        closeOverlayBtn.addEventListener('mouseleave', () => {
+            closeOverlayBtn.style.color = 'rgba(255,255,255,0.5)';
+        });
+    }
 
-    // Ruler
-    const ruler = document.getElementById('timelineRuler');
-    if (ruler) {
-        const steps = Math.min(10, Math.floor(dur / 30));
-        const interval = dur / (steps || 1);
-        for (let i = 0; i <= steps; i++) {
-            const t = i * interval;
-            const tick = document.createElement('span');
-            tick.style.cssText = `position:absolute;left:${pct(t)};font-size:10px;color:var(--text-muted);
-                transform:translateX(-50%);font-family:var(--font-mono)`;
-            tick.textContent = fmtTime(t);
-            ruler.appendChild(tick);
+    // ESC key to close overlay
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && questionOverlay && questionOverlay.style.display === 'block') {
+            questionOverlay.style.display = 'none';
+        }
+    });
+
+    // Destroy existing instances
+    if (wavesurferCandidate) {
+        wavesurferCandidate.destroy();
+    }
+    if (wavesurferInterviewer) {
+        wavesurferInterviewer.destroy();
+    }
+
+    // Initialize WaveSurfer for CANDIDATE
+    try {
+        wavesurferCandidate = WaveSurfer.create({
+            container: '#waveformCandidate',
+            waveColor: 'rgba(56, 139, 253, 0.4)',
+            progressColor: 'rgba(56, 139, 253, 0.9)',
+            cursorColor: '#388bfd',
+            barWidth: 2,
+            barGap: 1,
+            barRadius: 2,
+            height: 80,
+            normalize: true,
+            backend: 'WebAudio',
+            mediaControls: false,
+            interact: true,
+            hideScrollbar: true,
+            autoCenter: true,
+            minPxPerSec: currentZoom
+        });
+
+        // Load candidate audio
+        await wavesurferCandidate.load(candidateAudioPath);
+
+        // Initialize regions plugin for candidate waveform
+        const RegionsPlugin = window.WaveSurfer.Regions || window.RegionsPlugin;
+        if (RegionsPlugin) {
+            const candidateRegions = wavesurferCandidate.registerPlugin(RegionsPlugin.create());
+            currentRegions = [];
+
+            // Create UNIFIED regions for each Q&A pair (question start to answer end)
+            qaPairs.forEach((pair, index) => {
+                const qStart = pair.question_start_time ?? 0;
+                const aEnd = pair.answer?.end_time ?? pair.question_end_time ?? qStart + 5;
+
+                // Unified Q&A region (purple/violet) - covers entire question-answer interaction
+                const unifiedRegion = candidateRegions.addRegion({
+                    start: qStart,
+                    end: aEnd,
+                    color: 'rgba(188, 140, 255, 0.35)',
+                    drag: false,
+                    resize: false,
+                    id: `qa-${pair.question_id}`,
+                    content: `Q${index + 1}`
+                });
+
+                currentRegions.push({ region: unifiedRegion, data: pair, index: index });
+            });
+
+            // Region click handler - jump video to exact timestamp and show Q&A
+            candidateRegions.on('region-clicked', (region, e) => {
+                e.stopPropagation();
+                
+                // Find the Q&A pair for this unified region
+                const regionData = currentRegions.find(r => r.region.id === region.id);
+                
+                if (regionData) {
+                    const pair = regionData.data;
+                    const qIndex = regionData.index + 1;
+                    const overlayHeader = document.getElementById('overlayHeader');
+                    const answerContainer = document.getElementById('answerContainer');
+                    const answerText = document.getElementById('answerText');
+                    
+                    // Jump to question start time (beginning of Q&A interaction)
+                    const targetTime = pair.question_start_time ?? 0;
+                    videoElement.currentTime = targetTime;
+                    wavesurferCandidate.seekTo(targetTime / dur);
+                    if (wavesurferInterviewer) {
+                        wavesurferInterviewer.seekTo(targetTime / dur);
+                    }
+                    
+                    // Show both question and answer in the overlay
+                    overlayHeader.textContent = `Q${qIndex}: Question & Answer`;
+                    overlayHeader.style.color = 'rgba(188, 140, 255, 1)';
+                    questionText.textContent = pair.question_text;
+                    answerText.textContent = pair.answer?.text || 'No answer recorded';
+                    answerContainer.style.display = 'block';
+                    questionOverlay.style.borderLeftColor = 'rgba(188, 140, 255, 1)';
+                    
+                    // Show overlay
+                    questionOverlay.style.display = 'block';
+                    
+                    // Auto-hide after 10 seconds
+                    setTimeout(() => {
+                        questionOverlay.style.display = 'none';
+                    }, 10000);
+                    
+                    console.log(`Jumped to Q${qIndex} at ${targetTime.toFixed(2)}s`);
+                }
+            });
+        }
+
+    } catch (error) {
+        console.error('Error initializing candidate waveform:', error);
+        document.getElementById('waveformCandidate').innerHTML = `
+            <div style="padding:30px;text-align:center;color:var(--text-muted)">
+                <div style="font-size:12px">⚠️ Unable to load candidate audio</div>
+                <div style="font-size:11px;margin-top:4px">${error.message}</div>
+            </div>
+        `;
+    }
+
+    // Initialize WaveSurfer for INTERVIEWER
+    try {
+        wavesurferInterviewer = WaveSurfer.create({
+            container: '#waveformInterviewer',
+            waveColor: 'rgba(139, 148, 158, 0.4)',
+            progressColor: 'rgba(139, 148, 158, 0.9)',
+            cursorColor: '#8b949e',
+            barWidth: 2,
+            barGap: 1,
+            barRadius: 2,
+            height: 80,
+            normalize: true,
+            backend: 'WebAudio',
+            mediaControls: false,
+            interact: true,
+            hideScrollbar: true,
+            autoCenter: true,
+            minPxPerSec: currentZoom
+        });
+
+        // Load interviewer audio
+        await wavesurferInterviewer.load(interviewerAudioPath);
+
+    } catch (error) {
+        console.error('Error initializing interviewer waveform:', error);
+        document.getElementById('waveformInterviewer').innerHTML = `
+            <div style="padding:30px;text-align:center;color:var(--text-muted)">
+                <div style="font-size:12px">⚠️ Unable to load interviewer audio</div>
+                <div style="font-size:11px;margin-top:4px">${error.message}</div>
+            </div>
+        `;
+    }
+
+    // Synchronization between video and both waveforms
+    if (videoElement && wavesurferCandidate) {
+        // Sync waveforms with video timeupdate
+        videoElement.addEventListener('timeupdate', () => {
+            const currentTime = videoElement.currentTime;
+            const normalizedPos = currentTime / dur;
+            
+            if (wavesurferCandidate && Math.abs(wavesurferCandidate.getCurrentTime() - currentTime) > 0.3) {
+                wavesurferCandidate.seekTo(normalizedPos);
+            }
+            if (wavesurferInterviewer && Math.abs(wavesurferInterviewer.getCurrentTime() - currentTime) > 0.3) {
+                wavesurferInterviewer.seekTo(normalizedPos);
+            }
+            
+            currentTimeDisplay.textContent = `${fmtTime(currentTime)} / ${fmtTime(dur)}`;
+        });
+
+        // Sync video with candidate waveform seeking
+        wavesurferCandidate.on('seeking', (currentTime) => {
+            if (Math.abs(videoElement.currentTime - currentTime) > 0.3) {
+                videoElement.currentTime = currentTime;
+                if (wavesurferInterviewer) {
+                    wavesurferInterviewer.seekTo(currentTime / dur);
+                }
+            }
+        });
+
+        // Sync video with interviewer waveform seeking
+        if (wavesurferInterviewer) {
+            wavesurferInterviewer.on('seeking', (currentTime) => {
+                if (Math.abs(videoElement.currentTime - currentTime) > 0.3) {
+                    videoElement.currentTime = currentTime;
+                    wavesurferCandidate.seekTo(currentTime / dur);
+                }
+            });
+        }
+
+        // Play/Pause button
+        playPauseBtn.addEventListener('click', () => {
+            if (videoElement.paused) {
+                videoElement.play();
+                wavesurferCandidate.play();
+                if (wavesurferInterviewer) wavesurferInterviewer.play();
+                playPauseBtn.textContent = '⏸ Pause';
+            } else {
+                videoElement.pause();
+                wavesurferCandidate.pause();
+                if (wavesurferInterviewer) wavesurferInterviewer.pause();
+                playPauseBtn.textContent = '▶ Play';
+            }
+        });
+
+        // Sync play/pause from video controls
+        videoElement.addEventListener('play', () => {
+            wavesurferCandidate.play();
+            if (wavesurferInterviewer) wavesurferInterviewer.play();
+            playPauseBtn.textContent = '⏸ Pause';
+        });
+
+        videoElement.addEventListener('pause', () => {
+            wavesurferCandidate.pause();
+            if (wavesurferInterviewer) wavesurferInterviewer.pause();
+            playPauseBtn.textContent = '▶ Play';
+        });
+
+        // Waveform click - seek both and show relevant Q&A
+        wavesurferCandidate.on('interaction', () => {
+            const time = wavesurferCandidate.getCurrentTime();
+            videoElement.currentTime = time;
+            if (wavesurferInterviewer) {
+                wavesurferInterviewer.seekTo(time / dur);
+            }
+            
+            // Find and show the Q&A pair closest to this timestamp
+            showQAAtTime(time);
+        });
+
+        if (wavesurferInterviewer) {
+            wavesurferInterviewer.on('interaction', () => {
+                const time = wavesurferInterviewer.getCurrentTime();
+                videoElement.currentTime = time;
+                wavesurferCandidate.seekTo(time / dur);
+                
+                // Find and show the Q&A pair closest to this timestamp
+                showQAAtTime(time);
+            });
+        }
+
+        // Helper function to show Q&A pair at specific timestamp
+        function showQAAtTime(timestamp) {
+            if (currentRegions.length === 0) return;
+            
+            // Find the Q&A pair that contains this timestamp
+            const region = currentRegions.find(r => {
+                const pair = r.data;
+                const start = pair.question_start_time ?? 0;
+                const end = pair.answer?.end_time ?? pair.question_end_time ?? start + 5;
+                return timestamp >= start && timestamp <= end;
+            });
+            
+            if (region) {
+                const pair = region.data;
+                const qIndex = region.index + 1;
+                const overlayHeader = document.getElementById('overlayHeader');
+                const answerContainer = document.getElementById('answerContainer');
+                const answerText = document.getElementById('answerText');
+                const questionText = document.getElementById('questionText');
+                
+                overlayHeader.textContent = `Q${qIndex}: Question & Answer`;
+                overlayHeader.style.color = 'rgba(188, 140, 255, 1)';
+                questionText.textContent = pair.question_text;
+                answerText.textContent = pair.answer?.text || 'No answer recorded';
+                answerContainer.style.display = 'block';
+                document.getElementById('questionOverlay').style.borderLeftColor = 'rgba(188, 140, 255, 1)';
+                document.getElementById('questionOverlay').style.display = 'block';
+                
+                setTimeout(() => {
+                    document.getElementById('questionOverlay').style.display = 'none';
+                }, 8000);
+            }
         }
     }
 
-    // Speaking track
-    const trackSpk = document.getElementById('trackSpeaking');
-    if (trackSpk) {
-        segs.forEach(seg => {
-            const start = seg.start_time ?? seg.start ?? 0;
-            const end = seg.end_time ?? seg.end ?? 0;
-            const speaker = (seg.speaker || 'candidate').toLowerCase();
-            const color = speaker === 'interviewer' ? '#8b949e' : '#388bfd';
-            const bar = document.createElement('div');
-            bar.style.cssText = `position:absolute;left:${pct(start)};width:${pct(end - start)};
-                height:100%;background:${color};opacity:0.75;border-radius:2px;cursor:pointer`;
-            bar.title = `${speaker} [${fmtTime(start)} → ${fmtTime(end)}]`;
-            bar.dataset.speaker = speaker;
-            trackSpk.appendChild(bar);
+    // Zoom controls
+    if (zoomSlider && zoomInBtn && zoomOutBtn) {
+        const updateZoom = (newZoom) => {
+            currentZoom = newZoom;
+            zoomSlider.value = newZoom;
+            
+            if (wavesurferCandidate) {
+                wavesurferCandidate.zoom(newZoom);
+            }
+            if (wavesurferInterviewer) {
+                wavesurferInterviewer.zoom(newZoom);
+            }
+        };
+
+        zoomSlider.addEventListener('input', (e) => {
+            updateZoom(parseInt(e.target.value));
+        });
+
+        zoomInBtn.addEventListener('click', () => {
+            const newZoom = Math.min(200, currentZoom + 10);
+            updateZoom(newZoom);
+        });
+
+        zoomOutBtn.addEventListener('click', () => {
+            const newZoom = Math.max(10, currentZoom - 10);
+            updateZoom(newZoom);
         });
     }
 
-    // Q&A track
-    const trackQA = document.getElementById('trackQA');
-    if (trackQA) {
-        qaPairs.forEach((pair, i) => {
-            const start = pair.question_start_time ?? 0;
-            const end = (pair.answer?.end_time ?? pair.question_end_time ?? start + 5);
-            const bar = document.createElement('div');
-            bar.style.cssText = `position:absolute;left:${pct(start)};width:${pct(end - start)};
-                height:100%;background:#bc8cff;opacity:0.7;border-radius:2px;cursor:pointer;
-                display:flex;align-items:center;justify-content:center;
-                font-size:9px;color:#0d1117;font-weight:700;overflow:hidden`;
-            bar.textContent = `Q${i + 1}`;
-            bar.title = pair.question_text;
-            bar.addEventListener('click', () => jumpToQA(pair.question_id));
-            trackQA.appendChild(bar);
-        });
-    }
-
-    // Score track (colored blocks per checkpoint)
-    const trackScore = document.getElementById('trackScore');
-    if (trackScore && checkpoints.length && qaPairs.length) {
-        checkpoints.forEach(cp => {
-            const pair = qaPairs.find(p => p.question_id === cp.checkpoint);
-            if (!pair) return;
-            const start = pair.question_start_time ?? 0;
-            const end = pair.answer?.end_time ?? (start + 10);
-            const score = cp.relevance_score ?? 0;
-            const bar = document.createElement('div');
-            bar.style.cssText = `position:absolute;left:${pct(start)};width:${pct(end - start)};
-                height:100%;background:${scoreColor(score)};opacity:0.8;border-radius:2px`;
-            bar.title = `Score: ${score.toFixed(2)} — ${cp.checkpoint}`;
-            trackScore.appendChild(bar);
-        });
-    }
-
-    // Speaker filter
-    document.getElementById('speakerFilter')?.addEventListener('change', e => {
-        const val = e.target.value;
-        const bars = document.querySelectorAll('#trackSpeaking [data-speaker]');
-        bars.forEach(bar => {
-            bar.style.opacity = (val === 'all' || bar.dataset.speaker === val) ? '0.75' : '0.15';
-        });
-    });
+    console.log('✓ Dual-track Video + Waveform initialized with', qaPairs.length, 'Q&A segments');
 }
 
 function setupEvidencePanels() {
@@ -222,8 +538,20 @@ function setupEvidencePanels() {
             options: {
                 responsive: true, maintainAspectRatio: false,
                 scales: {
-                    y: { min: 0, max: 100, ticks: { callback: v => `${v}%` } },
-                    x: {}
+                    y: { 
+                        min: 0, 
+                        max: 100, 
+                        ticks: { 
+                            callback: v => `${v}%`,
+                            color: '#ffffff',
+                            font: { size: 10 }
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    x: {
+                        ticks: { color: '#ffffff', font: { size: 10 } },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
                 },
                 plugins: { legend: { display: false } }
             }
@@ -234,24 +562,95 @@ function setupEvidencePanels() {
     const behCtx = document.getElementById('behaviorSignalChart');
     if (behCtx) {
         const bm = sessionData.behavior_metrics || {};
-        const all = bm.all_segments || bm.segments || bm.behavior_segments || [];
-        const labels = all.slice(0, 20).map((_, i) => `${i + 1}`);
-        const confidence = all.slice(0, 20).map(s => (s.confidence_score ?? s.confidence ?? 0) * 100);
-        const fluency = all.slice(0, 20).map(s => (s.fluency_score ?? s.fluency ?? 0) * 100);
+        const all = bm.segments || [];
+        
+        // Sample every Nth segment to avoid overcrowding (max 30 points)
+        const step = Math.max(1, Math.floor(all.length / 30));
+        const samples = all.filter((_, i) => i % step === 0).slice(0, 30);
+        
+        const labels = samples.map(s => fmtTime(s.start_time ?? 0));
+        
+        // Derive behavioral metrics from raw audio/video data
+        // Energy (normalized to 0-100) - represents vocal confidence
+        const energy = samples.map(s => {
+            const e = s.audio_metrics?.energy_mean ?? 0;
+            return Math.min(100, e * 1000); // Scale energy to visible range
+        });
+        
+        // Speech rate (normalized) - represents fluency
+        const speechRate = samples.map(s => {
+            const rate = s.audio_metrics?.speech_rate ?? 0;
+            return Math.min(100, rate * 5); // Typical rate 5-15 words/sec
+        });
+        
+        // Gaze stability (normalized to 0-100) - represents engagement
+        const gaze = samples.map(s => {
+            const g = s.video_metrics?.gaze_stability ?? 0;
+            return Math.min(100, g * 10000); // Scale small values
+        });
+        
         if (chartInstances.behSignal) chartInstances.behSignal.destroy();
         chartInstances.behSignal = new Chart(behCtx, {
-            type: 'bar',
+            type: 'line',
             data: {
                 labels,
                 datasets: [
-                    { label: 'Confidence', data: confidence, backgroundColor: 'rgba(56,139,253,0.6)' },
-                    { label: 'Fluency', data: fluency, backgroundColor: 'rgba(57,197,207,0.6)' },
+                    { 
+                        label: 'Vocal Energy', 
+                        data: energy, 
+                        borderColor: 'rgba(56,139,253,0.8)',
+                        backgroundColor: 'rgba(56,139,253,0.1)',
+                        fill: true,
+                        tension: 0.3
+                    },
+                    { 
+                        label: 'Speech Rate', 
+                        data: speechRate, 
+                        borderColor: 'rgba(57,197,207,0.8)',
+                        backgroundColor: 'rgba(57,197,207,0.1)',
+                        fill: true,
+                        tension: 0.3
+                    },
+                    { 
+                        label: 'Gaze Stability', 
+                        data: gaze, 
+                        borderColor: 'rgba(187,140,255,0.8)',
+                        backgroundColor: 'rgba(187,140,255,0.1)',
+                        fill: true,
+                        tension: 0.3
+                    },
                 ]
             },
             options: {
-                responsive: true, maintainAspectRatio: false,
-                scales: { y: { min: 0, max: 100 } },
-                plugins: { legend: { position: 'top' } }
+                responsive: true, 
+                maintainAspectRatio: false,
+                scales: { 
+                    y: { 
+                        min: 0, 
+                        max: 100,
+                        ticks: { color: '#ffffff', font: { size: 10 } },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    x: { 
+                        ticks: { 
+                            color: '#ffffff', 
+                            font: { size: 9 },
+                            maxRotation: 45,
+                            minRotation: 45
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
+                },
+                plugins: { 
+                    legend: { 
+                        position: 'top',
+                        labels: { 
+                            color: '#ffffff',
+                            font: { size: 11 },
+                            boxWidth: 12
+                        }
+                    }
+                }
             }
         });
     }
