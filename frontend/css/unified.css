@@ -1037,33 +1037,50 @@ body.sidebar-layout .page-view {
 ══════════════════════════════════════════════════════════════ */
 
 /* Waveform region styling */
-#waveformContainer {
+#waveformContainer,
+#waveformCandidate,
+#waveformInterviewer {
     cursor: pointer;
 }
 
-#waveformContainer .wavesurfer-region {
+#waveformCandidate .wavesurfer-region,
+#waveformInterviewer .wavesurfer-region {
     cursor: pointer !important;
-    transition: opacity 0.2s ease;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
 }
 
-#waveformContainer .wavesurfer-region:hover {
-    opacity: 0.9 !important;
-    filter: brightness(1.3);
+#waveformCandidate .wavesurfer-region:hover,
+#waveformInterviewer .wavesurfer-region:hover {
+    opacity: 1 !important;
+    filter: brightness(1.4);
+    border: 1px solid rgba(188, 140, 255, 0.8);
+    box-shadow: 0 2px 8px rgba(188, 140, 255, 0.3);
 }
 
-#waveformContainer .wavesurfer-region-content {
+#waveformCandidate .wavesurfer-region-content,
+#waveformInterviewer .wavesurfer-region-content {
     pointer-events: none;
     user-select: none;
 }
 
 /* Video overlay animation */
 #questionOverlay {
-    animation: slideUp 0.3s ease-out;
+    animation: slideUpFade 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes slideUp {
+#questionOverlay #closeOverlay {
+    transition: all 0.2s ease;
+}
+
+#questionOverlay #closeOverlay:hover {
+    color: #fff !important;
+    transform: scale(1.2);
+}
+
+@keyframes slideUpFade {
     from {
-        transform: translateY(20px);
+        transform: translateY(25px);
         opacity: 0;
     }
     to {

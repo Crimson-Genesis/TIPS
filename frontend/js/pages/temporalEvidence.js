@@ -58,15 +58,21 @@ function buildTemporal() {
             
             <!-- Question/Answer Display Overlay -->
             <div id="questionOverlay" style="position:absolute;bottom:60px;left:20px;right:20px;
-                background:rgba(0,0,0,0.85);border-left:3px solid var(--accent-blue);
-                padding:12px 16px;border-radius:6px;display:none;backdrop-filter:blur(8px)">
-                <div id="overlayHeader" style="font-size:10px;color:var(--accent-blue);font-weight:600;
-                    text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Current Question</div>
-                <div id="questionText" style="font-size:14px;color:#fff;line-height:1.5;margin-bottom:0"></div>
-                <div id="answerContainer" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1)">
-                    <div style="font-size:10px;color:var(--accent-green);font-weight:600;
-                        text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Candidate's Answer</div>
-                    <div id="answerText" style="font-size:14px;color:#fff;line-height:1.5"></div>
+                background:rgba(0,0,0,0.90);border-left:4px solid rgba(188, 140, 255, 1);
+                padding:14px 18px;border-radius:8px;display:none;backdrop-filter:blur(10px);
+                box-shadow:0 8px 32px rgba(0,0,0,0.5)">
+                <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:6px">
+                    <div id="overlayHeader" style="font-size:11px;color:rgba(188, 140, 255, 1);font-weight:700;
+                        text-transform:uppercase;letter-spacing:0.06em">Question & Answer</div>
+                    <button id="closeOverlay" style="background:transparent;border:none;color:rgba(255,255,255,0.5);
+                        font-size:16px;cursor:pointer;padding:0;width:20px;height:20px;line-height:1;
+                        transition:color 0.2s" title="Close (ESC)">×</button>
+                </div>
+                <div id="questionText" style="font-size:14px;color:#fff;line-height:1.6;margin-bottom:0"></div>
+                <div id="answerContainer" style="display:block;margin-top:12px;padding-top:12px;border-top:1px solid rgba(188, 140, 255, 0.3)">
+                    <div style="font-size:10px;color:rgba(63, 185, 80, 1);font-weight:600;
+                        text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">💬 Candidate's Answer</div>
+                    <div id="answerText" style="font-size:14px;color:#e6e6e6;line-height:1.6"></div>
                 </div>
             </div>
         </div>
@@ -123,12 +129,11 @@ function buildTemporal() {
             
             <!-- Segment Legend -->
             <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:11px;color:var(--text-muted)">
-                ${legendDot('#388bfd', 'Question segment')}
-                ${legendDot('#3fb950', 'Answer segment')}
-                ${legendDot('#8b949e', 'Interviewer')}
-                ${legendDot('#388bfd', 'Candidate')}
+                ${legendDot('rgba(139, 148, 158, 0.4)', 'Interviewer Audio')}
+                ${legendDot('rgba(56, 139, 253, 0.4)', 'Candidate Audio')}
+                ${legendDot('rgba(188, 140, 255, 0.5)', 'Q&A Segment (unified)')}
                 <span style="margin-left:auto;font-size:11px;color:var(--text-muted)">
-                    💡 Click any Q&A segment to jump to that timestamp | Use zoom controls for detailed view
+                    💡 Click any Q&A segment to view question & answer | Use zoom controls for detailed view
                 </span>
             </div>
         </div>
@@ -178,6 +183,7 @@ async function setupVideoWaveform() {
     const currentTimeDisplay = document.getElementById('currentTime');
     const questionOverlay = document.getElementById('questionOverlay');
     const questionText = document.getElementById('questionText');
+    const closeOverlayBtn = document.getElementById('closeOverlay');
     const zoomSlider = document.getElementById('zoomSlider');
     const zoomInBtn = document.getElementById('zoomInBtn');
     const zoomOutBtn = document.getElementById('zoomOutBtn');
@@ -186,6 +192,28 @@ async function setupVideoWaveform() {
         console.warn('Video element or WaveSurfer not available');
         return;
     }
+
+    // Close overlay button handler
+    if (closeOverlayBtn && questionOverlay) {
+        closeOverlayBtn.addEventListener('click', () => {
+            questionOverlay.style.display = 'none';
+        });
+        
+        // Hover effect for close button
+        closeOverlayBtn.addEventListener('mouseenter', () => {
+            closeOverlayBtn.style.color = '#fff';
+        });
+        closeOverlayBtn.addEventListener('mouseleave', () => {
+            closeOverlayBtn.style.color = 'rgba(255,255,255,0.5)';
+        });
+    }
+
+    // ESC key to close overlay
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && questionOverlay && questionOverlay.style.display === 'block') {
+            questionOverlay.style.display = 'none';
+        }
+    });
 
     // Destroy existing instances
     if (wavesurferCandidate) {
@@ -224,95 +252,64 @@ async function setupVideoWaveform() {
             const candidateRegions = wavesurferCandidate.registerPlugin(RegionsPlugin.create());
             currentRegions = [];
 
-            // Create regions for each Q&A pair on candidate track
+            // Create UNIFIED regions for each Q&A pair (question start to answer end)
             qaPairs.forEach((pair, index) => {
                 const qStart = pair.question_start_time ?? 0;
-                const qEnd = pair.question_end_time ?? qStart + 2;
-                const aStart = pair.answer?.start_time ?? qEnd;
-                const aEnd = pair.answer?.end_time ?? aStart + 5;
+                const aEnd = pair.answer?.end_time ?? pair.question_end_time ?? qStart + 5;
 
-                // Question region (blue) - shows on candidate track
-                const questionRegion = candidateRegions.addRegion({
+                // Unified Q&A region (purple/violet) - covers entire question-answer interaction
+                const unifiedRegion = candidateRegions.addRegion({
                     start: qStart,
-                    end: qEnd,
-                    color: 'rgba(56, 139, 253, 0.35)',
-                    drag: false,
-                    resize: false,
-                    id: `question-${pair.question_id}`
-                });
-
-                // Answer region (green) - shows on candidate track
-                const answerRegion = candidateRegions.addRegion({
-                    start: aStart,
                     end: aEnd,
-                    color: 'rgba(63, 185, 80, 0.35)',
+                    color: 'rgba(188, 140, 255, 0.35)',
                     drag: false,
                     resize: false,
-                    id: `answer-${pair.question_id}`
+                    id: `qa-${pair.question_id}`,
+                    content: `Q${index + 1}`
                 });
 
-                currentRegions.push({ question: questionRegion, answer: answerRegion, data: pair });
+                currentRegions.push({ region: unifiedRegion, data: pair, index: index });
             });
 
-            // Region click handler - jump video to that timestamp
+            // Region click handler - jump video to exact timestamp and show Q&A
             candidateRegions.on('region-clicked', (region, e) => {
                 e.stopPropagation();
                 
-                // Find the Q&A pair for this region
-                const pair = currentRegions.find(r => 
-                    r.question.id === region.id || r.answer.id === region.id
-                )?.data;
-
-                if (pair) {
+                // Find the Q&A pair for this unified region
+                const regionData = currentRegions.find(r => r.region.id === region.id);
+                
+                if (regionData) {
+                    const pair = regionData.data;
+                    const qIndex = regionData.index + 1;
                     const overlayHeader = document.getElementById('overlayHeader');
                     const answerContainer = document.getElementById('answerContainer');
                     const answerText = document.getElementById('answerText');
                     
-                    // Check if this is a question or answer region
-                    const isQuestionRegion = region.id.startsWith('question-');
-                    const isAnswerRegion = region.id.startsWith('answer-');
-                    
-                    if (isQuestionRegion) {
-                        // Clicked on question region - jump to question start
-                        const targetTime = pair.question_start_time ?? 0;
-                        videoElement.currentTime = targetTime;
-                        wavesurferCandidate.seekTo(targetTime / dur);
-                        if (wavesurferInterviewer) {
-                            wavesurferInterviewer.seekTo(targetTime / dur);
-                        }
-                        
-                        // Show only question text
-                        overlayHeader.textContent = 'Interviewer Question';
-                        overlayHeader.style.color = 'var(--accent-blue)';
-                        questionText.textContent = pair.question_text;
-                        answerContainer.style.display = 'none';
-                        questionOverlay.style.borderLeftColor = 'var(--accent-blue)';
-                        
-                    } else if (isAnswerRegion) {
-                        // Clicked on answer region - jump to answer start
-                        const targetTime = pair.answer?.start_time ?? pair.question_end_time ?? 0;
-                        videoElement.currentTime = targetTime;
-                        wavesurferCandidate.seekTo(targetTime / dur);
-                        if (wavesurferInterviewer) {
-                            wavesurferInterviewer.seekTo(targetTime / dur);
-                        }
-                        
-                        // Show both question and answer text
-                        overlayHeader.textContent = 'Question & Answer';
-                        overlayHeader.style.color = 'var(--accent-green)';
-                        questionText.textContent = pair.question_text;
-                        answerText.textContent = pair.answer?.text || 'No answer recorded';
-                        answerContainer.style.display = 'block';
-                        questionOverlay.style.borderLeftColor = 'var(--accent-green)';
+                    // Jump to question start time (beginning of Q&A interaction)
+                    const targetTime = pair.question_start_time ?? 0;
+                    videoElement.currentTime = targetTime;
+                    wavesurferCandidate.seekTo(targetTime / dur);
+                    if (wavesurferInterviewer) {
+                        wavesurferInterviewer.seekTo(targetTime / dur);
                     }
+                    
+                    // Show both question and answer in the overlay
+                    overlayHeader.textContent = `Q${qIndex}: Question & Answer`;
+                    overlayHeader.style.color = 'rgba(188, 140, 255, 1)';
+                    questionText.textContent = pair.question_text;
+                    answerText.textContent = pair.answer?.text || 'No answer recorded';
+                    answerContainer.style.display = 'block';
+                    questionOverlay.style.borderLeftColor = 'rgba(188, 140, 255, 1)';
                     
                     // Show overlay
                     questionOverlay.style.display = 'block';
                     
-                    // Hide after 8 seconds (longer because we might show both Q&A)
+                    // Auto-hide after 10 seconds
                     setTimeout(() => {
                         questionOverlay.style.display = 'none';
-                    }, 8000);
+                    }, 10000);
+                    
+                    console.log(`Jumped to Q${qIndex} at ${targetTime.toFixed(2)}s`);
                 }
             });
         }
@@ -425,13 +422,16 @@ async function setupVideoWaveform() {
             playPauseBtn.textContent = '▶ Play';
         });
 
-        // Waveform click - seek both
+        // Waveform click - seek both and show relevant Q&A
         wavesurferCandidate.on('interaction', () => {
             const time = wavesurferCandidate.getCurrentTime();
             videoElement.currentTime = time;
             if (wavesurferInterviewer) {
                 wavesurferInterviewer.seekTo(time / dur);
             }
+            
+            // Find and show the Q&A pair closest to this timestamp
+            showQAAtTime(time);
         });
 
         if (wavesurferInterviewer) {
@@ -439,7 +439,44 @@ async function setupVideoWaveform() {
                 const time = wavesurferInterviewer.getCurrentTime();
                 videoElement.currentTime = time;
                 wavesurferCandidate.seekTo(time / dur);
+                
+                // Find and show the Q&A pair closest to this timestamp
+                showQAAtTime(time);
             });
+        }
+
+        // Helper function to show Q&A pair at specific timestamp
+        function showQAAtTime(timestamp) {
+            if (currentRegions.length === 0) return;
+            
+            // Find the Q&A pair that contains this timestamp
+            const region = currentRegions.find(r => {
+                const pair = r.data;
+                const start = pair.question_start_time ?? 0;
+                const end = pair.answer?.end_time ?? pair.question_end_time ?? start + 5;
+                return timestamp >= start && timestamp <= end;
+            });
+            
+            if (region) {
+                const pair = region.data;
+                const qIndex = region.index + 1;
+                const overlayHeader = document.getElementById('overlayHeader');
+                const answerContainer = document.getElementById('answerContainer');
+                const answerText = document.getElementById('answerText');
+                const questionText = document.getElementById('questionText');
+                
+                overlayHeader.textContent = `Q${qIndex}: Question & Answer`;
+                overlayHeader.style.color = 'rgba(188, 140, 255, 1)';
+                questionText.textContent = pair.question_text;
+                answerText.textContent = pair.answer?.text || 'No answer recorded';
+                answerContainer.style.display = 'block';
+                document.getElementById('questionOverlay').style.borderLeftColor = 'rgba(188, 140, 255, 1)';
+                document.getElementById('questionOverlay').style.display = 'block';
+                
+                setTimeout(() => {
+                    document.getElementById('questionOverlay').style.display = 'none';
+                }, 8000);
+            }
         }
     }
 
