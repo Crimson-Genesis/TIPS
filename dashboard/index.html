@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TIPS — Interview Analysis Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/charts.css" />
+</head>
+
+<body>
+
+    <!-- ═══ TOP NAVBAR ════════════════════════════════════════════════════ -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-brand">
+            <span class="brand-icon">◈</span>
+            <span class="brand-name">TIPS</span>
+            <span class="brand-sub">Interview Analysis</span>
+        </div>
+
+        <div class="navbar-tabs" id="navTabs">
+            <button class="nav-tab active" data-page="hub">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                </svg>
+                Session Hub
+            </button>
+            <button class="nav-tab" data-page="temporal">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                </svg>
+                Temporal Evidence
+            </button>
+            <button class="nav-tab" data-page="analytics">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10" />
+                    <line x1="12" y1="20" x2="12" y2="4" />
+                    <line x1="6" y1="20" x2="6" y2="14" />
+                </svg>
+                Analytics
+            </button>
+            <button class="nav-tab" data-page="pipeline">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+                Pipeline Execution
+            </button>
+            <button class="nav-tab" data-page="qa">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                Q&amp;A Review
+            </button>
+        </div>
+
+        <div class="navbar-actions">
+            <div class="session-chip" id="sessionChip">
+                <span class="session-dot"></span>
+                <span id="sessionLabel">No session loaded</span>
+            </div>
+            <button class="btn-load" id="btnLoad">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                Load Session
+            </button>
+        </div>
+    </nav>
+
+    <!-- ═══ PAGE CONTAINER ════════════════════════════════════════════════ -->
+    <main class="page-main" id="pageMain">
+        <div class="page-view active" id="page-hub"></div>
+        <div class="page-view" id="page-temporal"></div>
+        <div class="page-view" id="page-analytics"></div>
+        <div class="page-view" id="page-pipeline"></div>
+        <div class="page-view" id="page-qa"></div>
+    </main>
+
+    <!-- ═══ LOAD SESSION MODAL ════════════════════════════════════════════ -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="loadModal">
+            <div class="modal-header">
+                <h2>Load Interview Session</h2>
+                <button class="modal-close" id="modalClose">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Select the <code>output/</code> folder from your pipeline run, or use the Path tab
+                    if serving from the project root.</p>
+
+                <!-- Output path hint box -->
+                <div class="path-hint-box" id="pathHintBox" style="display:none">
+                    <span class="phi-label">📂 Output folder detected:</span>
+                    <code class="phi-path" id="pathHintValue"></code>
+                    <button class="phi-btn" id="pathHintCopy" title="Copy path">Copy</button>
+                </div>
+
+                <div class="load-tabs">
+                    <button class="load-tab active" data-mode="folder">📁 Folder Picker</button>
+                    <button class="load-tab" data-mode="path">🔗 URL Path</button>
+                    <button class="load-tab" data-mode="files">📄 Individual Files</button>
+                </div>
+
+                <!-- FOLDER TAB (recommended) -->
+                <div class="load-panel active" id="panel-folder">
+                    <div
+                        style="background:rgba(56,139,253,0.08);border:1px solid rgba(56,139,253,0.25);border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:12px;color:var(--text-secondary);line-height:1.6">
+                        <strong style="color:var(--accent-blue)">Recommended:</strong> Browse to
+                        <code style="color:var(--accent-teal)">TIPS\backend\backend\output\</code> and select all the
+                        JSON files inside it.
+                    </div>
+                    <label class="file-drop-zone" for="folderPicker">
+                        <span class="drop-icon">📂</span>
+                        <span>Click to select the <code>output/</code> folder</span>
+                        <span class="drop-hint">Selects all JSON files inside the folder automatically</span>
+                        <input type="file" id="folderPicker" webkitdirectory multiple accept=".json" hidden />
+                    </label>
+                    <div id="folderFileList" class="file-list"></div>
+                </div>
+
+                <!-- PATH TAB -->
+                <div class="load-panel" id="panel-path">
+                    <label class="path-label">Output directory URL path (relative to where the server is
+                        running):</label>
+                    <input type="text" class="path-input" id="pathInput" value="../backend/backend/output/" />
+                    <div style="margin-top:10px;font-size:12px;color:var(--text-muted);line-height:1.7">
+                        <div>⚠ <strong>Only works</strong> if the server is started from the <code>TIPS/</code> root
+                            (not the <code>dashboard/</code> subfolder).</div>
+                        <div style="margin-top:6px">Current server is running from <code>dashboard/</code>, so the
+                            folder picker above is more reliable.</div>
+                        <div style="margin-top:6px">Full output path on disk: <code id="diskPathHint"
+                                style="color:var(--accent-teal)">d:\AIProject\TIPS\backend\backend\output\</code></div>
+                    </div>
+                </div>
+
+                <!-- INDIVIDUAL FILES TAB -->
+                <div class="load-panel" id="panel-files">
+                    <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">Load each JSON file
+                        individually from your <code>output/</code> folder:</div>
+                    <div class="file-inputs-grid" id="fileInputsGrid"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-secondary" id="modalCancel">Cancel</button>
+                <button class="btn-primary" id="modalConfirm">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Load &amp; Analyse
+                </button>
+            </div>
+            <div class="modal-progress" id="modalProgress">
+                <div class="progress-bar" id="progressBar"></div>
+                <span id="progressText">Loading files…</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ TOOLTIP ═══════════════════════════════════════════════════════ -->
+    <div class="global-tooltip" id="globalTooltip"></div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>
