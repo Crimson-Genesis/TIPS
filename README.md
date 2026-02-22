@@ -1,83 +1,122 @@
-# TIPS — Temporal Interview Profiling System
+# TIPS — The Temporal Interview Profiling System
 
 [![Python 3.11](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-00.svg)](https://fastapi.tiangolo.com/)
 [![WebRTC](https://img.shields.io/badge/WebRTC-aiortc-green.svg)](https://aiortc.readthedocs.io/)
 
-TIPS is an automated interview analysis system that processes recorded video interviews, extracts behavioral signals from audio and video, evaluates answer relevance using LLMs, and produces time-evolving candidate scores against job descriptions.
+---
+
+## A Prologue
+
+*In the name of all that is methodical and systematic, behold! TIPS — The Temporal Interview Profiling System — a most noble contraption whereby the souls of candidates may be weighed, measured, and thoroughly examined in the crucible of the modern interview.*
+
+*Whereas the art of hiring hath long suffered under the yoke of subjectivity and caprice, TIPS emergeth as a beacon of analytical rigour. This system doth process recorded video interviews through a multi-stage pipeline of considerable sophistication, extracting signals both auditory and visual, evaluating responses with the keen eye of Large Language Models, and rendering time-evolving verdicts upon the candidate's worthiness.*
 
 ---
 
-## Overview
+## Of the System's Purpose
 
-TIPS combines browser-based interview recording with a multi-stage backend pipeline that processes the interview data:
+The Temporal Interview Profiling System (TIPS) standeth as an automated interview analysis engine, designed to process pre-recorded video interviews and generate comprehensive behavioural and semantic assessments of candidates whomst seek employment.
 
-1. **Interview Recording** — Browser-based video/audio interview via WebRTC with server-side recording
-2. **Signal Extraction** — Audio features, video features, and speech-to-text transcription
-3. **Temporal Segmentation** — Speaking segments, silence detection, and Q&A pairing
-4. **Behavioral Metrics** — Confidence, fluency, eye contact, and response latency
-5. **Semantic Scoring** — LLM-powered relevance evaluation against job descriptions
-6. **Score Aggregation** — JD-conditioned scoring with chronological accumulation
+The system doth operate as a batch processing apparatus, wherein interviews are first recorded and subsequently subjected to six distinct stages of analysis, each building upon the last, until finally there emerge time-evolving candidate scores and verdicts upon hiring.
+
+TIPS striveth to provide an objective, data-driven assessment by analysing:
+
+- **Verbal Responses** — What the candidate doth uttereth
+- **Vocal Characteristics** — How the candidate doth speaketh  
+- **Visual Behaviour** — Whither the candidate doth looketh
+
+Unlike实时 systems of lesser capability, TIPS understandeth not merely *what* is said, but *when* it is said, and *how* the candidate's confidence doth fluctuate throughout the interrogation.
 
 ---
 
-## Architecture
+## Of the Architecture
+
+The architecture of TIPS consisteth of three principal components, each serving its sacred purpose:
 
 ```
-┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│   Web UI        │     │  Backend Pipeline │     │   JSON Outputs  │
-│ (Recording)     │────▶│  (6-Stage)        │────▶│   (Timeline,    │
-│                 │     │                  │     │    Scores, etc) │
-└─────────────────┘     └──────────────────┘     └─────────────────┘
+┌─────────────────────┐     ┌───────────────────────┐     ┌──────────────────┐
+│  Interview UI      │     │  Backend Pipeline      │     │   The Dashboard  │
+│  (Recording)       │────▶│  (Six Stages)          │────▶│   (Visualisation)│
+└─────────────────────┘     └───────────────────────┘     └──────────────────┘
 ```
+
+### The Three Pillars
+
+**Pillar I — The Interview Recording UI**  
+A WebRTC-powered browser interface for conducting video interviews with synchronised audio capture from both interviewer and candidate.
+
+**Pillar II — The Backend Pipeline**  
+A six-stage processing system that analyseth recorded interviews and extracteth behavioural metrics and semantic relevance scores.
+
+**Pillar III — The Dashboard**  
+An interactive web-based visualisation interface for presenting and exploring analysis results in their full splendour.
 
 ---
 
-## Tech Stack
+## Of the Tech Stack
 
-### Backend
-- **Python 3.11** — Core runtime
-- **FastAPI** — Web server framework
-- **aiortc** — WebRTC implementation
-- **uvicorn** — ASGI server
-- **faster-whisper** — Speech-to-text
-- **librosa** — Audio feature extraction
-- **opencv-python** — Video processing
-- **mediapipe** — Face/pose detection
-- **transformers + torch** — LLM-based semantic scoring
-- **webrtcvad** — Voice activity detection
+### For the Backend (the Great Engine)
 
-### Frontend
-- **JavaScript** — Client-side WebRTC
-- **HTML/CSS** — Interviewer and candidate interfaces
+| Component | Technology |
+|-----------|------------|
+| Tongue | Python 3.11 |
+| Web Framework | FastAPI |
+| WebRTC | aiortc |
+| ASGI Server | uvicorn |
+| Speech-to-Text | faster-whisper (small model) |
+| Audio Analysis | librosa, webrtcvad |
+| Video Processing | OpenCV, MediaPipe |
+| LLM Inference | Transformers + PyTorch |
+| LLM Quantization | BitsAndBytes (4-bit NF4) |
+| Video Codec | ffmpeg, PyAV |
 
-### Infrastructure
-- **ffmpeg** — Audio/video processing
-- **Git LFS** — Large file storage for recordings
+### For the Interview UI
+
+| Component | Technology |
+|-----------|------------|
+| Backend Server | FastAPI (Python) |
+| Real-time Comm. | WebSocket |
+| Video/Audio Capture | WebRTC (Browser API) |
+| Media Processing | aiortc (Python) |
+| Frontend | HTML5, CSS3, JavaScript (ES6+) |
+
+### For the Dashboard
+
+| Component | Technology |
+|-----------|------------|
+| Frontend Framework | Vanilla JavaScript (ES6 Modules) |
+| Routing | Custom SPA Router |
+| Data Visualisation | Chart.js 4.4.2 |
+| Styling | CSS3 with Custom Properties |
+
+The LLM component employeth **Qwen2.5-3B-Instruct** with 4-bit quantisation, enabling operation upon GPUs of modest VRAM (approximately 3GB) whilst maintaining reasonable inference quality.
 
 ---
 
-## Project Structure
+## Of the Project Structure
 
 ```
-├── backend/                 # Interview processing pipeline
+├── backend/                 # The Great Engine (Pipeline)
 │   ├── main.py             # Pipeline orchestration
-│   ├── main_1.py           # Alternative orchestration
 │   ├── config/             # Configuration module
 │   ├── requirements.txt    # Python dependencies
 │   ├── src/
-│   │   ├── stage0_timebase/      # Time base establishment
-│   │   ├── stage1_extraction/    # Signal extraction
-│   │   ├── stage2_temporal/      # Temporal segmentation
-│   │   ├── stage3_behavior/      # Behavioral metrics
-│   │   ├── stage4_semantic/      # Relevance scoring
-│   │   └── stage5_aggregation/   # Score aggregation
-│   ├── trans/              # Interview recordings input
+│   │   ├── stage0_timebase/      # Stage 0 — Timebase Establishment
+│   │   ├── stage1_extraction/    # Stage 1 — Signal Extraction
+│   │   │   ├── candidate_audio.py  # Stage 1A
+│   │   │   ├── interviewer_audio.py# Stage 1B
+│   │   │   └── candidate_video.py  # Stage 1C
+│   │   ├── stage2_temporal/      # Stage 2 — Temporal Segmentation
+│   │   ├── stage3_behavior/      # Stage 3 — Behavioural Metrics
+│   │   ├── stage4_semantic/      # Stage 4 — Semantic Scoring
+│   │   └── stage5_aggregation/   # Stage 5 — Verdict Aggregation
+│   ├── trans/              # Interview recordings (inputs)
 │   ├── jd/                 # Job descriptions
 │   ├── output/             # Pipeline JSON outputs
 │   └── results/            # Timestamped results
 │
-├── web_ui/                 # WebRTC interview interface
+├── web_ui/                 # The Interview Recording UI
 │   ├── server.py           # FastAPI WebSocket server
 │   ├── index.html         # Landing page (role selection)
 │   ├── interviewer.html   # Interviewer control panel
@@ -86,9 +125,14 @@ TIPS combines browser-based interview recording with a multi-stage backend pipel
 │   ├── candidate.js       # Candidate WebRTC client
 │   └── recordings/        # Stored interview sessions
 │
-├── Interview_scripts/      # LaTeX interview question scripts
+├── docs/
+│   ├── photos/            # Dashboard screenshots (1-16)
+│   ├── TIPS_Body.tex      # The great tome of documentation
+│   └── dfd.py             # Data flow diagram generator
+│
+├── Interview_scripts/     # LaTeX interview question scripts
 │   ├── machine_learning_engineer.tex
-│   ├── system_architectonic.tex
+│   ├── system_architect.tex
 │   └── product_manager.tex
 │
 ├── README.md
@@ -97,22 +141,143 @@ TIPS combines browser-based interview recording with a multi-stage backend pipel
 
 ---
 
-## Pipeline Stages
+## Of the Six Stages
+
+The pipeline consisteth of six stages, each with its sacred duty:
 
 | Stage | Name | Description |
 |-------|------|-------------|
-| 0 | Timebase | Establish canonical time base from video file |
-| 1 | Extraction | Extract audio features, video features, and transcriptions |
-| 2 | Temporal | Group speaking segments, detect silence, pair Q&A |
-| 3 | Behavior | Compute confidence, fluency, eye contact, latency |
-| 4 | Semantic | Score answer relevance using LLM against JD |
-| 5 | Aggregation | JD-conditioned scoring with chronological accumulation |
+| 0 | **Timebase** | Establisheth canonical time base, synchroniseth all streams |
+| 1 | **Extraction** | Three parallel sub-stages extract audio features, video features, and transcriptions |
+| 2 | **Temporal** | Groupeth speaking segments, detecteth silence, paireth Q&A |
+| 3 | **Behaviour** | Computeth confidence, fluency, eye contact, latency |
+| 4 | **Semantic** | Scoreth answer relevance using LLM against Job Description |
+| 5 | **Aggregation** | JD-conditioned scoring with chronological accumulation |
+
+### Stage 0 — The Timebase
+
+Stage 0 establisheth the canonical time base that synchroniseth all subsequent processing. This foundational stage extracteth:
+
+- Video metadata (FPS, frame count, duration)
+- Audio metadata (sample rate, channel count, duration)
+- Timestamp alignment between video and audio streams
+- Dataset identification for tracking
+
+All subsequent stages depend upon this timebase, for it is the very foundation upon which the temple of analysis is built.
+
+### Stages 1A, 1B, 1C — Parallel Signal Extraction
+
+Stage 1 representeth the primary data extraction phase, uniquely designed for parallel execution:
+
+**Stage 1A — Candidate Audio Processing**  
+Extracteth RMS energy, pitch, voice activity segments, and speech transcription via Faster-Whisper.
+
+**Stage 1B — Interviewer Audio Processing**  
+Transcribeth the interviewer's utterances for question identification, with word-level timestamps.
+
+**Stage 1C — Candidate Video Processing**  
+Extracteth facial features, head pose estimation (yaw, pitch, roll), and gaze direction from sampled frames.
+
+These three substages run concurrently, maximising throughput whilst minimising total processing time.
+
+### Stage 2 — Temporal Segmentation
+
+Stage 2 combineth the outputs of Stage 1 to create a unified temporal view:
+
+1. **Speaking Segment Detection** — Identifyeth when each party doth speak
+2. **Q&A Pairing** — Mapeth interviewer questions to candidate answers using temporal proximity and silence tolerance
+
+The algorithm thus handleth natural interview flow wherein candidates may pause whilst collecting their thoughts.
+
+### Stage 3 — Behavioural Metrics
+
+Stage 3 computeth behavioural metrics for each candidate speaking segment:
+
+**Audio Metrics:**
+- Pitch (fundamental frequency) — indicateth confidence
+- Energy (RMS) — indicateth assertiveness
+- Speech rate — indicateth fluency
+- Pause density — indicateth thinking time
+
+**Video Metrics:**
+- Face presence ratio — indicateth camera engagement
+- Head motion — indicateth nervousness or engagement
+- Gaze stability — indicateth eye contact quality
+
+### Stage 4 — Semantic Relevance Scoring
+
+Stage 4 implementeth the core intelligence of TIPS, employing the Qwen2.5-3B-Instruct LLM with 4-bit quantisation to:
+
+- Evaluate semantic relevance between answers and job description (0.0-1.0)
+- Extract matched keywords from technical vocabulary
+- Assess five competency dimensions:
+  - Technical Depth
+  - System Design
+  - Production Experience
+  - Communication Clarity
+  - Problem Solving
+- Generate incremental verdicts after each question
+
+### Stage 5 — Aggregation and Final Verdict
+
+Stage 5 aggregateth the incremental assessments to render a final hiring recommendation:
+
+**Verdict Options:**
+- **STRONG_HIRE** — Exceedeth expectations
+- **HIRE** — Meeteth requirements
+- **BORDERLINE** — Mixed signals
+- **NO_HIRE** — doth not meet requirements
+
+With confidence levels of HIGH, MEDIUM, or LOW, and a natural language justification.
 
 ---
 
-## Web UI
+## Of the Dashboard
 
-The web UI provides a browser-based interview interface:
+*Behold! The Dashboard, a panoptic vessel wherein the entirety of the candidate's performance shall be laid bare unto the analyst's discerning eye.*
+
+The Dashboard consisteth of five principal views, each presenting different facets of the analysis:
+
+### Session Hub
+
+The grand entryway presenting an overview of the entire interview — candidate name, position sought, and all metadata pertaining to the assessment.
+
+### Temporal Evidence
+
+A scrolling timeline of all utterances, colour-coded by speaker, enabling traversal through the interview's chronology. Click upon any segment, and the video shall reposition itself to that moment whilst the transcript appeareth overlaid upon the visual.
+
+### Metrics & Sigils
+
+Two graphs of great utility:
+
+- **Score Trajectory** — The candidate's performance over time
+- **Behavioural Signals** — Three crucial metrics (Vocal Energy, Speech Rate, Gaze Stability), each toggleable at the analyst's pleasure
+
+### The Analysis Chamber
+
+A cornucopia of visualisations:
+
+- **Question-Wise Relevance Score** — Bar graph for each interrogatory
+- **Competency Breakdown** — Aggregated performance across all dimensions
+- **Keyword Match Heatmap** — Distribution of key terms from the job description
+- **Behavioural Distributions** — Confidence levels, fluency scores, response latencies
+- **Performance Trajectory** — How performance evolved throughout
+
+### Q&A Review
+
+All question-answer pairs in unified view, each expandable to reveal the full particulars: question, answer, relevance score, behavioural metrics, and competency.
+
+![Session Hub](docs/photos/3.png)
+![Temporal Evidence](docs/photos/4.png)
+![Score Trajectory](docs/photos/6.png)
+![Analysis Section](docs/photos/7.png)
+![Q&A Review](docs/photos/14.png)
+
+---
+
+## Of the Interview Recording UI
+
+The Interview Recording UI provides a browser-based interface for conducting video interviews:
 
 - **Landing Page** — Role selection (Interviewer / Candidate)
 - **Interviewer Panel** — Start/control interview, view participant status
@@ -120,145 +285,42 @@ The web UI provides a browser-based interview interface:
 - **Server-side Recording** — Captures interviewer audio, candidate audio, and candidate video
 - **Dark/Light Theme** — Toggle support
 
-## The Dashboard: An Interface Most Splendid
-
-*Behold! The Dashboard, a panoptic vessel wherein the entirety of the candidate's performance shall be laid bare unto the analyst's discerning eye. From session loading unto detailed Q&A review, this interface presents a comprehensive chronicle of the interview's temporal and semantic dimensions.*
+The UI producestandardised output files in MP4 (video) and WAV (audio) formats, ensuring consistent input to the backend pipeline.
 
 ---
 
-### Session Loading
+## Of Input & Output
 
-Upon initiating the Dashboard, one encounters first the **Load Session** window, wherein the analyst may selecteth a folder containing the recorded interview artefacts. All files within the chosen directory shall present themselves for examination.
+### Input Requirements
 
-![Load Session Window](docs/photos/1.png)
+The pipeline accepteth the following:
 
-With the folder selected, the files manifest themselves in their fullness, ready for the analyst's scrutiny.
+| File | Format | Description |
+|------|--------|-------------|
+| `candidate_video.mp4` | MP4 (H.264) | Candidate's video feed |
+| `candidate_audio.wav` | WAV (48kHz) | Candidate's microphone |
+| `interviewer_audio.wav` | WAV (48kHz) | Interviewer's microphone |
+| `*.md` | Plain text | Job description |
 
-![Folder Selection](docs/photos/2.png)
+### Output Artifacts
 
----
+The pipeline producesthe following JSON files in `backend/output/`:
 
-### The Session Hub
-
-The **Session Hub** serves as the grand entryway to all analyses. Herein lieth an overview of the entire interview session, presenting the candidate's name, the position sought, and sundry metadata pertaining to the assessment.
-
-![Session Hub](docs/photos/3.png)
-
----
-
-### Temporal Evidence
-
-The **Temporal Evidence** section presents a scrolling timeline of all utterances, both from the interviewer and the candidate. Each segment is colour-coded by speaker, allowing the analyst to traverse the interview's chronology with ease.
-
-![Temporal Evidence](docs/photos/4.png)
-
-When one clicketh upon a particular segment within the Synchronised Audio Timeline, the video shall reposition itself to that moment, and the transcript shall appear overlaid upon the visual, displaying both question and answer in harmonious concert.
-
-![Synchronised Audio Timeline](docs/photos/5.png)
-
----
-
-### Metrics & Sigils
-
-Beneath the temporal view lie two graphs of great utility:
-
-The **Score Trajectory** graph displayeth the candidate's performance over time, whilst the **Behavioural Signals** panel revealeth three crucial metrics:
-
-1. **Vocal Energy** — The intensity of the candidate's voice
-2. **Speech Rate** — The cadence of their utterance
-3. **Gaze Stability** — The constancy of their visual attention
-
-Each signal may be toggled on or off at the analyst's pleasure.
-
-![Score Trajectory and Behavioural Signals](docs/photos/6.png)
+| File | Description |
+|------|-------------|
+| `timeline.json` | Master timebase synchronisation |
+| `candidate_audio_raw.json` | Audio features + transcription |
+| `candidate_video_raw.json` | Video frame features |
+| `interviewer_transcript.json` | Interviewer speech-to-text |
+| `speaking_segments.json` | Speaking vs silence segments |
+| `qa_pairs.json` | Question-answer mappings |
+| `candidate_behavior_metrics.json` | Behavioural metrics |
+| `relevance_scores.json` | LLM-evaluated relevance scores |
+| `candidate_score_timeline.json` | Time-evolving performance scores + final verdict |
 
 ---
 
-### The Analysis Chamber
-
-The **Analysis** section containeth a cornucopia of visualisations:
-
-#### Question-Wise Relevance Score
-
-A bar graph displayeth the relevance score for each question posed, enabling rapid identification of strong and weak responses.
-
-![Question-Wise Relevance Score](docs/photos/7.png)
-
-#### Question-Wise Breakdown
-
-Beneath the graph lieth the **Question-Wise Breakdown**, presenting each interrogatory alongside the candidate's response and score in tabular form.
-
-![Question-Wise Breakdown](docs/photos/8.png)
-
-#### Competency Compendium
-
-The **Competency Breakdown** graph presenteth an aggregated view of performance across all competencies, displaying the average score for each.
-
-![Competency Breakdown](docs/photos/9.png)
-
-#### The Lexical Heat
-
-The **Keyword Match Heatmap** visualiseth the presence and distribution of key terms from the job description within the candidate's responses.
-
-![Keyword Match Heatmap](docs/photos/10.png)
-
-#### Behavioural Distributions
-
-Charts displayeth the distribution of various behavioural metrics, including confidence levels, fluency scores, and response latencies.
-
-![Behavioural Distributions](docs/photos/11.png)
-
-#### Trajectory of Performance
-
-A comprehensive view of how the candidate's performance evolved throughout the interview, from first greeting unto final farewell.
-
-![Performance Trajectory](docs/photos/12.png)
-
----
-
-### The Great Engine's Pulse
-
-The **Pipeline Execution** section displayeth read-only information regarding the analysis pipeline's progress. The analyst may observe the engine's workings without direct intervention.
-
-![Pipeline Execution](docs/photos/13.png)
-
----
-
-### Q&A Review
-
-The **Q&A Review** section presenteth all question-answer pairs in a unified view. Each pair may be expanded to reveal the full details of the interchange.
-
-![Q&A Review](docs/photos/14.png)
-
-Upon selecting a particular Q&A pair, the analyst may view the complete information: the question posed, the answer rendered, the relevance score assigned, the behavioural metrics observed, and the competency to which that question pertained.
-
-![Q&A Pair Details](docs/photos/15.png)
-
----
-
-### The Recording Chamber
-
-For those requiring the conduct of fresh interviews, the **Recording** section provides a WebRTC-powered interface for capturing candidate responses in real-time. This chamber serves as the gateway to new data for analysis.
-
-![Recording Interface](docs/photos/16.png)
-
----
-
-*Thus concludes the tour of the Dashboard, a tool of considerable power in the hands of the skilled analyst.*
-
----
-
-## Interview Scripts
-
-Pre-built LaTeX interview scripts for testing:
-
-- **Machine Learning Engineer** — ML fundamentals, system design, practical applications
-- **System Architect** — Distributed systems, scalability, architecture patterns
-- **Product Manager** — Product sense, execution, leadership
-
----
-
-## Setup & Usage
+## Of Setup & Usage
 
 ### Backend Setup
 
@@ -273,7 +335,7 @@ source venv/bin/activate  # Linux/macOS
 # Install dependencies
 pip install -r requirements.txt
 
-# Run pipeline (requires interview recordings in trans/ and JD in jd/)
+#iring interview recordings in trans Run pipeline (requ/ and JD in jd/)
 python main.py
 ```
 
@@ -293,51 +355,44 @@ python server.py --host 0.0.0.0 --port 8000
 # Candidate:  http://localhost:8000/candidate.html
 ```
 
-### Quick Test (with sample data)
+### Quick Test (with Sample Data)
 
 ```bash
-# Sample recordings and JDs are included in the repo
+# Sample recordings and JDs are included within
 cd backend
 python main.py
 ```
 
 ---
 
-## Output Artifacts
+## Of the Roadmap
 
-The pipeline produces JSON files in `backend/output/`:
-
-| File | Description |
-|------|-------------|
-| `timeline.json` | Master timebase synchronization |
-| `candidate_audio_raw.json` | Audio features + transcription |
-| `candidate_video_raw.json` | Video frame features |
-| `interviewer_transcript.json` | Interviewer speech-to-text |
-| `speaking_segments.json` | Speaking vs silence segments |
-| `qa_pairs.json` | Question-answer mappings |
-| `candidate_behavior_metrics.json` | Behavioral metrics (confidence, fluency, etc.) |
-| `relevance_scores.json` | LLM-evaluated relevance scores |
-| `candidate_score_timeline.json` | Time-evolving performance scores |
-
----
-
-## Roadmap
-
-- [x] Interview recording (WebRTC)
-- [x] Signal extraction pipeline
-- [x] Temporal segmentation
-- [x] Behavioral metrics computation
-- [x] LLM-powered semantic scoring
-- [ ] Dashboard visualization (planned)
+- [x] Interview Recording (WebRTC)
+- [x] Signal Extraction Pipeline
+- [x] Temporal Segmentation
+- [x] Behavioural Metrics Computation
+- [x] LLM-Powered Semantic Scoring
+- [x] Dashboard Visualisation
+- [ ] Real-time streaming (contemplated)
 
 ---
 
 ## License
 
-MIT License
+MIT License — freely use, modify, and distribute this system.
+
+---
+
+## The Final Word
+
+*Thus concludes our discourse upon TIPS — The Temporal Interview Profiling System. May it serve thee well in the noble quest of finding worthy candidates amongst the multitude of applicants. May thy hiring decisions be ever more informed, thy analysis ever more precise, and thy process ever more streamlined.*
+
+*For in the final analysis, the truth shall set thee free — and TIPS shall help thee find it.*
 
 ---
 
 ## Author
 
-Systems-level exploration of temporal human-computer interaction in interviews.
+A systems-level exploration of temporal human-computer interaction in the domain of interviews.
+
+*Written in the year of our Lord 2026.*
