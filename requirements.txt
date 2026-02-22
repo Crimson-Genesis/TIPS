@@ -1,0 +1,196 @@
+# TIPS — Requirements & Setup Guide
+# ==========================================
+#
+# This file containeth all instructions for setting up the TIPS system.
+# Follow the sections in order.
+#
+# ==========================================
+# SECTION 1: SYSTEM DEPENDENCIES
+# ==========================================
+#
+# Install system-level dependencies first:
+#
+# Ubuntu/Debian:
+#   sudo apt-get update
+#   sudo apt-get install -y ffmpeg libsndfile1 libgl1-mesa-glx libglib2.0-0
+#
+# Arch Linux:
+#   sudo pacman -S ffmpeg libsndfile mesa libglib2
+#
+# macOS:
+#   brew install ffmpeg libsndfile
+#
+# Windows:
+#   Install ffmpeg from https://ffmpeg.org/download.html
+#   Add ffmpeg to PATH
+#
+# ==========================================
+# SECTION 2: BACKEND DEPENDENCIES
+# ==========================================
+#
+# Create a virtual environment and install Python packages:
+#
+#   cd backend
+#   python -m venv venv
+#   source venv/bin/activate        # Linux/macOS
+#   venv\Scripts\activate          # Windows
+#   pip install -r requirements.txt
+#
+# Or install from root:
+#   pip install -r backend/requirements.txt
+#
+
+# Audio Processing
+librosa>=0.10.0
+webrtcvad>=2.10.0
+faster-whisper>=0.10.0
+soundfile>=0.12.0
+
+# Video Processing
+opencv-python>=4.8.0
+mediapipe>=0.10.0
+
+# LLM / NLP
+transformers>=4.35.0
+torch>=2.0.0
+accelerate>=0.25.0
+bitsandbytes>=0.41.0  # For 4-bit quantization
+
+# Data Handling
+numpy>=1.24.0
+scipy>=1.11.0
+pydantic>=2.5.0
+
+# CLI
+typer>=0.9.0
+
+# ==========================================
+# SECTION 3: WEB UI DEPENDENCIES
+# ==========================================
+#
+# Install for running the interview recording UI:
+#
+#   pip install fastapi uvicorn aiortc av
+#
+# Or from requirements file:
+#   pip install -r web_ui/requirements.txt
+#
+
+fastapi>=0.109.0
+uvicorn>=0.27.0
+aiortc>=1.9.0
+av>=12.0.0
+
+# ==========================================
+# SECTION 4: LLM MODEL SETUP
+# ==========================================
+#
+# TIPS uses Qwen2.5-3B-Instruct with 4-bit quantization.
+# The model is automatically downloaded on first run.
+#
+# Requirements:
+#   - NVIDIA GPU with >=4GB VRAM
+#   - CUDA 11.8+ or CPU fallback (slower)
+#
+# First run (automatic download):
+#   cd backend
+#   python -c "from transformers import AutoModelForCausalLM, AutoTokenizer; \
+#       tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-3B-Instruct'); \
+#       model = AutoModelForCausalLM.from_pretrained('Qwen/Qwen2.5-3B-Instruct', \
+#       quantization_config=bitsandbytesnf4_config())"
+#
+# The model (~2GB) will be cached in ~/.cache/huggingface/
+#
+# For CPU-only inference (no GPU required, but much slower):
+#   Edit src/stage4+5/4+5.py and set device="cpu" instead of "cuda"
+#
+# ==========================================
+# SECTION 5: RUNNING THE SYSTEM
+# ==========================================
+#
+# OPTION A: Run the Backend Pipeline
+# ----------------------------------
+# 1. Place interview files in backend/trans/:
+#    - candidate_video.mp4
+#    - candidate_audio.wav
+#    - interviewer_audio.wav
+#
+# 2. Place job description in backend/jd/ (e.g., machine_learning_engineer.md)
+#
+# 3. Run the pipeline:
+#    cd backend
+#    source venv/bin/activate
+#    python main.py
+#
+# 4. Results appear in backend/output/ and backend/results/
+#
+# OPTION B: Run the Web UI (Interview Recording)
+# -----------------------------------------------
+# 1. Start the WebSocket server:
+#    cd web_ui
+#    pip install fastapi uvicorn aiortc av
+#    python server.py --host 0.0.0.0 --port 8000
+#
+# 2. Open in browser:
+#    - Interviewer: http://localhost:8000/interviewer.html
+#    - Candidate:   http://localhost:8000/candidate.html
+#
+# OPTION C: View Dashboard
+# ------------------------
+# 1. The dashboard is in web_ui/dashboard.html
+# 2. Serve it via any static server:
+#    cd web_ui
+#    python -m http.server 8080
+# 3. Open http://localhost:8080/dashboard.html
+# 4. Click "Load Session" and select a results folder from backend/results/
+#
+# ==========================================
+# SECTION 6: QUICK START (with sample data)
+# ==========================================
+#
+# Sample interview files and job descriptions are included:
+#   backend/trans/     - Sample recordings
+#   backend/jd/        - Sample job descriptions
+#
+# To run immediately:
+#    cd backend
+#    python -m venv venv
+#    source venv/bin/activate
+#    pip install -r requirements.txt
+#    python main.py
+#
+# ==========================================
+# SECTION 7: VERIFICATION
+# ==========================================
+#
+# Check your setup:
+#    python -c "import cv2, librosa, faster_whisper; print('All OK')"
+#
+# Check GPU:
+#    python -c "import torch; print(f'CUDA: {torch.cuda.is_available()}')"
+#
+# Check ffmpeg:
+#    ffmpeg -version
+#
+# ==========================================
+# SECTION 8: COMMON ISSUES
+# ==========================================
+#
+# - "No module named 'cv2'": Run pip install opencv-python
+# - "No module named 'librosa'": Run pip install librosa
+# - "CUDA out of memory": Use smaller batch size or run on CPU
+# - "ffmpeg not found": Install ffmpeg system-wide first
+# - "Model download fails": Check internet connection, try HuggingFace login
+#
+# ==========================================
+# SECTION 9: FULL INSTALL ONE-LINER
+# ==========================================
+#
+# Ubuntu/Debian (full setup):
+#   sudo apt-get install -y ffmpeg libsndfile1 libgl1-mesa-glx libglib2.0-0 && \
+#   cd backend && python -m venv venv && \
+#   source venv/bin/activate && \
+#   pip install -r requirements.txt && \
+#   cd ../web_ui && pip install fastapi uvicorn aiortc av
+#
+# ==========================================
