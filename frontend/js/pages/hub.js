@@ -27,6 +27,7 @@ function buildEmpty() {
 
 function buildHub() {
     const fv = sessionData.final_verdict || {};
+    console.log('Final Verdict Object:', fv);
     const overallScore = fv.overall_score ?? averageScore();
     const checkpoints = sessionData.checkpoints || [];
     const qaPairs = sessionData.qa_pairs?.qa_pairs || [];
@@ -38,7 +39,8 @@ function buildHub() {
     const nQ = qaPairs.length || checkpoints.length;
     // Get duration from timeline.json video.duration_sec field
     const dur = sessionData.timeline?.video?.duration_sec ?? sessionData.timeline?.audio?.candidate?.duration_sec ?? sessionData.timeline?.duration_sec ?? sessionData.timeline?.duration ?? 0;
-    const summary = fv.summary || fv.recommendation || '';
+    const summary = fv.reason || fv.summary || fv.recommendation || '';
+    console.log('Summary to display:', summary);
 
     return `
     <div class="section-header" style="justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
