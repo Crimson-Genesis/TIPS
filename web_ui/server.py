@@ -86,7 +86,7 @@ class SynchronizedAudioTrack(MediaStreamTrack):
 
         # Increment by actual samples in this frame
         if hasattr(frame, "samples"):
-            self.sample_count += frame.samples
+            self.sample_count += frame.samples  # type: ignore
         else:
             self.sample_count += 960  # Default 20ms frame at 48kHz
 
@@ -103,22 +103,22 @@ class RoomState:
 class Room:
     def __init__(self):
         self.state = RoomState.IDLE
-        self.interviewer_ws = None
-        self.candidate_ws = None
-        self.interviewer_pc = None
-        self.candidate_pc = None
-        self.interviewer_recorder = None
-        self.candidate_audio_recorder = None
-        self.candidate_video_recorder = None
-        self.interviewer_audio_track = None
-        self.candidate_audio_track = None
-        self.candidate_video_track = None
-        self.normalized_candidate_video_track = None
-        self.normalized_interviewer_audio_track = None
-        self.normalized_candidate_audio_track = None
-        self.session_id = None
+        self.interviewer_ws: Optional[WebSocket] = None
+        self.candidate_ws: Optional[WebSocket] = None
+        self.interviewer_pc: Optional[RTCPeerConnection] = None
+        self.candidate_pc: Optional[RTCPeerConnection] = None
+        self.interviewer_recorder: Optional[MediaRecorder] = None
+        self.candidate_audio_recorder: Optional[MediaRecorder] = None
+        self.candidate_video_recorder: Optional[MediaRecorder] = None
+        self.interviewer_audio_track: Optional[MediaStreamTrack] = None
+        self.candidate_audio_track: Optional[MediaStreamTrack] = None
+        self.candidate_video_track: Optional[MediaStreamTrack] = None
+        self.normalized_candidate_video_track: Optional[MediaStreamTrack] = None
+        self.normalized_interviewer_audio_track: Optional[MediaStreamTrack] = None
+        self.normalized_candidate_audio_track: Optional[MediaStreamTrack] = None
+        self.session_id: Optional[str] = None
         self.should_close = False
-        self.recording_start_time = None
+        self.recording_start_time: Optional[float] = None
 
     def reset(self):
         self.state = RoomState.IDLE
@@ -507,10 +507,10 @@ OUTPUT_FILES = {
 async def api_status():
     """Return current room state for the control page."""
     return JSONResponse({
-        "state": room.state.name,
-        "interviewer_connected": room.interviewer is not None,
-        "candidate_connected": room.candidate is not None,
-        "is_recording": room.is_recording,
+        "state": room.state,
+        "interviewer_connected": room.interviewer_ws is not None,
+        "candidate_connected": room.candidate_ws is not None,
+        "is_recording": room.state == RoomState.RECORDING,
     })
 
 
@@ -678,7 +678,7 @@ async def run_pipeline_async(session_id, interviewer_audio, candidate_video, can
         
         # Monitor output for stage updates
         while True:
-            output = process.stdout.readline()
+            output = process.stdout.readline() if process.stdout else None
             if output == '' and process.poll() is not None:
                 break
             if output:
@@ -741,7 +741,7 @@ async def run_pipeline_async(session_id, interviewer_audio, candidate_video, can
             pipeline_status[session_id]["message"] = "Pipeline completed successfully"
             pipeline_status[session_id]["completed_stages"] = list(completed_stages)
         else:
-            stderr = process.stderr.read()
+            stderr = process.stderr.read() if process.stderr else "No stderr available"
             pipeline_status[session_id]["status"] = "failed"
             pipeline_status[session_id]["error"] = f"Pipeline failed: {stderr}"
             

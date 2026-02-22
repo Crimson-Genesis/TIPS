@@ -9,6 +9,8 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{titlesec}
+\usepackage{float}
+\usepackage{caption}
 
 \hypersetup{
     colorlinks=true,
@@ -56,6 +58,20 @@
     xrightmargin=5mm
 }
 
+\lstdefinestyle{javascriptstyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    xleftmargin=5mm,
+    xrightmargin=5mm
+}
+
 \lstset{
     breaklines=true,
     postbreak=\space,
@@ -78,19 +94,13 @@
 
 \begin{document}
 
-\pagenumbering{roman}
-
-\tableofcontents
-
-\clearpage
-
-\pagenumbering{arabic}
-
-% ============================================================================
-% PHASE 1: INTRODUCTION & ARCHITECTURE
-% ============================================================================
-
-\section{Abstract}
+% Abstract - first page, no page number
+\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+\textbf{\LARGE Abstract}
+\end{center}
+\vspace{0.5in}
 
 The Temporal Interview Profiling System (TIPS) is an automated interview analysis system designed to process recorded video interviews and generate comprehensive behavioral and semantic assessments of candidates. The system processes pre-recorded interview files through a multi-stage backend pipeline that extracts audio and video signals, performs temporal segmentation, computes behavioral metrics, and utilizes Large Language Models (LLMs) for semantic relevance scoring against job descriptions.
 
@@ -100,13 +110,19 @@ The pipeline architecture consists of six sequential and parallel processing sta
 
 The system produces structured outputs including timeline data, behavioral metrics JSON files, relevance scores for each Q\&A pair, and a final hiring recommendation with confidence level. Output verdicts include four categories: STRONG\_HIRE, HIRE, BORDERLINE, and NO\_HIRE. This approach addresses key limitations of traditional interview evaluation including subjectivity, limited analysis depth, scalability issues, lack of standardization, and the absence of temporal performance insights.
 
-This report documents the complete design and implementation of the TIPS backend pipeline, with particular emphasis on the multi-stage processing architecture, the integration of LLMs for semantic evaluation, and the planned dashboard for result visualization.
+TIPS also includes a fully implemented Interview Recording UI for capturing video interviews using WebRTC technology, and a comprehensive Dashboard for visualizing analysis results. This report documents the complete design and implementation of the TIPS system, including the backend pipeline, the Interview Recording UI, and the Dashboard visualization system.
+\vspace*{\fill}
 
 \clearpage
 
-% ============================================================================
-% SECTION 1: INTRODUCTION
-% ============================================================================
+% Table of Contents - roman page numbers
+\pagenumbering{roman}
+\tableofcontents
+
+\clearpage
+
+% Main content - arabic page numbers
+\pagenumbering{arabic}
 
 \section{Introduction}
 
@@ -120,7 +136,17 @@ The Temporal Interview Profiling System (TIPS) represents an attempt to build a 
 
 A key design philosophy of TIPS is modularity. Rather than building a monolithic system that handles all aspects of interview analysis, TIPS implements a six-stage pipeline where each stage focuses on a specific aspect of the analysis. This modular approach allows for easier debugging, optimization, and future enhancement of individual components.
 
-Furthermore, TIPS is designed to function as a backend service that can be integrated with existing interview platforms. The Interview UI component serves purely as a data collection mechanism, allowing organizations to attach TIPS to their existing infrastructure. This addon approach means that companies with established interview systems can leverage TIPS's analytical capabilities without replacing their entire technology stack.
+Furthermore, TIPS is designed to function as a backend service that can be integrated with existing interview platforms. The Interview UI component serves as a data collection mechanism, allowing organizations to attach TIPS to their existing infrastructure. This addon approach means that companies with established interview systems can leverage TIPS's analytical capabilities without replacing their entire technology stack.
+
+The TIPS system consists of three primary components:
+
+\begin{enumerate}
+    \item \textbf{Interview Recording UI}: A WebRTC-based browser interface for recording video interviews with synchronized audio capture.
+    \item \textbf{Backend Pipeline}: A six-stage processing system that analyzes recorded interviews and generates behavioral metrics and semantic relevance scores.
+    \item \textbf{Dashboard}: An interactive web-based visualization interface for presenting and exploring analysis results.
+\end{enumerate}
+
+These three components work together to provide a complete end-to-end solution for automated interview analysis, from recording to final recommendation.
 
 \subsection{Problem Statement}
 
@@ -136,9 +162,13 @@ Traditional interview evaluation methods suffer from several significant limitat
     \item \textbf{Lack of Standardization}: Without automated tools, comparing candidates across different interviewers or time periods becomes challenging.
     
     \item \textbf{No Temporal Insights}: Traditional scoring provides a single aggregate score without understanding how candidate performance evolves throughout the interview.
+    
+    \item \textbf{Manual Processing}: Interview recordings require manual review, which is time-consuming and prone to human error.
+    
+    \item \textbf{Inconsistent Recording}: Different interview platforms produce recordings in various formats, making centralized analysis difficult.
 \end{enumerate}
 
-TIPS addresses these problems by providing an automated, reproducible, and comprehensive analysis system that processes interview recordings to generate temporal behavioral metrics and semantic relevance scores.
+TIPS addresses these problems by providing an automated, reproducible, and comprehensive analysis system that processes interview recordings to generate temporal behavioral metrics and semantic relevance scores. The integrated Interview Recording UI ensures consistent recording format, while the Dashboard provides intuitive visualization of analysis results.
 
 \subsection{Objectives}
 
@@ -159,7 +189,11 @@ The primary objectives of the TIPS project are:
     
     \item To generate time-evolving candidate scores with incremental verdict recommendations.
     
-    \item To design a dashboard visualization system for presenting analysis results.
+    \item To design and implement a Dashboard visualization system for presenting analysis results.
+    
+    \item To implement a WebRTC-based Interview Recording UI for capturing synchronized video interviews.
+    
+    \item To create a unified system that seamlessly integrates recording, processing, and visualization components.
 \end{enumerate}
 
 \subsection{Scope}
@@ -167,13 +201,13 @@ The primary objectives of the TIPS project are:
 The scope of this project encompasses:
 
 \begin{itemize}
+    \item \textbf{Interview Recording UI}: Complete WebRTC-based recording interface for conducting video interviews.
     \item \textbf{Backend Pipeline}: Complete implementation of the six-stage processing pipeline.
-    \item \textbf{Interview UI}: Basic data collection interface for recording interviews (not the primary focus).
-    \item \textbf{Dashboard}: Planned visualization component for result presentation.
-    \item \textbf{Integration Capability}: System designed to function as an addon to existing interview platforms.
+    \item \textbf{Dashboard}: Complete implementation of the visualization interface with five main views.
+    \item \textbf{Integration}: System designed to function as a complete end-to-end solution for interview analysis.
 \end{itemize}
 
-The system is designed for batch processing of pre-recorded interviews rather than real-time streaming analysis. This approach allows for more comprehensive processing at the cost of immediate feedback.
+The system is designed for batch processing of pre-recorded interviews rather than real-time streaming analysis. This approach allows for more comprehensive processing at the cost of immediate feedback. The Interview Recording UI captures interviews and saves them in a standardized format, which is then processed by the backend pipeline.
 
 \clearpage
 
@@ -201,6 +235,16 @@ Research in this area has explored various modalities for interview analysis:
 
 However, many existing systems treat these modalities in isolation or provide only aggregate scores without temporal context. TIPS aims to provide a more holistic analysis by combining multiple signals and tracking their evolution throughout the interview.
 
+TIPS differentiates itself from existing solutions by:
+
+\begin{itemize}
+    \item Providing time-evolving scores that track candidate performance throughout the interview
+    \item Combining behavioral metrics with semantic relevance scoring
+    \item Offering an integrated recording solution through WebRTC
+    \item Providing a comprehensive dashboard for result visualization
+    \item Using lightweight LLM models that can run on consumer hardware
+\end{itemize}
+
 \subsection{Speech Recognition and Transcription}
 
 The field of automatic speech recognition (ASR) has seen dramatic improvements in recent years, particularly with the advent of transformer-based models. Faster-Whisper, used in TIPS for transcription, represents the state-of-the-art in open-source speech recognition, offering high accuracy with efficient inference.
@@ -213,6 +257,8 @@ Key advances that enable systems like TIPS include:
     \item Voice Activity Detection (VAD) for identifying speech segments
     \item Multilingual support and robust handling of various accents
 \end{itemize}
+
+TIPS leverages Faster-Whisper's capabilities to generate accurate transcriptions with word-level timestamps, enabling precise Q\&A pairing in the temporal segmentation stage.
 
 \subsection{Behavioral Signal Processing}
 
@@ -261,12 +307,12 @@ This section presents the high-level architecture of TIPS, including the data fl
 TIPS follows a batch processing architecture where interview recordings are processed after the interview session concludes. The system consists of three primary components:
 
 \begin{enumerate}
-    \item \textbf{Interview UI Layer}: Browser-based recording interface using WebRTC
+    \item \textbf{Interview UI Layer}: Browser-based recording interface using WebRTC for capturing synchronized video and audio.
     \item \textbf{Backend Pipeline}: Six-stage processing system for analysis
-    \item \textbf{Dashboard}: Visualization interface for results (planned)
+    \item \textbf{Dashboard}: Interactive visualization interface for results
 \end{enumerate}
 
-The data flow follows a unidirectional pipeline pattern: raw media files are processed through successive stages, with each stage consuming the output of the previous stage and producing intermediate results.
+The data flow follows a unidirectional pipeline pattern: interviews are recorded through the Interview UI, raw media files are processed through successive pipeline stages, with each stage consuming the output of the previous stage and producing intermediate results.
 
 \begin{figure}[htbp]
     \centering
@@ -275,7 +321,7 @@ The data flow follows a unidirectional pipeline pattern: raw media files are pro
     \label{fig:dfd}
 \end{figure}
 
-Figure \ref{fig:dfd} illustrates the complete data flow from external entities (Interviewer and Candidate) through the various processing stages to the final output artifacts.
+Figure \ref{fig:dfd} illustrates the complete data flow from external entities (Interviewer and Candidate) through the various processing stages to the final output artifacts and Dashboard visualization.
 
 The pipeline accepts four primary inputs:
 
@@ -286,7 +332,9 @@ The pipeline accepts four primary inputs:
     \item \textbf{Job Description}: Text document describing the position requirements
 \end{itemize}
 
-The output consists of JSON files containing timeline data, behavioral metrics, relevance scores, and candidate performance timelines.
+The output consists of JSON files containing timeline data, behavioral metrics, relevance scores, and candidate performance timelines. These outputs are consumed by the Dashboard for visualization.
+
+The Interview Recording UI produces standardized output files in MP4 (video) and WAV (audio) formats, ensuring consistent input to the backend pipeline regardless of the recording platform used.
 
 \subsection{Processing Model}
 
@@ -300,6 +348,8 @@ TIPS operates as a batch processing system rather than a real-time streaming sys
     \item \textbf{Modularity}: Each stage can be independently optimized, debugged, or replaced without affecting others.
     
     \item \textbf{Scalability}: The pipeline can process multiple interviews concurrently without interference.
+    
+    \item \textbf{Post-Interview Review}: HR teams can review results after the interview is complete, allowing for more thoughtful evaluation.
 \end{enumerate}
 
 The processing flow consists of:
@@ -310,9 +360,11 @@ The processing flow consists of:
     \item \textbf{Sequential Stage 2}: Temporal segmentation
     \item \textbf{Sequential Stage 3}: Behavioral metrics computation
     \item \textbf{Sequential Stage 4+5}: Semantic scoring and verdict aggregation
+    \item \textbf{Dashboard Visualization}: Interactive exploration of results
 \end{enumerate}
 
 This hybrid approach maximizes parallelism where possible (Stage 1) while maintaining necessary sequential dependencies between stages.
+
 
 \subsection{Stage 0: Timebase Establishment}
 
@@ -356,6 +408,7 @@ Stage 1 represents the primary data extraction phase and is uniquely designed to
 
 The parallel execution of these three sub-stages significantly reduces overall processing time, as each operates on independent data sources.
 
+
 \subsection{Stage 2: Temporal Segmentation}
 
 Stage 2 combines the outputs from Stage 1 to create a unified temporal view of the interview. This stage performs two critical functions:
@@ -398,6 +451,7 @@ Stage 3 analyzes each candidate speaking segment in detail, computing quantitati
 
 These metrics provide objective, quantifiable indicators of candidate performance that complement the semantic analysis in later stages.
 
+
 \subsection{Stages 4 and 5: Semantic Scoring and Verdict Aggregation}
 
 Stages 4 and 5 represent the intelligence layer of the TIPS pipeline, where Large Language Models (LLMs) evaluate the semantic content of candidate responses:
@@ -422,7 +476,6 @@ Stages 4 and 5 represent the intelligence layer of the TIPS pipeline, where Larg
 
 These stages utilize Qwen2.5-3B-Instruct with 4-bit quantization for efficient inference while maintaining evaluation quality.
 
-% \clearpage
 
 \subsection{Technology Stack}
 
@@ -430,8 +483,8 @@ TIPS leverages a modern technology stack optimized for performance and accuracy:
 
 \begin{table}[htbp]
     \centering
-    \caption{Technology Stack}
-    \label{tab:tech_stack}
+    \caption{Technology Stack - Backend Pipeline}
+    \label{tab:tech_stack_backend}
     \begin{tabular}{@{}ll@{}}
         \toprule
         \textbf{Component} & \textbf{Technology} \\
@@ -450,9 +503,46 @@ TIPS leverages a modern technology stack optimized for performance and accuracy:
     \end{tabular}
 \end{table}
 
+\begin{table}[htbp]
+    \centering
+    \caption{Technology Stack - Interview Recording UI}
+    \label{tab:tech_stack_ui}
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{Component} & \textbf{Technology} \\
+        \midrule
+        Backend Server & FastAPI (Python) \\
+        Real-time Communication & WebSocket \\
+        Video/Audio Capture & WebRTC (Browser API) \\
+        Media Processing & aiortc (Python) \\
+        Video Codec & H.264 (browser + ffmpeg) \\
+        Audio Codec & Opus (browser) \\
+        Frontend & HTML5, CSS3, JavaScript (ES6+) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Technology Stack - Dashboard}
+    \label{tab:tech_stack_dashboard}
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{Component} & \textbf{Technology} \\
+        \midrule
+        Frontend Framework & Vanilla JavaScript (ES6 Modules) \\
+        Routing & Custom SPA Router \\
+        Data Visualization & Chart.js 4.4.2 \\
+        Styling & CSS3 with Custom Properties \\
+        Font & Inter, JetBrains Mono (Google Fonts) \\
+        File Loading & Fetch API, File API \\
+        Deployment & Static files (any web server) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
 The LLM component uses Qwen2.5-3B-Instruct with 4-bit quantization, enabling operation on GPUs with limited VRAM (approximately 3GB) while maintaining reasonable inference quality.
 
-% \clearpage
 
 \subsection{System Specifications}
 
@@ -596,7 +686,6 @@ The timebase stage performs the following operations:
 
 The timeline JSON serves as the master reference for all subsequent processing stages, ensuring that timestamps from different stages can be correctly correlated.
 
-\clearpage
 
 % ============================================================================
 % SUBSECTION 4.2: STAGE 1 - SIGNAL EXTRACTION
@@ -695,6 +784,7 @@ Typical output includes approximately 3,800+ feature frames and 40-50 transcript
 
 The combination of VAD and Whisper's built-in voice activity detection provides robust speech segmentation, handling various speaking styles and pause patterns.
 
+
 % ============================================================================
 % SUBSECTION 4.2.2: STAGE 1B - INTERVIEWER AUDIO
 % ============================================================================
@@ -741,6 +831,7 @@ The output is used to segment the interview into Q\&A pairs, making it a critica
 % ============================================================================
 % SUBSECTION 4.2.3: STAGE 1C - CANDIDATE VIDEO
 % ============================================================================
+
 
 \subsection{Stage 1C: Candidate Video Processing}
 
@@ -819,6 +910,7 @@ The video processing stage implements a sophisticated feature extraction pipelin
 \end{enumerate}
 
 The sampling strategy (every 10th frame) provides approximately 24-30 frames per second of video, balancing computational efficiency with temporal resolution.
+
 
 % ============================================================================
 % SUBSECTION 4.3: STAGE 2 - TEMPORAL SEGMENTATION
@@ -908,6 +1000,7 @@ This approach ensures accurate pairing even in conversational interviews where c
 % ============================================================================
 % SUBSECTION 4.4: STAGE 3 - BEHAVIORAL METRICS
 % ============================================================================
+
 
 \subsection{Stage 3: Behavioral Metrics Computation}
 
@@ -1024,6 +1117,7 @@ The computed metrics can be interpreted as follows:
 % SUBSECTION 4.5: STAGE 4 - SEMANTIC SCORING
 % ============================================================================
 
+
 \subsection{Stage 4: Semantic Relevance Scoring}
 
 Stage 4 implements the core intelligence of TIPS: evaluating candidate responses against job requirements using Large Language Models.
@@ -1055,7 +1149,7 @@ For each Q\&A pair, the LLM performs:
         \item Communication clarity
         \item Problem solving
     \end{itemize}
-    \item \textbf{Incremental Verdict}: Provides live assessment\newline
+    \item \textbf{Incremental Verdict}: Provides live assessment
         (strong\_progress, adequate\_progress, weak\_progress, no\_signal)
 \end{enumerate}
 
@@ -1135,6 +1229,7 @@ Stage 4 produces \texttt{relevance\_scores.json} (JSONL format) with entries lik
 % ============================================================================
 % SUBSECTION 4.6: STAGE 5 - AGGREGATION & VERDICT
 % ============================================================================
+
 
 \subsection{Stage 5: Aggregation and Final Verdict}
 
@@ -1231,6 +1326,7 @@ The verdict considers cumulative performance rather than isolated responses, pro
 % SUBSECTION 4.7: PARALLEL PROCESSING ARCHITECTURE
 % ============================================================================
 
+
 \subsection{Pipeline Execution Model}
 
 The TIPS pipeline implements a hybrid execution model that balances parallelism with sequential dependencies:
@@ -1323,6 +1419,8 @@ The pipeline accepts the following input files:
     \item \textbf{Job Description}: Plain text file containing the position requirements
 \end{enumerate}
 
+Alternatively, the Interview Recording UI can be used to capture interviews directly in the required format.
+
 \subsection{Output Data Schemas}
 
 The pipeline produces the following JSON output files:
@@ -1348,87 +1446,7 @@ The pipeline produces the following JSON output files:
     \end{tabular}
 \end{table}
 
-\textbf{timeline.json Schema:}
-
-\begin{lstlisting}[style=jsonstyle]
-{
-  "timebase": "video",
-  "dataset_id": "1",
-  "video": {
-    "file": "path/to/video.mp4",
-    "fps": 24.0,
-    "frame_count": 9248,
-    "duration_sec": 385.333
-  },
-  "audio": {
-    "candidate": {"duration_sec": 385.333, "sample_rate": 48000},
-    "interviewer": {"duration_sec": 385.333, "sample_rate": 48000}
-  }
-}
-\end{lstlisting}
-
-\textbf{qa\_pairs.json Schema:}
-
-\begin{lstlisting}[style=jsonstyle]
-{
-  "dataset_id": "1",
-  "qa_pairs": [
-    {
-      "question_id": "Q1",
-      "question_text": "Give me a brief overview...",
-      "question_start_time": 13.75,
-      "question_end_time": 19.21,
-      "answer": {
-        "start_time": 20.77,
-        "end_time": 58.35,
-        "text": "I have nine years of experience..."
-      }
-    }
-  ]
-}
-\end{lstlisting}
-
-\textbf{candidate\_behavior\_metrics.json Schema:}
-
-\begin{lstlisting}[style=jsonstyle]
-{
-  "dataset_id": "1",
-  "segment_count": 407,
-  "segments": [
-    {
-      "segment_id": "SEG1",
-      "start_time": 1.65,
-      "end_time": 1.83,
-      "audio_metrics": {
-        "pitch_mean": 475.15,
-        "pitch_variance": 7493.5,
-        "energy_mean": 0.0134,
-        "speech_rate": 11.11,
-        "pause_density": 0.5
-      },
-      "video_metrics": {
-        "face_presence_ratio": 1.0,
-        "head_motion_mean": 0.0,
-        "gaze_stability": 0.0
-      }
-    }
-  ]
-}
-\end{lstlisting}
-
-\textbf{Schema Design Principles:}
-
-The JSON output schemas are designed following these principles:
-
-\begin{enumerate}
-    \item \textbf{Human Readable}: Field names are descriptive and self-explanatory
-    \item \textbf{Machine Parseable}: JSON format enables easy parsing by any programming language
-    \item \textbf{Timestamp Consistency}: All time values use seconds as the unit, ensuring cross-stage alignment
-    \item \textbf{Nested Structure}: Related data is nested appropriately (e.g., audio/video metrics within segments)
-    \item \textbf{Versioning}: Each file includes dataset\_id for traceability
-\end{enumerate}
-
-The JSONL (JSON Lines) format for relevance scores allows streaming processing and easier log parsing.
+These output files are consumed by the Dashboard for visualization.
 
 \clearpage
 
@@ -1506,6 +1524,7 @@ A sample Q\&A pair analysis result:
 }
 \end{lstlisting}
 
+
 \subsection{Behavioral Metrics Analysis}
 
 Sample behavioral metrics for a speaking segment:
@@ -1548,169 +1567,1104 @@ Total pipeline execution time: Approximately 3-7 minutes depending on interview 
 \clearpage
 
 % ============================================================================
-% SECTION 7: DASHBOARD DESIGN
+% SECTION 7: INTERVIEW RECORDING UI
 % ============================================================================
 
-\section{Dashboard Design}
+\section{Interview Recording UI}
 
-The TIPS Dashboard is designed to visualize the analysis results in an intuitive and actionable format. While the dashboard implementation is planned for future work, this section outlines the design specifications.
+The Interview Recording UI is a WebRTC-based browser interface for conducting and recording video interviews. It provides synchronized video and audio capture for both the interviewer and candidate, producing standardized output files that can be directly processed by the backend pipeline.
 
-\subsection{Dashboard Overview}
+\subsection{Overview}
 
-The TIPS Dashboard serves as the primary interface for accessing and interpreting interview analysis results. It is designed with a focus on usability, providing both high-level summaries and detailed drill-down capabilities for users with varying levels of technical expertise.
-
-The dashboard provides three main views, each serving a distinct purpose:
+The Interview Recording UI consists of:
 
 \begin{enumerate}
-    \item \textbf{Temporal Evidence View}: Visualizes the interview timeline with Q\&A pairs, behavioral signals, and relevance scores at each checkpoint. This view is designed for detailed, moment-by-moment analysis of candidate responses.
-    
-    \item \textbf{Analytics View}: Presents aggregate statistics, competency dimension scores, and trend analysis. This view provides a holistic overview of candidate performance suitable for quick decision-making.
-    
-    \item \textbf{Pipeline Execution View}: Shows pipeline execution status, processing logs, and output file locations. This view is primarily for technical users and debugging purposes.
+    \item \textbf{Backend Server}: FastAPI-based server handling WebSocket connections and media streaming
+    \item \textbf{WebRTC Implementation}: Using the aiortc library for peer-to-peer communication
+    \item \textbf{Frontend Interface}: HTML/JavaScript-based recording interface
+    \item \textbf{Media Recording}: Synchronized video and audio capture using MediaRecorder API
 \end{enumerate}
 
-The dashboard reads directly from the JSON output files generated by the pipeline, making it independent of the processing logic. This architecture offers several advantages:
+The system implements a room-based model where the interviewer and candidate join a shared session, and their media streams are captured and recorded simultaneously.
+
+
+\subsection{System Architecture}
+
+The Interview Recording UI follows a client-server architecture with WebSocket-based real-time communication:
+
+\begin{enumerate}
+    \item \textbf{Server (server.py)}: FastAPI application managing WebSocket connections, room state, and media recording
+    \item \textbf{Browser Client}: WebRTC-enabled browser capturing local video/audio
+    \item \textbf{Media Relay}: Server-side component forwarding media streams to recording handlers
+\end{enumerate}
+
+The server implements a state machine for room management:
 
 \begin{itemize}
-    \item \textbf{Decoupling}: The dashboard does not need to understand the internal workings of the pipeline; it simply reads the standardized JSON outputs.
-    \item \textbf{Flexibility}: New pipeline stages can be added without modifying the dashboard, as long as the output format remains compatible.
-    \item \textbf{Portability}: The JSON files can be moved or archived independently, with the dashboard capable of loading historical results.
-    \item \textbf{Security}: The dashboard operates on read-only data, eliminating risks associated with modifying pipeline outputs.
+    \item \textbf{IDLE}: Initial state, no participants connected
+    \item \textbf{INTERVIEWER\_CONNECTED}: Interviewer has joined, waiting for candidate
+    \item \textbf{BOTH\_CONNECTED}: Both participants joined, ready to record
+    \item \textbf{RECORDING}: Active recording in progress
 \end{itemize}
 
-The dashboard is designed to support multiple users simultaneously, with role-based access controls. Hiring managers might primarily use the Analytics View for quick assessments, while technical recruiters may spend more time in the Temporal Evidence View for detailed evaluations. Administrators would interact with the Pipeline Execution View for system monitoring.
+\subsection{WebRTC Implementation}
+
+The Interview Recording UI uses aiortc, a Python implementation of WebRTC, to handle real-time media streaming on the server side.
+
+\textbf{Synchronized Video Track:}
+
+\begin{lstlisting}[style=pystyle]
+class SynchronizedVideoTrack(MediaStreamTrack):
+    """
+    A video track that uses frame count for perfectly consistent timing.
+    """
+    kind = "video"
+
+    def __init__(self, track: MediaStreamTrack):
+        super().__init__()
+        self.track = track
+        self.frame_count = 0
+        self.fps = 30
+        self.time_base = Fraction(1, 90000)  # 90kHz for video
+
+    async def recv(self):
+        frame = await self.track.recv()
+        # Set PTS based on frame count for perfect 30fps timing
+        frame.pts = int(self.frame_count * 90000 / self.fps)
+        frame.time_base = self.time_base
+        self.frame_count += 1
+        return frame
+\end{lstlisting}
+
+The SynchronizedVideoTrack class ensures that video frames are timestamped consistently for perfect synchronization between video and audio.
+
+\textbf{Synchronized Audio Track:}
+
+\begin{lstlisting}[style=pystyle]
+class SynchronizedAudioTrack(MediaStreamTrack):
+    """
+    An audio track that uses sample count for perfectly consistent timing.
+    """
+    kind = "audio"
+
+    def __init__(self, track: MediaStreamTrack):
+        super().__init__()
+        self.track = track
+        self.sample_count = 0
+        self.sample_rate = 48000
+        self.time_base = Fraction(1, 48000)  # 48kHz for audio
+
+    async def recv(self):
+        frame = await self.track.recv()
+        frame.pts = self.sample_count
+        frame.time_base = self.time_base
+        if hasattr(frame, "samples"):
+            self.sample_count += frame.samples
+        else:
+            self.sample_count += 960  # Default 20ms frame at 48kHz
+        return frame
+\end{lstlisting}
+
+The SynchronizedAudioTrack class similarly ensures consistent audio timestamping.
+
+
+\subsection{Room State Management}
+
+The RoomState class manages the lifecycle of an interview session:
+
+\begin{lstlisting}[style=pystyle]
+class RoomState:
+    IDLE = "IDLE"
+    INTERVIEWER_CONNECTED = "INTERVIEWER_CONNECTED"
+    BOTH_CONNECTED = "BOTH_CONNECTED"
+    RECORDING = "RECORDING"
+    FINISHED = "FINISHED"
+
+    def __init__(self):
+        self.state = self.IDLE
+        self.interviewer_pc = None
+        self.candidate_pc = None
+        self.interviewer_track = None
+        self.candidate_track = None
+        self.recorder = None
+        self.start_time = None
+        self.room_id = None
+\end{lstlisting}
+
+The room state transitions through the following lifecycle:
+
+\begin{enumerate}
+    \item \textbf{Creation}: Room is created with IDLE state when the interviewer initiates
+    \item \textbf{Interviewer Join}: State transitions to INTERVIEWER\_CONNECTED
+    \item \textbf{Candidate Join}: State transitions to BOTH\_CONNECTED
+    \item \textbf{Recording Start}: State transitions to RECORDING
+    \item \textbf{Recording Stop}: State transitions to FINISHED
+    \item \textbf{Cleanup}: Room is cleaned up and removed
+\end{enumerate}
+
+
+\subsection{WebSocket API}
+
+The Interview Recording UI exposes WebSocket endpoints for real-time communication:
+
+\begin{itemize}
+    \item \textbf{/ws/room/\{room\_id\}}: Main WebSocket endpoint for participants
+    \item \textbf{/ws/control/\{room\_id\}}: Control endpoint for recording commands
+\end{itemize}
+
+The WebSocket protocol handles:
+
+\begin{itemize}
+    \item \textbf{Connection}: Participants connect and identify their role (interviewer/candidate)
+    \item \textbf{WebRTC Signaling}: SDP offers/answers and ICE candidates exchanged
+    \item \textbf{Control Messages}: Start/stop recording, room management
+    \item \textbf{Status Updates}: Real-time room state notifications
+\end{itemize}
+
+The WebSocket protocol handles:
+
+\begin{itemize}
+    \item \textbf{Connection}: Participants connect and identify their role (interviewer/candidate)
+    \item \textbf{WebRTC Signaling}: SDP offers/answers and ICE candidates exchanged
+    \item \textbf{Control Messages}: Start/stop recording, room management
+    \item \textbf{Status Updates}: Real-time room state notifications
+\end{itemize}
+
+\textbf{Client-Side Connection:}
+
+The frontend establishes a WebSocket connection and performs the WebRTC handshake:
+
+\begin{lstlisting}[style=javascriptstyle]
+// Establish WebSocket connection
+const ws = new WebSocket(`ws://${serverUrl}/ws/room/${roomId}`);
+
+// Create peer connection
+const pc = new RTCPeerConnection(servers);
+
+// Add local tracks
+localStream.getTracks().forEach(track => {
+    pc.addTrack(track, localStream);
+});
+
+// Handle remote tracks
+pc.ontrack = event => {
+    remoteStream.addTrack(event.track);
+};
+
+// Create and send offer
+const offer = await pc.createOffer();
+await pc.setLocalDescription(offer);
+ws.send(JSON.stringify({ type: 'offer', sdp: offer.sdp }));
+\end{lstlisting}
+
+
+\subsection{Media Recording}
+
+The frontend uses the browser's MediaRecorder API to capture and save media:
+
+\begin{enumerate}
+    \item \textbf{Video Recording}: Captures the local video element showing the participant
+    \item \textbf{Audio Recording}: Captures audio from the microphone
+    \item \textbf{Synchronization}: Video and audio are recorded with matching timestamps
+\end{enumerate}
+
+\textbf{Recording Implementation:}
+
+\begin{lstlisting}[style=javascriptstyle]
+// Create media recorder for video
+const videoRecorder = new MediaRecorder(videoStream, {
+    mimeType: 'video/webm;codecs=vp9'
+});
+
+// Create separate audio recorder
+const audioRecorder = new MediaRecorder(audioStream, {
+    mimeType: 'audio/webm;codecs=opus'
+});
+
+// Collect chunks
+const videoChunks = [];
+videoRecorder.ondataavailable = e => videoChunks.push(e.data);
+
+audioRecorder.ondataavailable = e => audioChunks.push(e.data);
+
+// Start recording
+videoRecorder.start();
+audioRecorder.start();
+
+// Stop and save
+videoRecorder.stop();
+const videoBlob = new Blob(videoChunks, { type: 'video/webm' });
+\end{lstlisting}
+
+The recorded files are saved locally and can be uploaded to the backend pipeline for processing.
+
+
+\subsection{Interview UI Features}
+
+The Interview Recording UI provides the following features:
+
+\begin{enumerate}
+    \item \textbf{Room Creation}: Interviewer creates a room and receives a room ID to share
+    \item \textbf{Room Joining}: Candidate joins using the room ID
+    \item \textbf{Real-time Preview}: Both participants see each other's video in real-time
+    \item \textbf{Recording Control}: Start/stop recording buttons for the interviewer
+    \item \textbf{Local Recording}: Each participant can record their own local feed
+    \item \textbf{File Download}: Recorded interviews can be downloaded as MP4/WAV files
+    \item \textbf{Standardized Output}: Produces files in the exact format required by the pipeline
+\end{enumerate}
+
+The UI is designed to be simple and intuitive, requiring minimal technical knowledge from users. All complex WebRTC operations are handled transparently in the background.
 
 \clearpage
+
+% ============================================================================
+% SECTION 8: DASHBOARD
+% ============================================================================
+
+\section{Dashboard}
+
+The TIPS Dashboard is a fully implemented interactive web interface for visualizing interview analysis results. It provides comprehensive views for exploring behavioral metrics, semantic scores, and final recommendations.
+
+The Dashboard reads directly from the JSON output files generated by the backend pipeline, making it independent of the processing logic. This architecture offers several advantages:
+
+\begin{itemize}
+    \item \textbf{Decoupling}: The dashboard does not need to understand the internal workings of the pipeline
+    \item \textbf{Flexibility}: New pipeline stages can be added without modifying the dashboard
+    \item \textbf{Portability}: The JSON files can be moved or archived independently
+    \item \textbf{Security}: The dashboard operates on read-only data
+\end{itemize}
+
+The Dashboard is implemented as a Single Page Application (SPA) using vanilla JavaScript with ES6 modules.
+
+
+\subsection{Dashboard Architecture}
+
+The Dashboard is organized into five main views:
+
+\begin{enumerate}
+    \item \textbf{Session Hub}: Overview page with verdict, stats, and competency radar chart
+    \item \textbf{Temporal Evidence}: Chronological timeline with Q\&A pairs and behavioral signals
+    \item \textbf{Analytics}: Detailed charts including score trajectory, competency breakdown, and keyword heatmap
+    \item \textbf{Pipeline Execution}: Processing status and output file information
+    \item \textbf{Q\&A Review}: Full transcript with scores and LLM reasoning per question
+\end{enumerate}
+
+The Dashboard architecture consists of the following JavaScript modules:
+
+\begin{itemize}
+    \item \textbf{main.js}: Application entry point, initialization, and modal handling
+    \item \textbf{router.js}: SPA routing for page navigation
+    \item \textbf{dataLoader.js}: JSON file loading and session data management
+    \item \textbf{config.js}: Configuration constants and competency definitions
+    \item \textbf{pages/hub.js}: Session Hub page renderer
+    \item \textbf{pages/temporalEvidence.js}: Temporal Evidence page renderer
+    \textbf{pages/analytics.js}: Analytics page renderer
+    \textbf{pages/pipelineExecution.js}: Pipeline Execution page renderer
+    \textbf{pages/qaReview.js}: Q\&A Review page renderer
+\end{itemize}
+
+
+\subsection{Session Hub}
+
+The Session Hub is the main landing page of the Dashboard, providing an at-a-glance summary of the interview analysis.
+
+\textbf{Key Components:}
+
+\begin{enumerate}
+    \item \textbf{Verdict Banner}: Displays the final hiring recommendation (STRONG\_HIRE, HIRE, BORDERLINE, NO\_HIRE) with confidence level and justification
+    \item \textbf{Gauge Chart}: Visual representation of the overall score as a percentage
+    \item \textbf{Statistics Cards}: Total duration, question count, speaking time, and average relevance
+    \item \textbf{Competency Radar Chart}: Visualizes the five competency dimensions
+    \item \textbf{Session Metadata}: Dataset ID, timebase, video FPS, frame count, and sample rate
+    \item \textbf{Quick Navigation}: Cards for navigating to other Dashboard views
+\end{enumerate}
+
+\textbf{Verdict Banner Implementation:}
+
+The verdict banner dynamically styles based on the verdict type:
+
+\begin{lstlisting}[style=javascriptstyle]
+const cssClass = verdict.toLowerCase().replace(/_/g, '-')
+    .replace('strong-hire', 'strong-hire')
+    .replace('weak-hire', 'weak-hire')
+    .replace('no-hire', 'no-hire');
+\end{lstlisting}
+
+Different CSS classes apply appropriate color schemes:
+\begin{itemize}
+    \item \textbf{strong-hire}: Green theme (confident positive recommendation)
+    \item \textbf{hire}: Blue theme (standard positive recommendation)
+    \item \textbf{borderline}: Yellow/amber theme (uncertain recommendation)
+    \item \textbf{no-hire}: Red theme (negative recommendation)
+\end{itemize}
+
+\textbf{Gauge Chart:}
+
+The gauge chart uses Chart.js doughnut chart to display the overall score:
+
+\begin{lstlisting}[style=javascriptstyle]
+const gaugeChart = new Chart(canvas, {
+    type: 'doughnut',
+    data: {
+        datasets: [{
+            data: [score, 1 - score],
+            backgroundColor: [color, 'rgba(48,54,61,0.6)'],
+            borderWidth: 0,
+            circumference: 240,
+            rotation: 240,
+        }]
+    },
+    options: {
+        responsive: false,
+        cutout: '75%',
+        plugins: { legend: { display: false }, tooltip: { enabled: false } }
+    }
+});
+\end{lstlisting}
+
+The gauge displays a score from 0-100\% with color coding:
+\begin{itemize}
+    \item Green (score >= 70\%): Strong positive
+    \item Yellow (40\% <= score < 70\%): Moderate
+    \item Red (score < 40\%): Weak
+\end{itemize}
+
 
 \subsection{Temporal Evidence View}
 
-The Temporal Evidence View is the primary interface for understanding a candidate's performance throughout the interview. This view provides a chronological representation of the entire interview with detailed breakdowns at each stage.
+The Temporal Evidence View provides a chronological timeline of the interview with synchronized audio, video signals, and transcripts.
 
-\textbf{Timeline Bar}: The timeline bar serves as the central navigation element of this view. It displays the full duration of the interview as a horizontal bar, with distinct color-coded segments representing different activities. Interviewer questions are marked in one color, candidate answers in another, and silence or transition periods in a third. The timeline is interactive, allowing recruiters to click on any segment to jump directly to that point in the interview.
+\textbf{Key Features:}
 
-\textbf{Segment Details}: Each segment on the timeline can be expanded to reveal detailed metrics. For candidate speaking segments, this includes audio metrics such as pitch variation, energy levels, speech rate, and pause density. Video metrics show face presence ratio, head movement, and gaze stability. These metrics are displayed alongside benchmark values to help recruiters understand whether the candidate's behavior falls within expected ranges.
+\begin{enumerate}
+    \item \textbf{Unified Timeline}: Visual representation of the entire interview with Q\&A segments
+    \item \textbf{Synchronized Audio Timeline}: Clickable segments that show question/answer pairs with transcript
+    \item \textbf{Score Trajectory Chart}: Line graph showing relevance score progression
+    \item \textbf{Behavioral Signals Chart}: Toggleable graphs for:
+    \begin{itemize}
+        \item Vocal Energy (RMS)
+        \item Speech Rate (words per minute)
+        \item Gaze Stability (0-1 scale)
+    \end{itemize}
+    \item \textbf{Segment Details}: Expandable panels showing metrics for each speaking segment
+\end{enumerate}
 
-\textbf{Transcript Panel}: The transcript panel displays the full text of both questions and answers. Questions are shown in a distinct style, while answers are displayed with paragraph formatting. Key phrases or technical terms identified by the LLM are highlighted within the transcript. This allows recruiters to quickly scan through the content without listening to the entire recording.
+The Timeline Bar serves as the central navigation element:
 
-\textbf{Score Overlay}: At each question checkpoint, the score overlay shows the relevance score (0.0-1.0), matched keywords, and incremental verdict. Color coding (green for strong progress, yellow for adequate, red for weak) provides immediate visual feedback on candidate performance. The progression of scores across questions helps identify trends in candidate performance.
+\begin{itemize}
+    \item Horizontal bar representing full interview duration
+    \item Color-coded segments for different activities (questions, answers, silence)
+    \item clicking jumps Interactive - to that segment
+    \item Shows relevance scores at Q\&A checkpoints
+\end{itemize}
 
-The Temporal Evidence View enables recruiters to perform detailed analysis of specific moments in the interview. For example, if a candidate shows a sudden drop in relevance score, the recruiter can immediately navigate to that segment to understand what triggered the change.
+The Score Trajectory Chart displays how the candidate's relevance score evolves throughout the interview:
 
-\clearpage
+\begin{itemize}
+    \item X-axis: Question number / checkpoint
+    \item Y-axis: Relevance score (0.0-1.0)
+    \item Line connects consecutive checkpoints
+    \item Visual indicators for incremental verdicts (color-coded dots)
+\end{itemize}
+
+The Behavioral Signals Chart provides multi-series visualization:
+
+\begin{itemize}
+    \item Toggle buttons to show/hide individual metrics
+    \item Vocal Energy: Shows candidate's volume/assertiveness over time
+    \item Speech Rate: Words per minute indicating fluency
+    \item Gaze Stability: Eye contact quality throughout the interview
+\end{itemize}
+
 
 \subsection{Analytics View}
 
-The Analytics View provides aggregate analysis and high-level insights into candidate performance. This view consolidates the detailed data from the pipeline into actionable metrics and visualizations.
+The Analytics View provides aggregate analysis and high-level insights into candidate performance through various visualizations.
 
-\textbf{Overall Score Card}: The score card presents the final hiring recommendation in a prominent format. It displays the verdict (STRONG\_HIRE, HIRE, BORDERLINE, or NO\_HIRE), the confidence level (HIGH, MEDIUM, or LOW), and the overall composite score (0.0-1.0). A brief justification text explains the reasoning behind the verdict, providing transparency in the decision-making process.
+\textbf{Components:}
 
-\textbf{Competency Radar Chart}: A radar (spider) chart visualizes the five competency dimensions: technical depth, system design, production experience, communication clarity, and problem solving. Each dimension is scored on a 0.0-1.0 scale, with the chart showing the candidate's profile shape. This visualization helps identify strengths and weaknesses across different competencies at a glance. A candidate with a balanced profile will show a regular polygon, while one with specific strengths or gaps will show an irregular shape.
+\begin{enumerate}
+    \item \textbf{Question-wise Relevance Score Graph}: Bar chart showing scores for each Q\&A pair
+    \item \textbf{Question-wise Breakdown}: Detailed list of questions with scores and matched keywords
+    \item \textbf{Competency Breakdown Graph}: Radar chart showing the five competency dimensions
+    \item \textbf{Keyword Match Heatmap}: Visual representation of technical terms matched from job description
+    \item \textbf{Behavioral Distributions}: Histograms/box plots of audio and video metrics
+    \item \textbf{Performance Trajectory}: Trend analysis showing candidate performance evolution
+\end{enumerate}
 
-\textbf{Trend Line Chart}: The trend chart plots relevance scores across all questions in chronological order. This allows recruiters to observe how candidate performance evolves throughout the interview. An upward trend might indicate growing comfort or preparation, while a downward trend could signal fatigue or increasing difficulty. The chart also highlights the incremental verdicts at each checkpoint, providing context to the score changes.
+\textbf{Question-wise Relevance Score:}
 
-\textbf{Keyword Cloud}: The keyword cloud displays technical terms and skills that were matched between the candidate's responses and the job description. The size of each keyword reflects its relevance or frequency. This visualization helps quickly identify the candidate's technical strengths and areas of expertise that align with the role requirements.
+Bar chart visualization where:
+\begin{itemize}
+    \item Each bar represents one Q\&A pair
+    \item Bar height indicates relevance score (0.0-1.0)
+    \item Color coding indicates verdict strength
+    \item Hover shows question text and matched keywords
+\end{itemize}
 
-\textbf{Behavioral Summary}: The behavioral summary aggregates the video and audio metrics across all speaking segments. It presents averages and distributions for metrics like pitch, energy, speech rate, face presence, and gaze stability. Comparative indicators show whether these values are above, below, or within expected ranges. This helps assess soft skills like confidence (reflected in pitch and energy), engagement (face presence and gaze), and communication quality (speech rate and pause patterns).
+\textbf{Competency Breakdown:}
 
-\clearpage
+Radar chart with five axes:
+
+\begin{enumerate}
+    \item \textbf{Technical Depth}: Understanding of technical concepts
+    \item \textbf{System Design}: Ability to design scalable systems
+    \item \textbf{Production Experience}: Real-world deployment knowledge
+    \item \textbf{Communication Clarity}: Ability to articulate ideas
+    \item \textbf{Problem Solving}: Approach to tackling technical challenges
+\end{enumerate}
+
+The radar chart uses Chart.js:
+
+\begin{lstlisting}[style=javascriptstyle]
+const radarChart = new Chart(canvas, {
+    type: 'radar',
+    data: {
+        labels: ['Technical Depth', 'System Design', 'Production Experience', 
+                 'Communication Clarity', 'Problem Solving'],
+        datasets: [{
+            label: 'Competency',
+            data: values,
+            backgroundColor: 'rgba(56,139,253,0.15)',
+            borderColor: '#388bfd',
+            borderWidth: 2,
+            pointBackgroundColor: '#388bfd',
+        }]
+    },
+    options: {
+        scales: {
+            r: {
+                min: 0, max: 100,
+                ticks: { stepSize: 25 },
+                grid: { color: 'rgba(48,54,61,0.8)' }
+            }
+        }
+    }
+});
+\end{lstlisting}
+
+
+\textbf{Keyword Match Heatmap:}
+
+Visual display of technical terms extracted from job description that appear in candidate responses:
+
+\begin{itemize}
+    \item Grid layout with keywords as cells
+    \item Cell size indicates frequency/importance
+    \item Color intensity shows relevance to job requirements
+    \item Grouped by technical categories
+\end{itemize}
+
+\textbf{Behavioral Distributions:}
+
+Statistical distributions of behavioral metrics:
+
+\begin{itemize}
+    \item \textbf{Pitch Distribution}: Histogram of fundamental frequency values
+    \item \textbf{Energy Distribution}: Histogram of RMS energy values
+    \item \textbf{Speech Rate Distribution}: Histogram of words per minute
+    \item \textbf{Gaze Stability Distribution}: Histogram of eye contact quality scores
+    \item \textbf{Face Presence Distribution}: Percentage of frames with detected face
+\end{itemize}
+
 
 \subsection{Pipeline Execution View}
 
-The Pipeline Execution View provides transparency into the inner workings of the TIPS system. This view is particularly useful for technical users, administrators, and debugging purposes.
+The Pipeline Execution View provides transparency into the backend processing that generated the analysis results.
 
-\textbf{Execution Status}: Each of the six pipeline stages (0 through 5) is displayed with its execution status. Stages can be in one of several states: not started, in progress, completed successfully, completed with warnings, or failed. Visual indicators (icons or color coding) make it easy to identify any issues at a glance.
+\textbf{Information Displayed:}
 
-\textbf{Processing Time}: The view shows the time taken by each stage to complete. This information is valuable for performance optimization and capacity planning. The breakdown helps identify bottlenecks - for example, if Stage 4 (LLM inference) takes significantly longer than others, it indicates opportunities for optimization.
+\begin{enumerate}
+    \item \textbf{Stage Status}: Each pipeline stage with execution status
+    \item \textbf{Processing Time}: Time taken by each stage to complete
+    \item \textbf{Output Files}: List of all generated JSON files with paths and sizes
+    \item \textbf{Execution Logs}: Timestamped log entries for debugging
+    \item \textbf{Dataset Information}: Metadata about the processed interview
+\end{enumerate}
 
-\textbf{Output Files}: All generated output files are listed with their file paths and sizes. Users can download individual files or the entire output bundle. This enables detailed inspection of intermediate results and integration with other systems. The files are organized by type: timeline data, transcriptions, behavioral metrics, relevance scores, and final verdicts.
-
-\textbf{Error Logs}: Any warnings or errors encountered during processing are displayed in a scrollable log view. Entries are timestamped and categorized by severity (info, warning, error). This facilitates troubleshooting when issues occur. Common issues like low confidence in transcription, poor video quality affecting face detection, or LLM timeout errors are clearly documented.
-
-\textbf{Dashboard Implementation Technology:}
-
-The dashboard will be implemented using:
+This view is particularly useful for:
 
 \begin{itemize}
-    \item \textbf{Frontend}: React.js or Vue.js for interactive UI
-    \item \textbf{Data Visualization}: D3.js or Chart.js for graphs and charts
-    \item \textbf{Backend API}: FastAPI for serving JSON data
-    \item \textbf{Deployment}: Docker containerization for easy deployment
+    \item Technical users and administrators
+    \item Debugging processing issues
+    \item Understanding data flow
+    \item Verifying pipeline execution
 \end{itemize}
 
-The Pipeline Execution View also includes configuration settings that administrators can modify, such as the LLM model selection, processing thresholds, and output preferences. This makes the dashboard not just a viewing tool but also a control center for the TIPS system.
+
+\subsection{Q\&A Review View}
+
+The Q\&A Review View provides a detailed, text-based exploration of each question-answer pair.
+
+\textbf{Features:}
+
+\begin{enumerate}
+    \item \textbf{Question List}: Collapsible list of all Q\&A pairs
+    \item \textbf{Expanded Detail View}: When clicked, shows:
+    \begin{itemize}
+        \item Full question text
+        \item Full answer text
+        \item Relevance score with justification
+        \item Matched keywords
+        \item Competency scores for that specific answer
+        \item Incremental verdict
+    \end{itemize}
+    \item \textbf{LLM Reasoning}: Shows the LLM's assessment for each answer
+    \item \textbf{Historical Context}: Shows how previous answers influenced current assessment
+\end{enumerate}
+
+This view is designed for:
+
+\begin{itemize}
+    \item Detailed manual review of specific responses
+    \item Understanding the reasoning behind scores
+    \item Identifying areas of strength and weakness
+    \item Preparing for follow-up interviews
+\end{itemize}
 
 \clearpage
 
 % ============================================================================
-% SECTION 8: LIMITATIONS
+% SECTION 9: DASHBOARD IMPLEMENTATION DETAILS
+% ============================================================================
+
+\section{Dashboard Implementation Details}
+
+This section provides detailed technical documentation of the Dashboard implementation.
+
+\subsection{File Structure}
+
+\begin{lstlisting}[style=pystyle]
+dashboard/
+|-- index.html              # Main HTML entry point
+|-- css/
+|   |-- main.css            # Core styles
+|   |-- components.css      # Reusable UI components
+|   |-- charts.css          # Chart-specific styles
+|-- js/
+    |-- main.js             # Application entry point
+    |-- router.js           # SPA routing
+    |-- dataLoader.js       # JSON file loading
+    |-- config.js           # Configuration constants
+    |-- pages/
+        |-- hub.js          # Session Hub renderer
+        |-- temporalEvidence.js
+        |-- analytics.js
+        |-- pipelineExecution.js
+        |-- qaReview.js
+\end{lstlisting}
+
+
+\subsection{Configuration}
+
+The Dashboard uses a centralized configuration in \texttt{config.js}:
+
+\begin{lstlisting}[style=javascriptstyle]
+export const CONFIG = {
+    OUTPUT_DIR: '../backend/backend/output/',
+    FILES: {
+        timeline: 'timeline.json',
+        qa_pairs: 'qa_pairs.json',
+        checkpoints: 'candidate_score_timeline.json',
+        final_verdict: 'candidate_score_timeline.json',
+        behavior_metrics: 'candidate_behavior_metrics.json',
+        speaking_segments: 'speaking_segments.json',
+        relevance_scores: 'relevance_scores.json',
+    },
+    COMPETENCY_KEYS: [
+        { key: 'technical_depth', label: 'Technical Depth' },
+        { key: 'system_design', label: 'System Design' },
+        { key: 'production_experience', label: 'Production Experience' },
+        { key: 'communication_clarity', label: 'Communication Clarity' },
+        { key: 'problem_solving', label: 'Problem Solving' },
+    ],
+    CHART_COLORS: {
+        primary: '#388bfd',
+        success: '#3fb950',
+        warning: '#d29922',
+        danger: '#f85149',
+    }
+};
+\end{lstlisting}
+
+
+\subsection{Data Loading}
+
+The dataLoader.js module handles loading JSON files from the pipeline output directory:
+
+\begin{lstlisting}[style=javascriptstyle]
+export async function loadFromPath(path, fileConfig, onProgress) {
+    const results = {};
+    const files = Object.keys(fileConfig);
+    let loaded = 0;
+
+    for (const key of files) {
+        const filename = fileConfig[key];
+        try {
+            const response = await fetch(`${path}/${filename}`);
+            if (response.ok) {
+                results[key] = await response.json();
+            }
+        } catch (e) {
+            console.error(`Failed to load ${filename}:`, e);
+        }
+        loaded++;
+        onProgress(loaded, files.length);
+    }
+
+    return results;
+}
+\end{lstlisting}
+
+The data loader supports multiple loading modes:
+
+\begin{enumerate}
+    \item \textbf{Path Mode}: Load files from a directory path via HTTP
+    \item \textbf{Folder Picker}: User selects a folder, files are matched by name
+    \item \textbf{Individual Files}: User selects each JSON file separately
+\end{enumerate}
+
+
+\subsection{Session Data Structure}
+
+After loading, the session data is available in a unified structure:
+
+\begin{lstlisting}[style=javascriptstyle]
+const sessionData = {
+    timeline: { ... },           // from timeline.json
+    qa_pairs: { ... },           // from qa_pairs.json
+    checkpoints: [ ... ],        // from candidate_score_timeline.json
+    final_verdict: { ... },      // extracted from last checkpoint
+    behavior_metrics: { ... },  // from candidate_behavior_metrics.json
+    speaking_segments: [ ... ],  // from speaking_segments.json
+    relevance_scores: [ ... ],   // from relevance_scores.json
+    errors: { ... },             // Track any loading errors
+};
+\end{lstlisting}
+
+Helper functions provide convenient access to computed values:
+
+\begin{lstlisting}[style=javascriptstyle]
+export function totalSpeakingTime(segments) {
+    return segments
+        .filter(s => s.type === 'speaking')
+        .reduce((sum, s) => sum + (s.end_time - s.start_time), 0);
+}
+
+export function avgCompetency(checkpoints, key) {
+    if (!checkpoints.length) return 0;
+    const sum = checkpoints.reduce((acc, cp) => 
+        acc + (cp.competency_scores?.[key] || 0), 0);
+    return sum / checkpoints.length;
+}
+
+export function scoreColor(score) {
+    return score >= 0.7 ? '#3fb950' : 
+           score >= 0.4 ? '#d29922' : '#f85149';
+}
+\end{lstlisting}
+
+
+\subsection{Routing}
+
+The router.js module implements client-side SPA routing:
+
+\begin{lstlisting}[style=javascriptstyle]
+export function initRouter() {
+    window.addEventListener('hashchange', handleRoute);
+    handleRoute(); // Initial route
+}
+
+function handleRoute() {
+    const hash = window.location.hash.replace('#', '') || 'hub';
+    showPage(hash);
+}
+
+export function navigateTo(page) {
+    window.location.hash = page;
+}
+
+function showPage(pageName) {
+    // Hide all pages
+    document.querySelectorAll('.page-view').forEach(el => {
+        el.classList.remove('active');
+    });
+
+    // Show target page
+    const pageEl = document.getElementById(`page-${pageName}`);
+    if (pageEl) {
+        pageEl.classList.add('active');
+    }
+
+    // Update nav tabs
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.page === pageName);
+    });
+}
+\end{lstlisting}
+
+\clearpage
+
+% ============================================================================
+% SECTION 10: DASHBOARD PHOTO DOCUMENTATION
+% ============================================================================
+
+\section{Dashboard Photo Documentation}
+
+This section provides visual documentation of the Dashboard interface with screenshots and descriptions.
+
+
+\subsection{Load Session Modal}
+
+Figure \ref{fig:photo1} shows the Load Session modal that appears when users click the "Load Session" button in the navigation bar. This modal provides multiple ways to load interview analysis data:
+
+\begin{itemize}
+    \item \textbf{Folder Picker (Recommended)}: Browse to the output directory and select all JSON files
+    \item \textbf{URL Path}: Enter the relative path to the output directory
+    \item \textbf{Individual Files}: Select each JSON file separately
+\end{itemize}
+
+The modal displays helpful hints about where to find the output files and shows loading progress.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{photos/1.png}
+    \caption{Load Session Modal - Initial State}
+    \label{fig:photo1}
+\end{figure}
+
+\clearpage
+
+Figure \ref{fig:photo2} shows the Load Session modal after selecting a folder. The file list displays all the JSON files found in the output directory, indicating which ones matched the expected file names:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{photos/2.png}
+    \caption{Load Session Modal - Files Selected}
+    \label{fig:photo2}
+\end{figure}
+
+
+\subsection{Session Hub}
+
+Figure \ref{fig:photo3} shows the Session Hub, the main landing page of the Dashboard after loading an interview session. The key components visible are:
+
+\begin{enumerate}
+    \item \textbf{Verdict Banner}: Shows "STRONG\_HIRE" with green theme, overall score (90\%)
+    \item \textbf{Confidence Level}: "HIGH" confidence
+    \item \textbf{Statistics Cards}: Total Duration, Questions, Speaking Time, Avg Relevance
+    \item \textbf{Competency Radar Chart}: Visualizes the five competency dimensions
+    \item \textbf{Session Metadata}: Dataset ID, timebase, video FPS, frame count, sample rate
+    \item \textbf{Quick Navigation Cards}: Links to Temporal Evidence, Analytics, Pipeline Execution, and Q\&A Review
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{photos/3.png}
+    \caption{Session Hub - Main Dashboard Overview}
+    \label{fig:photo3}
+\end{figure}
+
+
+\subsection{Temporal Evidence View}
+
+Figure \ref{fig:photo4} shows the Temporal Evidence view with the interview timeline. This view provides:
+
+\begin{enumerate}
+    \item \textbf{Timeline Bar}: Horizontal bar showing Q\&A segments
+    \item \textbf{Score Overlay}: Shows relevance scores at each checkpoint
+    \item \textbf{Vertical Markers}: Indicating question boundaries
+    \item \textbf{Synchronization Controls}: Ability to play back video with transcripts
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{photos/4.png}
+    \caption{Temporal Evidence - Timeline Overview}
+    \label{fig:photo4}
+\end{figure}
+
+
+Figure \ref{fig:photo5} shows the Synchronized Audio Timeline feature. When a user clicks on a Q\&A segment, the transcript panel opens showing:
+
+\begin{enumerate}
+    \item \textbf{Question Text}: The interviewer's question
+    \item \textbf{Answer Text}: The candidate's full response
+    \item \textbf{Question Start/End Times}: Timestamps for the question
+    \item \textbf{Answer Start/End Times}: Timestamps for the answer
+    \item \textbf{Video Navigation}: Click to jump to that segment in the video
+\end{enumerate}
+
+This feature allows recruiters to quickly navigate to specific Q\&A pairs and review responses in context.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{photos/5.png}
+    \caption{Temporal Evidence - Synchronized Transcript}
+    \label{fig:photo5}
+\end{figure}
+
+
+Figure \ref{fig:photo6} shows the Score Trajectory and Behavioral Signals charts:
+
+\begin{enumerate}
+    \item \textbf{Score Trajectory Chart}: Line graph showing relevance score progression across questions
+    \item \textbf{Behavioral Signals Chart}: Multi-series graph with toggles for:
+    \begin{itemize}
+        \item Vocal Energy (RMS)
+        \item Speech Rate (words per minute)
+        \item Gaze Stability (0-1 scale)
+    \end{itemize}
+    \item \textbf{Toggle Buttons}: Enable/disable individual signal series
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{photos/6.png}
+    \caption{Temporal Evidence - Score Trajectory and Behavioral Signals}
+    \label{fig:photo6}
+\end{figure}
+
+
+\subsection{Analytics View}
+
+Figure \ref{fig:photo7} shows the Analytics view with the Question-wise Relevance Score graph:
+
+\begin{enumerate}
+    \item \textbf{Bar Chart}: Each bar represents a Q\&A pair
+    \item \textbf{Score Labels}: Shows the relevance score for each question
+    \item \textbf{Color Coding}: Visual indication of score strength
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{photos/7.png}
+    \caption{Analytics - Question-wise Relevance Score}
+    \label{fig:photo7}
+\end{figure}
+
+
+Figure \ref{fig:photo8} shows the Question-wise Breakdown section:
+
+\begin{enumerate}
+    \item \textbf{Question List}: Expandable list of all Q\&A pairs
+    \item \textbf{Per-Question Details}: Score, matched keywords, and verdict for each question
+    \item \textbf{Expand/Collapse}: Click to see full answer text and reasoning
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{photos/8.png}
+    \caption{Analytics - Question-wise Breakdown}
+    \label{fig:photo8}
+\end{figure}
+
+
+Figure \ref{fig:photo9} shows the Competency Breakdown radar chart:
+
+\begin{enumerate}
+    \item \textbf{Radar Chart}: Five-axis visualization of competency dimensions
+    \begin{itemize}
+        \item Technical Depth
+        \item System Design
+        \item Production Experience
+        \item Communication Clarity
+        \item Problem Solving
+    \end{itemize}
+    \item \textbf{Percentage Scores}: Values for each competency (e.g., 82\%, 73\%, 92\%)
+    \item \textbf{Shape Analysis}: The shape of the radar indicates strengths and weaknesses
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{photos/9.png}
+    \caption{Analytics - Competency Breakdown Radar Chart}
+    \label{fig:photo9}
+\end{figure}
+
+
+Figure \ref{fig:photo10} shows the Keyword Match Heatmap:
+
+\begin{enumerate}
+    \item \textbf{Keyword Grid}: Visual display of technical terms
+    \item \textbf{Category Grouping}: Keywords organized by type
+    \item \textbf{Match Count}: Numbers indicating frequency of occurrence
+\end{enumerate}
+
+This visualization helps quickly identify the candidate's technical strengths and alignment with job requirements.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{photos/10.png}
+    \caption{Analytics - Keyword Match Heatmap}
+    \label{fig:photo10}
+\end{figure}
+
+
+Figure \ref{fig:photo11} shows the Behavioral Distributions:
+
+\begin{enumerate}
+    \item \textbf{Audio Metrics}: Pitch, Energy, Speech Rate distributions
+    \item \textbf{Video Metrics}: Face Presence, Gaze Stability distributions
+    \item \textbf{Histograms}: Visual representation of metric value distributions
+    \item \textbf{Statistics}: Mean, median, and range values
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{photos/11.png}
+    \caption{Analytics - Behavioral Distributions}
+    \label{fig:photo11}
+\end{figure}
+
+
+Figure \ref{fig:photo12} shows the Performance Trajectory:
+
+\begin{enumerate}
+    \item \textbf{Trend Analysis}: Visual representation of how performance evolved
+    \item \textbf{Early vs Late Questions}: Comparison of performance at different interview stages
+    \item \textbf{Improvement Indicators}: Shows if candidate improved, stayed consistent, or declined
+\end{enumerate}
+
+This view helps identify patterns in candidate performance over the course of the interview.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{photos/12.png}
+    \caption{Analytics - Performance Trajectory}
+    \label{fig:photo12}
+\end{figure}
+
+
+\subsection{Pipeline Execution View}
+
+Figure \ref{fig:photo13} shows the Pipeline Execution view:
+
+\begin{enumerate}
+    \item \textbf{Stage Status}: Read-only information about each pipeline stage
+    \item \textbf{Processing Metadata}: Dataset ID, processing timestamps
+    \item \textbf{Output Summary}: Statistics about the generated output files
+\end{enumerate}
+
+This view provides transparency into how the analysis was generated and helps with debugging if needed.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{photos/13.png}
+    \caption{Pipeline Execution - Processing Status}
+    \label{fig:photo13}
+\end{figure}
+
+
+\subsection{Q\&A Review View}
+
+Figure \ref{fig:photo14} shows the Q\&A Review overview:
+
+\begin{enumerate}
+    \item \textbf{Question List}: Scrollable list of all Q\&A pairs
+    \item \textbf{Score Summary}: Quick view of scores for each question
+    \item \textbf{Verdict Indicators}: Color-coded status for each response
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{photos/14.png}
+    \caption{Q\&A Review - Overview}
+    \label{fig:photo14}
+\end{figure}
+
+
+Figure \ref{fig:photo15} shows the expanded Q\&A pair detail view:
+
+\begin{enumerate}
+    \item \textbf{Full Question Text}: Complete question from interviewer
+    \item \textbf{Full Answer Text}: Complete candidate response
+    \item \textbf{Relevance Score}: Numerical score with justification
+    \item \textbf{Matched Keywords}: Technical terms identified in the answer
+    \item \textbf{Competency Scores}: Five-dimensional scoring for this specific answer
+    \item \textbf{Incremental Verdict}: Assessment at this checkpoint
+    \item \textbf{LLM Reasoning}: Explanation of the scoring
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{photos/15.png}
+    \caption{Q\&A Review - Expanded Pair Details}
+    \label{fig:photo15}
+\end{figure}
+
+\clearpage
+
+% ============================================================================
+% SECTION 11: INTERVIEW RECORDING UI PHOTO
+% ============================================================================
+
+\section{Interview Recording UI Documentation}
+
+This section provides visual documentation of the Interview Recording UI.
+
+Figure \ref{fig:photo16} shows the Interview Recording UI front page:
+
+\begin{enumerate}
+    \item \textbf{Room Creation}: Interface for creating a new interview room
+    \item \textbf{Room ID Display}: Shows the room ID to share with the candidate
+    \item \textbf{Connection Status}: Visual indication of participant connections
+    \item \textbf{Video Preview}: Local video preview for both interviewer and candidate
+    \item \textbf{Recording Controls}: Start/Stop recording buttons
+\end{enumerate}
+
+The Interview Recording UI provides a simple, intuitive interface for conducting video interviews with synchronized recording capabilities.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{photos/16.png}
+    \caption{Interview Recording UI - Main Interface}
+    \label{fig:photo16}
+\end{figure}
+
+\clearpage
+
+% ============================================================================
+% SECTION 12: LIMITATIONS
 % ============================================================================
 
 \section{Limitations}
 
-The current implementation of TIPS has several limitations that should be acknowledged:
-
-\subsection{Processing Model Limitations}
+The current implementation of TIPS has several limitations:
 
 \begin{enumerate}
-    \item \textbf{Batch Processing Only}: The system processes recorded interviews only, not real-time streams. This means analysis is not available immediately after the interview.
+    \item \textbf{Batch Processing}: The system processes recorded interviews only; analysis is available after post-processing completes.
     
-    \item \textbf{No Live Feedback}: Candidates do not receive immediate feedback during the interview.
+    \item \textbf{Language Support}: Optimized for English-language interviews only.
     
-    \item \textbf{Processing Time}: Full pipeline execution takes several minutes due to LLM inference requirements.
-\end{enumerate}
-
-\subsection{Technical Limitations}
-
-\begin{enumerate}
-    \item \textbf{Language Support}: The system is optimized for English-language interviews.
+    \item \textbf{Video Quality}: Poor lighting or camera angles may affect face detection and pose estimation accuracy.
     
-    \item \textbf{Video Quality Dependency}: Poor lighting or camera angles may affect face detection and pose estimation accuracy.
+    \item \textbf{Audio Quality}: Background noise impacts transcription accuracy and VAD performance.
     
-    \item \textbf{Audio Quality}: Background noise can impact transcription accuracy and VAD performance.
+    \item \textbf{LLM Constraints}: The quantized model may not capture all nuances; token limits may require truncating long answers.
     
-    \item \textbf{LLM Constraints}: The quantized model may not capture all nuances that a human interviewer would notice.
-\end{enumerate}
-
-\subsection{Evaluation Limitations}
-
-\begin{enumerate}
-    \item \textbf{Semantic Understanding}: LLMs, despite their capabilities, may not fully understand domain-specific technical concepts.
+    \item \textbf{Bias}: The scoring system reflects biases present in the LLM training data and job description.
     
-    \item \textbf{Bias}: The scoring system reflects the biases present in the LLM training data and job description.
-    
-    \item \textbf{Context Limitations}: The model has token limits that may require truncating long answers.
-\end{enumerate}
-
-\textbf{Additional Limitations:}
-
-\begin{enumerate}
     \item \textbf{Cross-Domain Generalization}: The scoring model may not generalize well across different job roles without fine-tuning.
     
-    \item \textbf{Audio-Only for Interviewer}: The interviewer audio is not analyzed for behavioral cues, only transcription.
+    \item \textbf{Interviewer Analysis}: Only transcription is performed; interviewer audio is not analyzed for behavioral cues.
     
-    \item \textbf{Single Camera}: Only single-view video analysis is supported; multi-angle recording is not handled.
+    \item \textbf{Single Camera}: Only single-view video analysis is supported.
     
-    \item \textbf{File Format Restrictions}: Only MP4 video and WAV audio formats are officially supported.
+    \item \textbf{Browser Compatibility}: Interview Recording UI requires WebRTC-enabled browsers.
+    
+    \item \textbf{Dashboard Deployment}: Requires a web server to serve static files and load JSON outputs.
 \end{enumerate}
 
 \clearpage
 
 % ============================================================================
-% SECTION 9: SCOPE FOR FUTURE ENHANCEMENT
+% SECTION 13: SCOPE FOR FUTURE ENHANCEMENT
 % ============================================================================
 
 \section{Scope for Future Enhancement}
 
 Several enhancements can be made to improve the TIPS system:
-
-\subsection{Dashboard Implementation}
-
-\begin{enumerate}
-    \item Implement the complete dashboard with all three views
-    \item Add interactive elements for exploring the timeline
-    \item Include export functionality (PDF reports, CSV data)
-    \item Add multi-language support for dashboard interfaces
-\end{enumerate}
 
 \subsection{Enhanced Analysis}
 
@@ -1719,6 +2673,19 @@ Several enhancements can be made to improve the TIPS system:
     \item Implement more sophisticated behavioral metrics
     \item Add support for multi-party interviews (panel discussions)
     \item Integrate additional LLM models for specialized domains
+    \item Implement multi-language support for transcription and evaluation
+    \item Add sentiment analysis for emotional tone assessment
+\end{enumerate}
+
+\subsection{Dashboard Enhancements}
+
+\begin{enumerate}
+    \item Add interactive elements for exploring the timeline
+    \item Include export functionality (PDF reports, CSV data)
+    \item Add multi-language support for dashboard interfaces
+    \item Implement comparison views for multiple candidates
+    \item Add candidate ranking across multiple interviews
+    \item Implement role-based access controls
 \end{enumerate}
 
 \subsection{Infrastructure}
@@ -1728,12 +2695,14 @@ Several enhancements can be made to improve the TIPS system:
     \item Add API endpoints for integration with existing HR systems
     \item Implement caching for frequently processed profiles
     \item Add support for distributed processing
+    \item Create Docker Compose setup for easy deployment
+    \item Implement authentication and authorization
 \end{enumerate}
 
 \clearpage
 
 % ============================================================================
-% SECTION 10: CONCLUSION
+% SECTION 14: CONCLUSION
 % ============================================================================
 
 \section{Conclusion}
@@ -1749,10 +2718,14 @@ Key achievements of this project include:
     \item Integration of state-of-the-art speech recognition (Faster-Whisper) and LLM technology (Qwen2.5-3B-Instruct)
     \item Design of a parallel processing architecture that maximizes throughput
     \item Creation of comprehensive JSON output schemas for analysis results
-    \item Planning for dashboard visualization to make results accessible
+    \item Implementation of a fully functional Dashboard with five interactive views
+    \item Development of a WebRTC-based Interview Recording UI
+    \item Integration of all components into a unified system
 \end{enumerate}
 
-The system's design as a backend addon ensures compatibility with existing interview platforms, allowing organizations to leverage TIPS's capabilities without replacing their current infrastructure.
+The system's design as a backend addon ensures compatibility with existing interview platforms, allowing organizations to leverage TIPS's analytical capabilities without replacing their current infrastructure. The Interview Recording UI provides a complete solution for conducting and recording interviews in the required format.
+
+The Dashboard transforms complex analysis results into intuitive visualizations, enabling hiring teams to quickly assess candidates and drill down into specific details when needed. The five different views (Hub, Temporal Evidence, Analytics, Pipeline Execution, Q\&A Review) cater to different user needs and levels of technical expertise.
 
 While the current implementation has limitations—particularly the batch processing model and dependency on English-language processing—the foundation is solid for future enhancements. The modular architecture allows for individual components to be upgraded as technology advances.
 
@@ -1789,6 +2762,8 @@ In conclusion, TIPS demonstrates the potential of combining traditional signal p
     
     \item BitsAndBytes: Efficient quantization for LLMs. \url{https://github.com/TimDettmers/bitsandbytes}
     
+    \item Chart.js: Simple yet flexible JavaScript charting library. \url{https://www.chartjs.org/}
+    
     \item DAF: A Framework for Defining Automated Interview Systems. ACM Computing Surveys.
     
     \item Behavioral Signal Processing: Deriving Behavioral Profiles from Audio-Video Data. IEEE Signal Processing Magazine.
@@ -1802,10 +2777,9 @@ In conclusion, TIPS demonstrates the potential of combining traditional signal p
 \textbf{Signature of the Guide with Date}
 \end{flushright}
 
-\clearpage
 
 % ============================================================================
-% END OF PHASE 3
+% END OF DOCUMENT
 % ============================================================================
 
 \end{document}
