@@ -163,7 +163,7 @@ def score_and_assess(
     # Build history summary
     history_summary = build_qa_summary(qa_history)
     
-    prompt = f"""You are evaluating a Machine Learning Engineer interview progressively.
+    prompt = f"""You are evaluating a candidate interview for the role defined in the provided Job Description.
 
 Job Description:
 {jd_text}
@@ -302,10 +302,10 @@ def get_final_verdict(jd_text: str, timeline: list):
     final_checkpoint = timeline[-1]
     final_scores = final_checkpoint['competency_scores']
     
-    prompt = f"""You are making a final hiring decision for a Machine Learning Engineer position.
+    prompt = f"""You are making a final hiring decision strictly based on the provided Job Description and interview evidence.
 
 Job Description:
-{jd_text[:1000]}
+{jd_text}
 
 Complete Interview Summary ({len(timeline)} questions):
 {summary_text}

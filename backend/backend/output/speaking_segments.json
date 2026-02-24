@@ -1,625 +1,766 @@
 {
-  "dataset_id": "1",
+  "dataset_id": "2",
   "segments": [
     {
       "segment_id": "SEG1",
       "type": "speaking",
-      "start_time": 1.65,
-      "end_time": 1.83,
-      "duration_sec": 0.18,
+      "start_time": 4.08,
+      "end_time": 4.17,
+      "duration_sec": 0.09,
       "video_frames": [
-        40
+        100
       ]
     },
     {
       "segment_id": "SEG2",
       "type": "speaking",
-      "start_time": 6.39,
-      "end_time": 6.69,
-      "duration_sec": 0.3,
+      "start_time": 4.44,
+      "end_time": 8.49,
+      "duration_sec": 4.05,
       "video_frames": [
-        160
+        110,
+        120,
+        130,
+        140,
+        150,
+        160,
+        170,
+        180,
+        190,
+        200
       ]
     },
     {
       "segment_id": "SEG3",
       "type": "speaking",
-      "start_time": 20.34,
-      "end_time": 25.59,
-      "duration_sec": 5.25,
+      "start_time": 8.94,
+      "end_time": 12.48,
+      "duration_sec": 3.54,
       "video_frames": [
-        490,
-        500,
-        510,
-        520,
-        530,
-        540,
-        550,
-        560,
-        570,
-        580,
-        590,
-        600,
-        610
+        220,
+        230,
+        240,
+        250,
+        260,
+        270,
+        280,
+        290
       ]
     },
     {
       "segment_id": "SEG4",
       "type": "speaking",
-      "start_time": 26.07,
-      "end_time": 29.01,
-      "duration_sec": 2.94,
+      "start_time": 12.66,
+      "end_time": 15.93,
+      "duration_sec": 3.27,
       "video_frames": [
-        630,
-        640,
-        650,
-        660,
-        670,
-        680,
-        690
+        310,
+        320,
+        330,
+        340,
+        350,
+        360,
+        370,
+        380
       ]
     },
     {
       "segment_id": "SEG5",
       "type": "speaking",
-      "start_time": 29.07,
-      "end_time": 30.96,
-      "duration_sec": 1.89,
+      "start_time": 16.23,
+      "end_time": 16.41,
+      "duration_sec": 0.18,
       "video_frames": [
-        700,
-        710,
+        390
+      ]
+    },
+    {
+      "segment_id": "SEG6",
+      "type": "speaking",
+      "start_time": 16.65,
+      "end_time": 19.95,
+      "duration_sec": 3.3,
+      "video_frames": [
+        400,
+        410,
+        420,
+        430,
+        440,
+        450,
+        460,
+        470
+      ]
+    },
+    {
+      "segment_id": "SEG7",
+      "type": "speaking",
+      "start_time": 19.98,
+      "end_time": 21.42,
+      "duration_sec": 1.44,
+      "video_frames": [
+        480,
+        490,
+        500,
+        510
+      ]
+    },
+    {
+      "segment_id": "SEG8",
+      "type": "speaking",
+      "start_time": 21.6,
+      "end_time": 22.26,
+      "duration_sec": 0.66,
+      "video_frames": [
+        520,
+        530
+      ]
+    },
+    {
+      "segment_id": "SEG9",
+      "type": "speaking",
+      "start_time": 22.86,
+      "end_time": 23.01,
+      "duration_sec": 0.15,
+      "video_frames": [
+        550
+      ]
+    },
+    {
+      "segment_id": "SEG10",
+      "type": "speaking",
+      "start_time": 25.74,
+      "end_time": 25.86,
+      "duration_sec": 0.12,
+      "video_frames": [
+        620
+      ]
+    },
+    {
+      "segment_id": "SEG11",
+      "type": "speaking",
+      "start_time": 26.16,
+      "end_time": 26.25,
+      "duration_sec": 0.09,
+      "video_frames": [
+        630
+      ]
+    },
+    {
+      "segment_id": "SEG12",
+      "type": "speaking",
+      "start_time": 26.46,
+      "end_time": 26.67,
+      "duration_sec": 0.21,
+      "video_frames": [
+        640
+      ]
+    },
+    {
+      "segment_id": "SEG13",
+      "type": "speaking",
+      "start_time": 28.89,
+      "end_time": 29.22,
+      "duration_sec": 0.33,
+      "video_frames": [
+        700
+      ]
+    },
+    {
+      "segment_id": "SEG14",
+      "type": "speaking",
+      "start_time": 29.61,
+      "end_time": 30.87,
+      "duration_sec": 1.26,
+      "video_frames": [
         720,
         730,
         740
       ]
     },
     {
-      "segment_id": "SEG6",
+      "segment_id": "SEG15",
       "type": "speaking",
-      "start_time": 31.38,
-      "end_time": 32.97,
-      "duration_sec": 1.59,
+      "start_time": 30.99,
+      "end_time": 34.44,
+      "duration_sec": 3.45,
       "video_frames": [
+        750,
         760,
         770,
         780,
-        790
-      ]
-    },
-    {
-      "segment_id": "SEG7",
-      "type": "speaking",
-      "start_time": 33.03,
-      "end_time": 33.87,
-      "duration_sec": 0.84,
-      "video_frames": [
+        790,
         800,
-        810
+        810,
+        820
       ]
     },
     {
-      "segment_id": "SEG8",
+      "segment_id": "SEG16",
       "type": "speaking",
-      "start_time": 33.9,
-      "end_time": 35.22,
-      "duration_sec": 1.32,
-      "video_frames": [
-        820,
-        830,
-        840
-      ]
-    },
-    {
-      "segment_id": "SEG9",
-      "type": "speaking",
-      "start_time": 35.4,
-      "end_time": 35.94,
-      "duration_sec": 0.54,
+      "start_time": 35.07,
+      "end_time": 38.01,
+      "duration_sec": 2.94,
       "video_frames": [
         850,
-        860
-      ]
-    },
-    {
-      "segment_id": "SEG10",
-      "type": "speaking",
-      "start_time": 36.24,
-      "end_time": 37.41,
-      "duration_sec": 1.17,
-      "video_frames": [
+        860,
         870,
         880,
-        890
+        890,
+        900,
+        910
       ]
     },
     {
-      "segment_id": "SEG11",
+      "segment_id": "SEG17",
       "type": "speaking",
-      "start_time": 38.07,
-      "end_time": 39.48,
-      "duration_sec": 1.41,
+      "start_time": 38.16,
+      "end_time": 43.08,
+      "duration_sec": 4.92,
       "video_frames": [
         920,
         930,
-        940
-      ]
-    },
-    {
-      "segment_id": "SEG12",
-      "type": "speaking",
-      "start_time": 40.05,
-      "end_time": 40.95,
-      "duration_sec": 0.9,
-      "video_frames": [
+        940,
+        950,
+        960,
         970,
-        980
-      ]
-    },
-    {
-      "segment_id": "SEG13",
-      "type": "speaking",
-      "start_time": 41.94,
-      "end_time": 42.96,
-      "duration_sec": 1.02,
-      "video_frames": [
+        980,
+        990,
+        1000,
         1010,
         1020,
         1030
       ]
     },
     {
-      "segment_id": "SEG14",
+      "segment_id": "SEG18",
       "type": "speaking",
-      "start_time": 42.99,
-      "end_time": 43.17,
-      "duration_sec": 0.18,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG15",
-      "type": "speaking",
-      "start_time": 43.29,
-      "end_time": 45.96,
-      "duration_sec": 2.67,
+      "start_time": 43.8,
+      "end_time": 47.04,
+      "duration_sec": 3.24,
       "video_frames": [
-        1040,
-        1050,
         1060,
         1070,
         1080,
         1090,
-        1100
-      ]
-    },
-    {
-      "segment_id": "SEG16",
-      "type": "speaking",
-      "start_time": 46.29,
-      "end_time": 47.85,
-      "duration_sec": 1.56,
-      "video_frames": [
-        1120,
-        1130,
-        1140
-      ]
-    },
-    {
-      "segment_id": "SEG17",
-      "type": "speaking",
-      "start_time": 47.88,
-      "end_time": 49.47,
-      "duration_sec": 1.59,
-      "video_frames": [
-        1150,
-        1160,
-        1170,
-        1180
-      ]
-    },
-    {
-      "segment_id": "SEG18",
-      "type": "speaking",
-      "start_time": 49.92,
-      "end_time": 52.08,
-      "duration_sec": 2.16,
-      "video_frames": [
-        1200,
-        1210,
-        1220,
-        1230,
-        1240
+        1100,
+        1110,
+        1120
       ]
     },
     {
       "segment_id": "SEG19",
       "type": "speaking",
-      "start_time": 52.14,
-      "end_time": 54.27,
-      "duration_sec": 2.13,
+      "start_time": 47.25,
+      "end_time": 51.03,
+      "duration_sec": 3.78,
       "video_frames": [
-        1260,
-        1270,
-        1280,
-        1290,
-        1300
+        1140,
+        1150,
+        1160,
+        1170,
+        1180,
+        1190,
+        1200,
+        1210,
+        1220
       ]
     },
     {
       "segment_id": "SEG20",
       "type": "speaking",
-      "start_time": 54.63,
-      "end_time": 58.53,
-      "duration_sec": 3.9,
-      "video_frames": [
-        1320,
-        1330,
-        1340,
-        1350,
-        1360,
-        1370,
-        1380,
-        1390,
-        1400
-      ]
+      "start_time": 51.45,
+      "end_time": 51.57,
+      "duration_sec": 0.12,
+      "video_frames": []
     },
     {
       "segment_id": "SEG21",
       "type": "speaking",
-      "start_time": 58.59,
-      "end_time": 58.74,
-      "duration_sec": 0.15,
-      "video_frames": []
+      "start_time": 51.69,
+      "end_time": 56.46,
+      "duration_sec": 4.77,
+      "video_frames": [
+        1250,
+        1260,
+        1270,
+        1280,
+        1290,
+        1300,
+        1310,
+        1320,
+        1330,
+        1340,
+        1350
+      ]
     },
     {
       "segment_id": "SEG22",
       "type": "speaking",
-      "start_time": 68.82,
-      "end_time": 69.39,
-      "duration_sec": 0.57,
-      "video_frames": [
-        1660
-      ]
+      "start_time": 57.66,
+      "end_time": 57.84,
+      "duration_sec": 0.18,
+      "video_frames": []
     },
     {
       "segment_id": "SEG23",
       "type": "speaking",
-      "start_time": 70.38,
-      "end_time": 71.07,
-      "duration_sec": 0.69,
+      "start_time": 58.2,
+      "end_time": 58.47,
+      "duration_sec": 0.27,
       "video_frames": [
-        1690,
-        1700
+        1400
       ]
     },
     {
       "segment_id": "SEG24",
       "type": "speaking",
-      "start_time": 71.34,
-      "end_time": 72.84,
-      "duration_sec": 1.5,
-      "video_frames": [
-        1720,
-        1730,
-        1740
-      ]
+      "start_time": 58.89,
+      "end_time": 58.98,
+      "duration_sec": 0.09,
+      "video_frames": []
     },
     {
       "segment_id": "SEG25",
       "type": "speaking",
-      "start_time": 73.26,
-      "end_time": 74.37,
-      "duration_sec": 1.11,
-      "video_frames": [
-        1760,
-        1770,
-        1780
-      ]
+      "start_time": 59.19,
+      "end_time": 59.34,
+      "duration_sec": 0.15,
+      "video_frames": []
     },
     {
       "segment_id": "SEG26",
       "type": "speaking",
-      "start_time": 74.43,
-      "end_time": 75.27,
-      "duration_sec": 0.84,
-      "video_frames": [
-        1790,
-        1800
-      ]
+      "start_time": 59.61,
+      "end_time": 59.7,
+      "duration_sec": 0.09,
+      "video_frames": []
     },
     {
       "segment_id": "SEG27",
       "type": "speaking",
-      "start_time": 75.78,
-      "end_time": 78.84,
-      "duration_sec": 3.06,
-      "video_frames": [
-        1820,
-        1830,
-        1840,
-        1850,
-        1860,
-        1870,
-        1880,
-        1890
-      ]
+      "start_time": 61.05,
+      "end_time": 61.23,
+      "duration_sec": 0.18,
+      "video_frames": []
     },
     {
       "segment_id": "SEG28",
       "type": "speaking",
-      "start_time": 78.9,
-      "end_time": 79.53,
-      "duration_sec": 0.63,
+      "start_time": 61.56,
+      "end_time": 61.71,
+      "duration_sec": 0.15,
       "video_frames": [
-        1900
+        1480
       ]
     },
     {
       "segment_id": "SEG29",
       "type": "speaking",
-      "start_time": 79.86,
-      "end_time": 81.42,
-      "duration_sec": 1.56,
-      "video_frames": [
-        1920,
-        1930,
-        1940,
-        1950
-      ]
-    },
-    {
-      "segment_id": "SEG30",
-      "type": "speaking",
-      "start_time": 81.72,
-      "end_time": 81.81,
+      "start_time": 62.55,
+      "end_time": 62.64,
       "duration_sec": 0.09,
       "video_frames": []
     },
     {
+      "segment_id": "SEG30",
+      "type": "speaking",
+      "start_time": 62.91,
+      "end_time": 63.15,
+      "duration_sec": 0.24,
+      "video_frames": [
+        1510
+      ]
+    },
+    {
       "segment_id": "SEG31",
       "type": "speaking",
-      "start_time": 82.29,
-      "end_time": 82.92,
-      "duration_sec": 0.63,
-      "video_frames": [
-        1980,
-        1990
-      ]
+      "start_time": 63.39,
+      "end_time": 63.63,
+      "duration_sec": 0.24,
+      "video_frames": []
     },
     {
       "segment_id": "SEG32",
       "type": "speaking",
-      "start_time": 83.1,
-      "end_time": 83.55,
-      "duration_sec": 0.45,
+      "start_time": 63.66,
+      "end_time": 69.54,
+      "duration_sec": 5.88,
       "video_frames": [
-        2000
+        1530,
+        1540,
+        1550,
+        1560,
+        1570,
+        1580,
+        1590,
+        1600,
+        1610,
+        1620,
+        1630,
+        1640,
+        1650,
+        1660
       ]
     },
     {
       "segment_id": "SEG33",
       "type": "speaking",
-      "start_time": 84.57,
-      "end_time": 88.47,
-      "duration_sec": 3.9,
+      "start_time": 70.29,
+      "end_time": 72.33,
+      "duration_sec": 2.04,
       "video_frames": [
-        2030,
-        2040,
-        2050,
-        2060,
-        2070,
-        2080,
-        2090,
-        2100,
-        2110,
-        2120
+        1690,
+        1700,
+        1710,
+        1720,
+        1730
       ]
     },
     {
       "segment_id": "SEG34",
       "type": "speaking",
-      "start_time": 89.04,
-      "end_time": 89.49,
-      "duration_sec": 0.45,
+      "start_time": 72.51,
+      "end_time": 76.65,
+      "duration_sec": 4.14,
       "video_frames": [
-        2140
+        1750,
+        1760,
+        1770,
+        1780,
+        1790,
+        1800,
+        1810,
+        1820,
+        1830
       ]
     },
     {
       "segment_id": "SEG35",
       "type": "speaking",
-      "start_time": 89.82,
-      "end_time": 92.07,
-      "duration_sec": 2.25,
+      "start_time": 77.01,
+      "end_time": 78.51,
+      "duration_sec": 1.5,
       "video_frames": [
-        2160,
-        2170,
-        2180,
-        2190,
-        2200
+        1850,
+        1860,
+        1870,
+        1880
       ]
     },
     {
       "segment_id": "SEG36",
       "type": "speaking",
-      "start_time": 92.1,
-      "end_time": 92.64,
-      "duration_sec": 0.54,
+      "start_time": 78.54,
+      "end_time": 79.8,
+      "duration_sec": 1.26,
       "video_frames": [
-        2220
+        1890,
+        1900,
+        1910
       ]
     },
     {
       "segment_id": "SEG37",
       "type": "speaking",
-      "start_time": 92.67,
-      "end_time": 93.99,
-      "duration_sec": 1.32,
+      "start_time": 79.92,
+      "end_time": 81.18,
+      "duration_sec": 1.26,
       "video_frames": [
-        2230,
-        2240,
-        2250
+        1920,
+        1930,
+        1940
       ]
     },
     {
       "segment_id": "SEG38",
       "type": "speaking",
-      "start_time": 94.35,
-      "end_time": 95.82,
-      "duration_sec": 1.47,
+      "start_time": 81.21,
+      "end_time": 83.4,
+      "duration_sec": 2.19,
       "video_frames": [
-        2270,
-        2280,
-        2290
+        1950,
+        1960,
+        1970,
+        1980,
+        1990,
+        2000
       ]
     },
     {
       "segment_id": "SEG39",
       "type": "speaking",
-      "start_time": 95.85,
-      "end_time": 96.57,
-      "duration_sec": 0.72,
-      "video_frames": [
-        2310
-      ]
+      "start_time": 87.18,
+      "end_time": 87.33,
+      "duration_sec": 0.15,
+      "video_frames": []
     },
     {
       "segment_id": "SEG40",
       "type": "speaking",
-      "start_time": 96.66,
-      "end_time": 97.17,
-      "duration_sec": 0.51,
-      "video_frames": [
-        2320,
-        2330
-      ]
+      "start_time": 88.38,
+      "end_time": 88.47,
+      "duration_sec": 0.09,
+      "video_frames": []
     },
     {
       "segment_id": "SEG41",
       "type": "speaking",
-      "start_time": 97.26,
-      "end_time": 99.36,
-      "duration_sec": 2.1,
-      "video_frames": [
-        2340,
-        2350,
-        2360,
-        2370,
-        2380
-      ]
+      "start_time": 89.01,
+      "end_time": 89.1,
+      "duration_sec": 0.09,
+      "video_frames": []
     },
     {
       "segment_id": "SEG42",
       "type": "speaking",
-      "start_time": 100.02,
-      "end_time": 101.04,
-      "duration_sec": 1.02,
+      "start_time": 89.16,
+      "end_time": 89.46,
+      "duration_sec": 0.3,
       "video_frames": [
-        2410,
-        2420
+        2140
       ]
     },
     {
       "segment_id": "SEG43",
       "type": "speaking",
-      "start_time": 101.1,
-      "end_time": 101.52,
-      "duration_sec": 0.42,
+      "start_time": 89.55,
+      "end_time": 96.15,
+      "duration_sec": 6.6,
       "video_frames": [
-        2430
+        2150,
+        2160,
+        2170,
+        2180,
+        2190,
+        2200,
+        2210,
+        2220,
+        2230,
+        2240,
+        2250,
+        2260,
+        2270,
+        2280,
+        2290,
+        2300
       ]
     },
     {
       "segment_id": "SEG44",
       "type": "speaking",
-      "start_time": 104.7,
-      "end_time": 104.79,
-      "duration_sec": 0.09,
-      "video_frames": []
+      "start_time": 96.36,
+      "end_time": 97.8,
+      "duration_sec": 1.44,
+      "video_frames": [
+        2320,
+        2330,
+        2340
+      ]
     },
     {
       "segment_id": "SEG45",
       "type": "speaking",
-      "start_time": 107.97,
-      "end_time": 108.06,
-      "duration_sec": 0.09,
-      "video_frames": []
+      "start_time": 98.01,
+      "end_time": 99.0,
+      "duration_sec": 0.99,
+      "video_frames": [
+        2360,
+        2370
+      ]
     },
     {
       "segment_id": "SEG46",
       "type": "speaking",
-      "start_time": 108.24,
-      "end_time": 108.96,
-      "duration_sec": 0.72,
+      "start_time": 99.03,
+      "end_time": 103.29,
+      "duration_sec": 4.26,
       "video_frames": [
-        2600,
-        2610
+        2380,
+        2390,
+        2400,
+        2410,
+        2420,
+        2430,
+        2440,
+        2450,
+        2460,
+        2470
       ]
     },
     {
       "segment_id": "SEG47",
       "type": "speaking",
-      "start_time": 109.8,
-      "end_time": 111.54,
-      "duration_sec": 1.74,
+      "start_time": 103.59,
+      "end_time": 107.97,
+      "duration_sec": 4.38,
       "video_frames": [
-        2640,
-        2650,
-        2660,
-        2670
+        2490,
+        2500,
+        2510,
+        2520,
+        2530,
+        2540,
+        2550,
+        2560,
+        2570,
+        2580,
+        2590
       ]
     },
     {
       "segment_id": "SEG48",
       "type": "speaking",
-      "start_time": 111.63,
-      "end_time": 112.41,
-      "duration_sec": 0.78,
+      "start_time": 110.01,
+      "end_time": 110.1,
+      "duration_sec": 0.09,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG49",
+      "type": "speaking",
+      "start_time": 110.43,
+      "end_time": 112.11,
+      "duration_sec": 1.68,
       "video_frames": [
+        2660,
+        2670,
         2680,
         2690
       ]
     },
     {
-      "segment_id": "SEG49",
-      "type": "speaking",
-      "start_time": 112.89,
-      "end_time": 115.11,
-      "duration_sec": 2.22,
-      "video_frames": [
-        2710,
-        2720,
-        2730,
-        2740,
-        2750,
-        2760
-      ]
-    },
-    {
       "segment_id": "SEG50",
       "type": "speaking",
-      "start_time": 115.2,
-      "end_time": 116.64,
-      "duration_sec": 1.44,
-      "video_frames": [
-        2770,
-        2780,
-        2790
-      ]
+      "start_time": 112.14,
+      "end_time": 112.23,
+      "duration_sec": 0.09,
+      "video_frames": []
     },
     {
       "segment_id": "SEG51",
       "type": "speaking",
-      "start_time": 116.85,
-      "end_time": 117.0,
-      "duration_sec": 0.15,
+      "start_time": 112.56,
+      "end_time": 112.8,
+      "duration_sec": 0.24,
       "video_frames": []
     },
     {
       "segment_id": "SEG52",
       "type": "speaking",
-      "start_time": 117.06,
-      "end_time": 120.27,
-      "duration_sec": 3.21,
+      "start_time": 112.89,
+      "end_time": 112.98,
+      "duration_sec": 0.09,
+      "video_frames": [
+        2710
+      ]
+    },
+    {
+      "segment_id": "SEG53",
+      "type": "speaking",
+      "start_time": 113.19,
+      "end_time": 113.31,
+      "duration_sec": 0.12,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG54",
+      "type": "speaking",
+      "start_time": 113.64,
+      "end_time": 113.85,
+      "duration_sec": 0.21,
+      "video_frames": [
+        2730
+      ]
+    },
+    {
+      "segment_id": "SEG55",
+      "type": "speaking",
+      "start_time": 113.91,
+      "end_time": 114.06,
+      "duration_sec": 0.15,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG56",
+      "type": "speaking",
+      "start_time": 114.15,
+      "end_time": 114.36,
+      "duration_sec": 0.21,
+      "video_frames": [
+        2740
+      ]
+    },
+    {
+      "segment_id": "SEG57",
+      "type": "speaking",
+      "start_time": 114.39,
+      "end_time": 114.6,
+      "duration_sec": 0.21,
+      "video_frames": [
+        2750
+      ]
+    },
+    {
+      "segment_id": "SEG58",
+      "type": "speaking",
+      "start_time": 114.75,
+      "end_time": 114.93,
+      "duration_sec": 0.18,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG59",
+      "type": "speaking",
+      "start_time": 115.05,
+      "end_time": 115.26,
+      "duration_sec": 0.21,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG60",
+      "type": "speaking",
+      "start_time": 115.35,
+      "end_time": 115.44,
+      "duration_sec": 0.09,
+      "video_frames": [
+        2770
+      ]
+    },
+    {
+      "segment_id": "SEG61",
+      "type": "speaking",
+      "start_time": 115.5,
+      "end_time": 115.65,
+      "duration_sec": 0.15,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG62",
+      "type": "speaking",
+      "start_time": 115.74,
+      "end_time": 115.92,
+      "duration_sec": 0.18,
+      "video_frames": [
+        2780
+      ]
+    },
+    {
+      "segment_id": "SEG63",
+      "type": "speaking",
+      "start_time": 116.1,
+      "end_time": 116.73,
+      "duration_sec": 0.63,
+      "video_frames": [
+        2790,
+        2800
+      ]
+    },
+    {
+      "segment_id": "SEG64",
+      "type": "speaking",
+      "start_time": 116.94,
+      "end_time": 122.7,
+      "duration_sec": 5.76,
       "video_frames": [
         2810,
         2820,
@@ -628,121 +769,78 @@
         2850,
         2860,
         2870,
-        2880
-      ]
-    },
-    {
-      "segment_id": "SEG53",
-      "type": "speaking",
-      "start_time": 120.39,
-      "end_time": 120.51,
-      "duration_sec": 0.12,
-      "video_frames": [
-        2890
-      ]
-    },
-    {
-      "segment_id": "SEG54",
-      "type": "speaking",
-      "start_time": 120.72,
-      "end_time": 122.01,
-      "duration_sec": 1.29,
-      "video_frames": [
+        2880,
+        2890,
         2900,
         2910,
-        2920
+        2920,
+        2930,
+        2940
       ]
     },
     {
-      "segment_id": "SEG55",
+      "segment_id": "SEG65",
       "type": "speaking",
-      "start_time": 122.13,
-      "end_time": 123.96,
-      "duration_sec": 1.83,
+      "start_time": 122.79,
+      "end_time": 122.94,
+      "duration_sec": 0.15,
       "video_frames": [
-        2940,
-        2950,
+        2950
+      ]
+    },
+    {
+      "segment_id": "SEG66",
+      "type": "speaking",
+      "start_time": 123.15,
+      "end_time": 124.95,
+      "duration_sec": 1.8,
+      "video_frames": [
         2960,
-        2970
-      ]
-    },
-    {
-      "segment_id": "SEG56",
-      "type": "speaking",
-      "start_time": 124.14,
-      "end_time": 124.86,
-      "duration_sec": 0.72,
-      "video_frames": [
+        2970,
         2980,
         2990
       ]
     },
     {
-      "segment_id": "SEG57",
+      "segment_id": "SEG67",
       "type": "speaking",
-      "start_time": 125.28,
-      "end_time": 126.42,
-      "duration_sec": 1.14,
+      "start_time": 125.13,
+      "end_time": 130.26,
+      "duration_sec": 5.13,
       "video_frames": [
         3010,
         3020,
-        3030
-      ]
-    },
-    {
-      "segment_id": "SEG58",
-      "type": "speaking",
-      "start_time": 126.69,
-      "end_time": 127.62,
-      "duration_sec": 0.93,
-      "video_frames": [
+        3030,
+        3040,
         3050,
-        3060
-      ]
-    },
-    {
-      "segment_id": "SEG59",
-      "type": "speaking",
-      "start_time": 127.8,
-      "end_time": 127.95,
-      "duration_sec": 0.15,
-      "video_frames": [
-        3070
-      ]
-    },
-    {
-      "segment_id": "SEG60",
-      "type": "speaking",
-      "start_time": 128.01,
-      "end_time": 129.51,
-      "duration_sec": 1.5,
-      "video_frames": [
+        3060,
+        3070,
         3080,
         3090,
-        3100
+        3100,
+        3110,
+        3120
       ]
     },
     {
-      "segment_id": "SEG61",
+      "segment_id": "SEG68",
       "type": "speaking",
-      "start_time": 129.54,
-      "end_time": 131.94,
-      "duration_sec": 2.4,
+      "start_time": 130.77,
+      "end_time": 132.24,
+      "duration_sec": 1.47,
       "video_frames": [
-        3110,
-        3120,
-        3130,
         3140,
         3150,
-        3160
+        3160,
+        3170
       ]
     },
     {
-      "segment_id": "SEG62",
+      "segment_id": "SEG69",
       "type": "speaking",
-      "start_time": 132.24,
-      "end_time": 135.0,
-      "duration_sec": 2.76,
+      "start_time": 132.36,
+      "end_time": 135.93,
+      "duration_sec": 3.57,
       "video_frames": [
         3180,
         3190,
@@ -750,207 +848,215 @@
         3210,
         3220,
         3230,
-        3240
+        3240,
+        3250,
+        3260
       ]
     },
     {
-      "segment_id": "SEG63",
+      "segment_id": "SEG70",
       "type": "speaking",
-      "start_time": 135.09,
-      "end_time": 138.93,
-      "duration_sec": 3.84,
+      "start_time": 137.82,
+      "end_time": 138.0,
+      "duration_sec": 0.18,
       "video_frames": [
-        3250,
-        3260,
-        3270,
-        3280,
-        3290,
-        3300,
-        3310,
-        3320,
+        3310
+      ]
+    },
+    {
+      "segment_id": "SEG71",
+      "type": "speaking",
+      "start_time": 138.6,
+      "end_time": 138.9,
+      "duration_sec": 0.3,
+      "video_frames": [
         3330
       ]
     },
     {
-      "segment_id": "SEG64",
+      "segment_id": "SEG72",
       "type": "speaking",
-      "start_time": 139.44,
-      "end_time": 143.28,
-      "duration_sec": 3.84,
+      "start_time": 139.62,
+      "end_time": 139.71,
+      "duration_sec": 0.09,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG73",
+      "type": "speaking",
+      "start_time": 139.77,
+      "end_time": 139.92,
+      "duration_sec": 0.15,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG74",
+      "type": "speaking",
+      "start_time": 140.4,
+      "end_time": 140.52,
+      "duration_sec": 0.12,
       "video_frames": [
-        3350,
-        3360,
-        3370,
-        3380,
-        3390,
-        3400,
-        3410,
-        3420,
-        3430
+        3370
       ]
     },
     {
-      "segment_id": "SEG65",
+      "segment_id": "SEG75",
       "type": "speaking",
-      "start_time": 144.06,
-      "end_time": 149.22,
-      "duration_sec": 5.16,
+      "start_time": 140.58,
+      "end_time": 140.7,
+      "duration_sec": 0.12,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG76",
+      "type": "speaking",
+      "start_time": 140.73,
+      "end_time": 140.85,
+      "duration_sec": 0.12,
       "video_frames": [
+        3380
+      ]
+    },
+    {
+      "segment_id": "SEG77",
+      "type": "speaking",
+      "start_time": 140.97,
+      "end_time": 141.12,
+      "duration_sec": 0.15,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG78",
+      "type": "speaking",
+      "start_time": 141.39,
+      "end_time": 146.79,
+      "duration_sec": 5.4,
+      "video_frames": [
+        3400,
+        3410,
+        3420,
+        3430,
+        3440,
+        3450,
         3460,
         3470,
         3480,
         3490,
         3500,
         3510,
-        3520,
-        3530,
-        3540,
+        3520
+      ]
+    },
+    {
+      "segment_id": "SEG79",
+      "type": "speaking",
+      "start_time": 147.66,
+      "end_time": 155.49,
+      "duration_sec": 7.83,
+      "video_frames": [
         3550,
         3560,
         3570,
-        3580
+        3580,
+        3590,
+        3600,
+        3610,
+        3620,
+        3630,
+        3640,
+        3650,
+        3660,
+        3670,
+        3680,
+        3690,
+        3700,
+        3710,
+        3720,
+        3730
       ]
     },
     {
-      "segment_id": "SEG66",
+      "segment_id": "SEG80",
       "type": "speaking",
-      "start_time": 151.05,
-      "end_time": 151.17,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG67",
-      "type": "speaking",
-      "start_time": 151.89,
-      "end_time": 151.98,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG68",
-      "type": "speaking",
-      "start_time": 152.43,
-      "end_time": 152.55,
-      "duration_sec": 0.12,
+      "start_time": 155.52,
+      "end_time": 157.35,
+      "duration_sec": 1.83,
       "video_frames": [
-        3660
+        3740,
+        3750,
+        3760,
+        3770
       ]
     },
     {
-      "segment_id": "SEG69",
+      "segment_id": "SEG81",
       "type": "speaking",
-      "start_time": 153.15,
-      "end_time": 153.24,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG70",
-      "type": "speaking",
-      "start_time": 153.27,
-      "end_time": 153.42,
-      "duration_sec": 0.15,
-      "video_frames": [
-        3680
-      ]
-    },
-    {
-      "segment_id": "SEG71",
-      "type": "speaking",
-      "start_time": 154.35,
-      "end_time": 154.44,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG72",
-      "type": "speaking",
-      "start_time": 157.2,
-      "end_time": 161.61,
-      "duration_sec": 4.41,
+      "start_time": 157.38,
+      "end_time": 158.34,
+      "duration_sec": 0.96,
       "video_frames": [
         3780,
         3790,
-        3800,
-        3810,
-        3820,
-        3830,
-        3840,
-        3850,
-        3860,
-        3870
+        3800
       ]
     },
     {
-      "segment_id": "SEG73",
+      "segment_id": "SEG82",
       "type": "speaking",
-      "start_time": 162.03,
-      "end_time": 163.05,
-      "duration_sec": 1.02,
-      "video_frames": [
-        3890,
-        3900,
-        3910
-      ]
+      "start_time": 162.54,
+      "end_time": 162.63,
+      "duration_sec": 0.09,
+      "video_frames": []
     },
     {
-      "segment_id": "SEG74",
+      "segment_id": "SEG83",
       "type": "speaking",
-      "start_time": 163.14,
-      "end_time": 163.53,
-      "duration_sec": 0.39,
-      "video_frames": [
-        3920
-      ]
+      "start_time": 162.66,
+      "end_time": 162.75,
+      "duration_sec": 0.09,
+      "video_frames": []
     },
     {
-      "segment_id": "SEG75",
+      "segment_id": "SEG84",
       "type": "speaking",
-      "start_time": 163.59,
-      "end_time": 165.3,
-      "duration_sec": 1.71,
-      "video_frames": [
-        3930,
-        3940,
-        3950,
-        3960
-      ]
+      "start_time": 164.61,
+      "end_time": 164.91,
+      "duration_sec": 0.3,
+      "video_frames": []
     },
     {
-      "segment_id": "SEG76",
+      "segment_id": "SEG85",
       "type": "speaking",
-      "start_time": 165.39,
-      "end_time": 167.76,
-      "duration_sec": 2.37,
+      "start_time": 165.21,
+      "end_time": 169.14,
+      "duration_sec": 3.93,
       "video_frames": [
         3970,
         3980,
         3990,
         4000,
         4010,
-        4020
-      ]
-    },
-    {
-      "segment_id": "SEG77",
-      "type": "speaking",
-      "start_time": 167.82,
-      "end_time": 168.39,
-      "duration_sec": 0.57,
-      "video_frames": [
+        4020,
         4030,
-        4040
+        4040,
+        4050
       ]
     },
     {
-      "segment_id": "SEG78",
+      "segment_id": "SEG86",
       "type": "speaking",
-      "start_time": 168.81,
-      "end_time": 171.69,
-      "duration_sec": 2.88,
+      "start_time": 169.29,
+      "end_time": 169.38,
+      "duration_sec": 0.09,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG87",
+      "type": "speaking",
+      "start_time": 169.44,
+      "end_time": 172.02,
+      "duration_sec": 2.58,
       "video_frames": [
-        4060,
         4070,
         4080,
         4090,
@@ -960,291 +1066,207 @@
       ]
     },
     {
-      "segment_id": "SEG79",
+      "segment_id": "SEG88",
       "type": "speaking",
-      "start_time": 171.72,
-      "end_time": 172.44,
-      "duration_sec": 0.72,
+      "start_time": 172.26,
+      "end_time": 175.44,
+      "duration_sec": 3.18,
       "video_frames": [
-        4130
-      ]
-    },
-    {
-      "segment_id": "SEG80",
-      "type": "speaking",
-      "start_time": 172.74,
-      "end_time": 173.73,
-      "duration_sec": 0.99,
-      "video_frames": [
+        4140,
         4150,
-        4160
-      ]
-    },
-    {
-      "segment_id": "SEG81",
-      "type": "speaking",
-      "start_time": 173.76,
-      "end_time": 174.33,
-      "duration_sec": 0.57,
-      "video_frames": [
-        4180
-      ]
-    },
-    {
-      "segment_id": "SEG82",
-      "type": "speaking",
-      "start_time": 174.54,
-      "end_time": 176.31,
-      "duration_sec": 1.77,
-      "video_frames": [
+        4160,
+        4170,
+        4180,
         4190,
         4200,
-        4210,
-        4220,
-        4230
+        4210
       ]
     },
     {
-      "segment_id": "SEG83",
+      "segment_id": "SEG89",
       "type": "speaking",
-      "start_time": 176.55,
-      "end_time": 176.64,
+      "start_time": 175.62,
+      "end_time": 175.71,
       "duration_sec": 0.09,
       "video_frames": []
     },
     {
-      "segment_id": "SEG84",
+      "segment_id": "SEG90",
       "type": "speaking",
-      "start_time": 176.7,
-      "end_time": 177.66,
-      "duration_sec": 0.96,
+      "start_time": 175.89,
+      "end_time": 177.78,
+      "duration_sec": 1.89,
       "video_frames": [
+        4230,
+        4240,
         4250,
         4260
       ]
     },
     {
-      "segment_id": "SEG85",
+      "segment_id": "SEG91",
       "type": "speaking",
-      "start_time": 177.69,
-      "end_time": 177.9,
-      "duration_sec": 0.21,
-      "video_frames": []
+      "start_time": 178.38,
+      "end_time": 179.46,
+      "duration_sec": 1.08,
+      "video_frames": [
+        4290,
+        4300
+      ]
     },
     {
-      "segment_id": "SEG86",
+      "segment_id": "SEG92",
       "type": "speaking",
-      "start_time": 177.99,
-      "end_time": 182.46,
-      "duration_sec": 4.47,
+      "start_time": 179.52,
+      "end_time": 183.39,
+      "duration_sec": 3.87,
       "video_frames": [
-        4280,
-        4290,
-        4300,
         4310,
         4320,
         4330,
         4340,
         4350,
         4360,
-        4370
-      ]
-    },
-    {
-      "segment_id": "SEG87",
-      "type": "speaking",
-      "start_time": 182.49,
-      "end_time": 183.87,
-      "duration_sec": 1.38,
-      "video_frames": [
+        4370,
         4380,
         4390,
-        4400,
-        4410
-      ]
-    },
-    {
-      "segment_id": "SEG88",
-      "type": "speaking",
-      "start_time": 184.2,
-      "end_time": 185.25,
-      "duration_sec": 1.05,
-      "video_frames": [
-        4430,
-        4440
-      ]
-    },
-    {
-      "segment_id": "SEG89",
-      "type": "speaking",
-      "start_time": 185.34,
-      "end_time": 187.02,
-      "duration_sec": 1.68,
-      "video_frames": [
-        4450,
-        4460,
-        4470,
-        4480
-      ]
-    },
-    {
-      "segment_id": "SEG90",
-      "type": "speaking",
-      "start_time": 187.17,
-      "end_time": 187.59,
-      "duration_sec": 0.42,
-      "video_frames": [
-        4500
-      ]
-    },
-    {
-      "segment_id": "SEG91",
-      "type": "speaking",
-      "start_time": 187.65,
-      "end_time": 188.1,
-      "duration_sec": 0.45,
-      "video_frames": [
-        4510
-      ]
-    },
-    {
-      "segment_id": "SEG92",
-      "type": "speaking",
-      "start_time": 188.31,
-      "end_time": 188.43,
-      "duration_sec": 0.12,
-      "video_frames": [
-        4520
+        4400
       ]
     },
     {
       "segment_id": "SEG93",
       "type": "speaking",
-      "start_time": 188.61,
-      "end_time": 191.22,
-      "duration_sec": 2.61,
-      "video_frames": [
-        4530,
-        4540,
-        4550,
-        4560,
-        4570,
-        4580
-      ]
+      "start_time": 185.46,
+      "end_time": 185.61,
+      "duration_sec": 0.15,
+      "video_frames": []
     },
     {
       "segment_id": "SEG94",
       "type": "speaking",
-      "start_time": 191.37,
-      "end_time": 192.36,
-      "duration_sec": 0.99,
-      "video_frames": [
-        4600,
-        4610
-      ]
+      "start_time": 186.72,
+      "end_time": 186.93,
+      "duration_sec": 0.21,
+      "video_frames": []
     },
     {
       "segment_id": "SEG95",
       "type": "speaking",
-      "start_time": 196.26,
-      "end_time": 196.35,
-      "duration_sec": 0.09,
+      "start_time": 186.96,
+      "end_time": 187.08,
+      "duration_sec": 0.12,
       "video_frames": []
     },
     {
       "segment_id": "SEG96",
       "type": "speaking",
-      "start_time": 196.62,
-      "end_time": 198.66,
-      "duration_sec": 2.04,
-      "video_frames": [
-        4720,
-        4730,
-        4740,
-        4750,
-        4760
-      ]
+      "start_time": 188.37,
+      "end_time": 188.49,
+      "duration_sec": 0.12,
+      "video_frames": []
     },
     {
       "segment_id": "SEG97",
       "type": "speaking",
-      "start_time": 198.69,
-      "end_time": 200.28,
-      "duration_sec": 1.59,
-      "video_frames": [
-        4770,
-        4780,
-        4790,
-        4800
-      ]
+      "start_time": 188.88,
+      "end_time": 189.09,
+      "duration_sec": 0.21,
+      "video_frames": []
     },
     {
       "segment_id": "SEG98",
       "type": "speaking",
-      "start_time": 200.49,
-      "end_time": 200.7,
-      "duration_sec": 0.21,
+      "start_time": 189.21,
+      "end_time": 189.3,
+      "duration_sec": 0.09,
       "video_frames": []
     },
     {
       "segment_id": "SEG99",
       "type": "speaking",
-      "start_time": 200.85,
-      "end_time": 201.03,
-      "duration_sec": 0.18,
+      "start_time": 189.36,
+      "end_time": 189.51,
+      "duration_sec": 0.15,
       "video_frames": []
     },
     {
       "segment_id": "SEG100",
       "type": "speaking",
-      "start_time": 201.21,
-      "end_time": 201.42,
-      "duration_sec": 0.21,
+      "start_time": 190.38,
+      "end_time": 195.54,
+      "duration_sec": 5.16,
       "video_frames": [
-        4830
+        4570,
+        4580,
+        4590,
+        4600,
+        4610,
+        4620,
+        4630,
+        4640,
+        4650,
+        4660,
+        4670,
+        4680,
+        4690
       ]
     },
     {
       "segment_id": "SEG101",
       "type": "speaking",
-      "start_time": 201.48,
-      "end_time": 201.84,
-      "duration_sec": 0.36,
+      "start_time": 195.78,
+      "end_time": 201.99,
+      "duration_sec": 6.21,
       "video_frames": [
+        4700,
+        4710,
+        4720,
+        4730,
+        4740,
+        4750,
+        4760,
+        4770,
+        4780,
+        4790,
+        4800,
+        4810,
+        4820,
+        4830,
         4840
       ]
     },
     {
       "segment_id": "SEG102",
       "type": "speaking",
-      "start_time": 202.59,
-      "end_time": 203.19,
-      "duration_sec": 0.6,
-      "video_frames": [
-        4870
-      ]
+      "start_time": 202.32,
+      "end_time": 202.41,
+      "duration_sec": 0.09,
+      "video_frames": []
     },
     {
       "segment_id": "SEG103",
       "type": "speaking",
-      "start_time": 203.34,
-      "end_time": 205.68,
-      "duration_sec": 2.34,
+      "start_time": 202.74,
+      "end_time": 205.02,
+      "duration_sec": 2.28,
       "video_frames": [
+        4870,
+        4880,
         4890,
         4900,
         4910,
-        4920,
-        4930
+        4920
       ]
     },
     {
       "segment_id": "SEG104",
       "type": "speaking",
-      "start_time": 206.16,
-      "end_time": 207.27,
-      "duration_sec": 1.11,
+      "start_time": 205.08,
+      "end_time": 207.09,
+      "duration_sec": 2.01,
       "video_frames": [
+        4930,
+        4940,
         4950,
         4960,
         4970
@@ -1253,36 +1275,28 @@
     {
       "segment_id": "SEG105",
       "type": "speaking",
-      "start_time": 207.39,
-      "end_time": 209.49,
-      "duration_sec": 2.1,
+      "start_time": 207.15,
+      "end_time": 208.29,
+      "duration_sec": 1.14,
       "video_frames": [
         4980,
-        4990,
-        5000,
-        5010,
-        5020
+        4990
       ]
     },
     {
       "segment_id": "SEG106",
       "type": "speaking",
-      "start_time": 209.7,
-      "end_time": 211.44,
-      "duration_sec": 1.74,
-      "video_frames": [
-        5040,
-        5050,
-        5060,
-        5070
-      ]
+      "start_time": 209.43,
+      "end_time": 209.55,
+      "duration_sec": 0.12,
+      "video_frames": []
     },
     {
       "segment_id": "SEG107",
       "type": "speaking",
-      "start_time": 212.61,
-      "end_time": 213.09,
-      "duration_sec": 0.48,
+      "start_time": 212.88,
+      "end_time": 212.97,
+      "duration_sec": 0.09,
       "video_frames": [
         5110
       ]
@@ -1290,151 +1304,109 @@
     {
       "segment_id": "SEG108",
       "type": "speaking",
-      "start_time": 213.18,
-      "end_time": 213.84,
-      "duration_sec": 0.66,
-      "video_frames": [
-        5120,
-        5130
-      ]
+      "start_time": 213.09,
+      "end_time": 213.18,
+      "duration_sec": 0.09,
+      "video_frames": []
     },
     {
       "segment_id": "SEG109",
       "type": "speaking",
-      "start_time": 214.83,
-      "end_time": 216.81,
-      "duration_sec": 1.98,
+      "start_time": 213.48,
+      "end_time": 216.0,
+      "duration_sec": 2.52,
       "video_frames": [
+        5130,
+        5140,
+        5150,
         5160,
         5170,
-        5180,
-        5190,
-        5200
+        5180
       ]
     },
     {
       "segment_id": "SEG110",
       "type": "speaking",
-      "start_time": 217.38,
-      "end_time": 217.95,
-      "duration_sec": 0.57,
+      "start_time": 216.03,
+      "end_time": 218.88,
+      "duration_sec": 2.85,
       "video_frames": [
+        5190,
+        5200,
+        5210,
         5220,
-        5230
+        5230,
+        5240,
+        5250
       ]
     },
     {
       "segment_id": "SEG111",
       "type": "speaking",
-      "start_time": 218.1,
-      "end_time": 218.22,
-      "duration_sec": 0.12,
-      "video_frames": []
+      "start_time": 219.12,
+      "end_time": 222.12,
+      "duration_sec": 3.0,
+      "video_frames": [
+        5260,
+        5270,
+        5280,
+        5290,
+        5300,
+        5310,
+        5320,
+        5330
+      ]
     },
     {
       "segment_id": "SEG112",
       "type": "speaking",
-      "start_time": 220.29,
-      "end_time": 220.38,
-      "duration_sec": 0.09,
-      "video_frames": []
+      "start_time": 222.21,
+      "end_time": 225.06,
+      "duration_sec": 2.85,
+      "video_frames": [
+        5340,
+        5350,
+        5360,
+        5370,
+        5380,
+        5390,
+        5400
+      ]
     },
     {
       "segment_id": "SEG113",
       "type": "speaking",
-      "start_time": 220.83,
-      "end_time": 221.28,
-      "duration_sec": 0.45,
-      "video_frames": [
-        5300,
-        5310
-      ]
+      "start_time": 225.24,
+      "end_time": 225.33,
+      "duration_sec": 0.09,
+      "video_frames": []
     },
     {
       "segment_id": "SEG114",
       "type": "speaking",
-      "start_time": 221.88,
-      "end_time": 222.12,
-      "duration_sec": 0.24,
+      "start_time": 225.48,
+      "end_time": 227.22,
+      "duration_sec": 1.74,
       "video_frames": [
-        5330
+        5420,
+        5430,
+        5440,
+        5450
       ]
     },
     {
       "segment_id": "SEG115",
       "type": "speaking",
-      "start_time": 222.21,
-      "end_time": 222.3,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG116",
-      "type": "speaking",
-      "start_time": 222.36,
-      "end_time": 222.51,
-      "duration_sec": 0.15,
+      "start_time": 227.49,
+      "end_time": 231.66,
+      "duration_sec": 4.17,
       "video_frames": [
-        5340
-      ]
-    },
-    {
-      "segment_id": "SEG117",
-      "type": "speaking",
-      "start_time": 222.54,
-      "end_time": 222.66,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG118",
-      "type": "speaking",
-      "start_time": 223.17,
-      "end_time": 223.44,
-      "duration_sec": 0.27,
-      "video_frames": [
-        5360
-      ]
-    },
-    {
-      "segment_id": "SEG119",
-      "type": "speaking",
-      "start_time": 223.47,
-      "end_time": 224.25,
-      "duration_sec": 0.78,
-      "video_frames": [
-        5370,
-        5380
-      ]
-    },
-    {
-      "segment_id": "SEG120",
-      "type": "speaking",
-      "start_time": 224.46,
-      "end_time": 229.23,
-      "duration_sec": 4.77,
-      "video_frames": [
-        5390,
-        5400,
-        5410,
-        5420,
-        5430,
-        5440,
-        5450,
         5460,
         5470,
         5480,
         5490,
-        5500
-      ]
-    },
-    {
-      "segment_id": "SEG121",
-      "type": "speaking",
-      "start_time": 229.62,
-      "end_time": 231.51,
-      "duration_sec": 1.89,
-      "video_frames": [
+        5500,
+        5510,
         5520,
         5530,
         5540,
@@ -1442,64 +1414,70 @@
       ]
     },
     {
-      "segment_id": "SEG122",
+      "segment_id": "SEG116",
       "type": "speaking",
-      "start_time": 231.66,
-      "end_time": 232.89,
-      "duration_sec": 1.23,
+      "start_time": 233.82,
+      "end_time": 234.27,
+      "duration_sec": 0.45,
       "video_frames": [
-        5560,
-        5570,
-        5580
+        5620
       ]
     },
     {
-      "segment_id": "SEG123",
+      "segment_id": "SEG117",
       "type": "speaking",
-      "start_time": 233.16,
-      "end_time": 234.81,
-      "duration_sec": 1.65,
+      "start_time": 234.36,
+      "end_time": 234.69,
+      "duration_sec": 0.33,
       "video_frames": [
-        5600,
-        5610,
-        5620,
         5630
       ]
     },
     {
-      "segment_id": "SEG124",
+      "segment_id": "SEG118",
       "type": "speaking",
-      "start_time": 235.11,
-      "end_time": 238.59,
-      "duration_sec": 3.48,
+      "start_time": 235.56,
+      "end_time": 236.01,
+      "duration_sec": 0.45,
       "video_frames": [
-        5650,
-        5660,
-        5670,
-        5680,
-        5690,
-        5700,
-        5710,
-        5720
+        5660
       ]
     },
     {
-      "segment_id": "SEG125",
+      "segment_id": "SEG119",
       "type": "speaking",
-      "start_time": 238.65,
-      "end_time": 239.07,
-      "duration_sec": 0.42,
+      "start_time": 237.09,
+      "end_time": 237.6,
+      "duration_sec": 0.51,
       "video_frames": [
-        5730
+        5700
       ]
     },
     {
-      "segment_id": "SEG126",
+      "segment_id": "SEG120",
       "type": "speaking",
-      "start_time": 239.64,
-      "end_time": 241.29,
-      "duration_sec": 1.65,
+      "start_time": 238.41,
+      "end_time": 238.5,
+      "duration_sec": 0.09,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG121",
+      "type": "speaking",
+      "start_time": 239.01,
+      "end_time": 239.1,
+      "duration_sec": 0.09,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG122",
+      "type": "speaking",
+      "start_time": 239.16,
+      "end_time": 241.35,
+      "duration_sec": 2.19,
       "video_frames": [
+        5740,
+        5750,
         5760,
         5770,
         5780,
@@ -1507,263 +1485,177 @@
       ]
     },
     {
-      "segment_id": "SEG127",
+      "segment_id": "SEG123",
       "type": "speaking",
-      "start_time": 241.35,
-      "end_time": 241.56,
-      "duration_sec": 0.21,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG128",
-      "type": "speaking",
-      "start_time": 241.65,
-      "end_time": 241.8,
-      "duration_sec": 0.15,
-      "video_frames": [
-        5800
-      ]
-    },
-    {
-      "segment_id": "SEG129",
-      "type": "speaking",
-      "start_time": 242.01,
-      "end_time": 242.58,
-      "duration_sec": 0.57,
+      "start_time": 241.77,
+      "end_time": 246.51,
+      "duration_sec": 4.74,
       "video_frames": [
         5810,
-        5820
-      ]
-    },
-    {
-      "segment_id": "SEG130",
-      "type": "speaking",
-      "start_time": 242.82,
-      "end_time": 244.86,
-      "duration_sec": 2.04,
-      "video_frames": [
+        5820,
         5830,
         5840,
         5850,
         5860,
-        5870
-      ]
-    },
-    {
-      "segment_id": "SEG131",
-      "type": "speaking",
-      "start_time": 244.95,
-      "end_time": 245.22,
-      "duration_sec": 0.27,
-      "video_frames": [
-        5880
-      ]
-    },
-    {
-      "segment_id": "SEG132",
-      "type": "speaking",
-      "start_time": 245.31,
-      "end_time": 246.45,
-      "duration_sec": 1.14,
-      "video_frames": [
+        5870,
+        5880,
         5890,
         5900,
         5910
       ]
     },
     {
-      "segment_id": "SEG133",
+      "segment_id": "SEG124",
       "type": "speaking",
-      "start_time": 246.51,
-      "end_time": 246.63,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG134",
-      "type": "speaking",
-      "start_time": 246.69,
-      "end_time": 247.77,
-      "duration_sec": 1.08,
+      "start_time": 246.93,
+      "end_time": 251.55,
+      "duration_sec": 4.62,
       "video_frames": [
         5930,
-        5940
-      ]
-    },
-    {
-      "segment_id": "SEG135",
-      "type": "speaking",
-      "start_time": 248.04,
-      "end_time": 248.55,
-      "duration_sec": 0.51,
-      "video_frames": [
-        5960
-      ]
-    },
-    {
-      "segment_id": "SEG136",
-      "type": "speaking",
-      "start_time": 248.61,
-      "end_time": 249.87,
-      "duration_sec": 1.26,
-      "video_frames": [
+        5940,
+        5950,
+        5960,
         5970,
         5980,
-        5990
-      ]
-    },
-    {
-      "segment_id": "SEG137",
-      "type": "speaking",
-      "start_time": 249.93,
-      "end_time": 250.32,
-      "duration_sec": 0.39,
-      "video_frames": [
-        6000
-      ]
-    },
-    {
-      "segment_id": "SEG138",
-      "type": "speaking",
-      "start_time": 250.68,
-      "end_time": 251.49,
-      "duration_sec": 0.81,
-      "video_frames": [
+        5990,
+        6000,
+        6010,
         6020,
         6030
       ]
     },
     {
-      "segment_id": "SEG139",
+      "segment_id": "SEG125",
       "type": "speaking",
-      "start_time": 251.82,
-      "end_time": 253.56,
-      "duration_sec": 1.74,
+      "start_time": 251.61,
+      "end_time": 252.45,
+      "duration_sec": 0.84,
       "video_frames": [
-        6050,
-        6060,
-        6070,
-        6080
+        6040,
+        6050
       ]
     },
     {
-      "segment_id": "SEG140",
+      "segment_id": "SEG126",
       "type": "speaking",
-      "start_time": 253.59,
-      "end_time": 255.12,
-      "duration_sec": 1.53,
+      "start_time": 252.9,
+      "end_time": 256.35,
+      "duration_sec": 3.45,
       "video_frames": [
+        6070,
+        6080,
         6090,
         6100,
         6110,
-        6120
-      ]
-    },
-    {
-      "segment_id": "SEG141",
-      "type": "speaking",
-      "start_time": 255.21,
-      "end_time": 257.16,
-      "duration_sec": 1.95,
-      "video_frames": [
+        6120,
         6130,
         6140,
-        6150,
-        6160,
-        6170
+        6150
       ]
     },
     {
-      "segment_id": "SEG142",
+      "segment_id": "SEG127",
       "type": "speaking",
-      "start_time": 257.37,
-      "end_time": 257.52,
-      "duration_sec": 0.15,
-      "video_frames": [
-        6180
-      ]
-    },
-    {
-      "segment_id": "SEG143",
-      "type": "speaking",
-      "start_time": 257.64,
-      "end_time": 258.63,
-      "duration_sec": 0.99,
-      "video_frames": [
-        6190,
-        6200
-      ]
-    },
-    {
-      "segment_id": "SEG144",
-      "type": "speaking",
-      "start_time": 259.14,
-      "end_time": 259.23,
-      "duration_sec": 0.09,
-      "video_frames": [
-        6220
-      ]
-    },
-    {
-      "segment_id": "SEG145",
-      "type": "speaking",
-      "start_time": 259.89,
-      "end_time": 259.98,
-      "duration_sec": 0.09,
+      "start_time": 257.34,
+      "end_time": 257.46,
+      "duration_sec": 0.12,
       "video_frames": []
     },
     {
-      "segment_id": "SEG146",
+      "segment_id": "SEG128",
       "type": "speaking",
-      "start_time": 260.37,
-      "end_time": 260.49,
+      "start_time": 257.85,
+      "end_time": 258.12,
+      "duration_sec": 0.27,
+      "video_frames": [
+        6190
+      ]
+    },
+    {
+      "segment_id": "SEG129",
+      "type": "speaking",
+      "start_time": 258.42,
+      "end_time": 258.54,
       "duration_sec": 0.12,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG130",
+      "type": "speaking",
+      "start_time": 258.78,
+      "end_time": 259.11,
+      "duration_sec": 0.33,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG131",
+      "type": "speaking",
+      "start_time": 260.19,
+      "end_time": 260.79,
+      "duration_sec": 0.6,
       "video_frames": [
         6250
       ]
     },
     {
-      "segment_id": "SEG147",
-      "type": "speaking",
-      "start_time": 260.55,
-      "end_time": 260.64,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG148",
-      "type": "speaking",
-      "start_time": 261.06,
-      "end_time": 261.15,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG149",
+      "segment_id": "SEG132",
       "type": "speaking",
       "start_time": 261.21,
-      "end_time": 261.3,
-      "duration_sec": 0.09,
+      "end_time": 261.72,
+      "duration_sec": 0.51,
       "video_frames": [
-        6270
+        6270,
+        6280
       ]
     },
     {
-      "segment_id": "SEG150",
+      "segment_id": "SEG133",
+      "type": "speaking",
+      "start_time": 261.75,
+      "end_time": 261.96,
+      "duration_sec": 0.21,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG134",
+      "type": "speaking",
+      "start_time": 262.08,
+      "end_time": 262.29,
+      "duration_sec": 0.21,
+      "video_frames": [
+        6290
+      ]
+    },
+    {
+      "segment_id": "SEG135",
+      "type": "speaking",
+      "start_time": 262.62,
+      "end_time": 262.74,
+      "duration_sec": 0.12,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG136",
       "type": "speaking",
       "start_time": 262.77,
-      "end_time": 262.92,
-      "duration_sec": 0.15,
-      "video_frames": [
-        6310
-      ]
+      "end_time": 262.89,
+      "duration_sec": 0.12,
+      "video_frames": []
     },
     {
-      "segment_id": "SEG151",
+      "segment_id": "SEG137",
       "type": "speaking",
       "start_time": 263.1,
-      "end_time": 265.8,
-      "duration_sec": 2.7,
+      "end_time": 263.22,
+      "duration_sec": 0.12,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG138",
+      "type": "speaking",
+      "start_time": 263.28,
+      "end_time": 265.83,
+      "duration_sec": 2.55,
       "video_frames": [
         6320,
         6330,
@@ -1774,476 +1666,512 @@
       ]
     },
     {
-      "segment_id": "SEG152",
+      "segment_id": "SEG139",
       "type": "speaking",
-      "start_time": 265.86,
-      "end_time": 269.73,
-      "duration_sec": 3.87,
+      "start_time": 265.92,
+      "end_time": 267.15,
+      "duration_sec": 1.23,
       "video_frames": [
         6390,
         6400,
-        6410,
+        6410
+      ]
+    },
+    {
+      "segment_id": "SEG140",
+      "type": "speaking",
+      "start_time": 267.27,
+      "end_time": 268.59,
+      "duration_sec": 1.32,
+      "video_frames": [
         6420,
         6430,
-        6440,
-        6450,
+        6440
+      ]
+    },
+    {
+      "segment_id": "SEG141",
+      "type": "speaking",
+      "start_time": 269.01,
+      "end_time": 273.84,
+      "duration_sec": 4.83,
+      "video_frames": [
         6460,
-        6470
-      ]
-    },
-    {
-      "segment_id": "SEG153",
-      "type": "speaking",
-      "start_time": 270.06,
-      "end_time": 271.14,
-      "duration_sec": 1.08,
-      "video_frames": [
+        6470,
+        6480,
         6490,
-        6500
-      ]
-    },
-    {
-      "segment_id": "SEG154",
-      "type": "speaking",
-      "start_time": 271.17,
-      "end_time": 273.27,
-      "duration_sec": 2.1,
-      "video_frames": [
+        6500,
         6510,
         6520,
         6530,
         6540,
-        6550
+        6550,
+        6560,
+        6570
       ]
     },
     {
-      "segment_id": "SEG155",
+      "segment_id": "SEG142",
       "type": "speaking",
-      "start_time": 273.69,
-      "end_time": 276.51,
-      "duration_sec": 2.82,
+      "start_time": 273.99,
+      "end_time": 277.35,
+      "duration_sec": 3.36,
       "video_frames": [
-        6570,
         6580,
         6590,
         6600,
         6610,
         6620,
-        6630
-      ]
-    },
-    {
-      "segment_id": "SEG156",
-      "type": "speaking",
-      "start_time": 276.63,
-      "end_time": 277.23,
-      "duration_sec": 0.6,
-      "video_frames": [
+        6630,
         6640,
         6650
       ]
     },
     {
-      "segment_id": "SEG157",
+      "segment_id": "SEG143",
       "type": "speaking",
-      "start_time": 277.35,
-      "end_time": 277.44,
+      "start_time": 277.5,
+      "end_time": 277.59,
       "duration_sec": 0.09,
-      "video_frames": []
+      "video_frames": [
+        6660
+      ]
     },
     {
-      "segment_id": "SEG158",
+      "segment_id": "SEG144",
       "type": "speaking",
-      "start_time": 277.65,
-      "end_time": 280.68,
-      "duration_sec": 3.03,
+      "start_time": 277.8,
+      "end_time": 279.99,
+      "duration_sec": 2.19,
       "video_frames": [
         6670,
         6680,
         6690,
         6700,
-        6710,
-        6720,
+        6710
+      ]
+    },
+    {
+      "segment_id": "SEG145",
+      "type": "speaking",
+      "start_time": 280.41,
+      "end_time": 280.5,
+      "duration_sec": 0.09,
+      "video_frames": [
         6730
+      ]
+    },
+    {
+      "segment_id": "SEG146",
+      "type": "speaking",
+      "start_time": 282.81,
+      "end_time": 282.96,
+      "duration_sec": 0.15,
+      "video_frames": [
+        6790
+      ]
+    },
+    {
+      "segment_id": "SEG147",
+      "type": "speaking",
+      "start_time": 283.23,
+      "end_time": 283.5,
+      "duration_sec": 0.27,
+      "video_frames": [
+        6800
+      ]
+    },
+    {
+      "segment_id": "SEG148",
+      "type": "speaking",
+      "start_time": 283.8,
+      "end_time": 283.98,
+      "duration_sec": 0.18,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG149",
+      "type": "speaking",
+      "start_time": 284.49,
+      "end_time": 285.15,
+      "duration_sec": 0.66,
+      "video_frames": [
+        6830,
+        6840
+      ]
+    },
+    {
+      "segment_id": "SEG150",
+      "type": "speaking",
+      "start_time": 286.23,
+      "end_time": 286.32,
+      "duration_sec": 0.09,
+      "video_frames": [
+        6870
+      ]
+    },
+    {
+      "segment_id": "SEG151",
+      "type": "speaking",
+      "start_time": 286.35,
+      "end_time": 286.44,
+      "duration_sec": 0.09,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG152",
+      "type": "speaking",
+      "start_time": 287.04,
+      "end_time": 287.16,
+      "duration_sec": 0.12,
+      "video_frames": [
+        6890
+      ]
+    },
+    {
+      "segment_id": "SEG153",
+      "type": "speaking",
+      "start_time": 287.91,
+      "end_time": 288.03,
+      "duration_sec": 0.12,
+      "video_frames": [
+        6910
+      ]
+    },
+    {
+      "segment_id": "SEG154",
+      "type": "speaking",
+      "start_time": 288.06,
+      "end_time": 288.15,
+      "duration_sec": 0.09,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG155",
+      "type": "speaking",
+      "start_time": 288.69,
+      "end_time": 289.2,
+      "duration_sec": 0.51,
+      "video_frames": [
+        6930,
+        6940
+      ]
+    },
+    {
+      "segment_id": "SEG156",
+      "type": "speaking",
+      "start_time": 289.23,
+      "end_time": 289.44,
+      "duration_sec": 0.21,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG157",
+      "type": "speaking",
+      "start_time": 289.71,
+      "end_time": 293.1,
+      "duration_sec": 3.39,
+      "video_frames": [
+        6960,
+        6970,
+        6980,
+        6990,
+        7000,
+        7010,
+        7020,
+        7030
+      ]
+    },
+    {
+      "segment_id": "SEG158",
+      "type": "speaking",
+      "start_time": 293.19,
+      "end_time": 295.32,
+      "duration_sec": 2.13,
+      "video_frames": [
+        7040,
+        7050,
+        7060,
+        7070,
+        7080
       ]
     },
     {
       "segment_id": "SEG159",
       "type": "speaking",
-      "start_time": 281.76,
-      "end_time": 281.85,
-      "duration_sec": 0.09,
-      "video_frames": []
+      "start_time": 295.95,
+      "end_time": 298.74,
+      "duration_sec": 2.79,
+      "video_frames": [
+        7110,
+        7120,
+        7130,
+        7140,
+        7150,
+        7160
+      ]
     },
     {
       "segment_id": "SEG160",
       "type": "speaking",
-      "start_time": 282.6,
-      "end_time": 282.75,
-      "duration_sec": 0.15,
-      "video_frames": []
+      "start_time": 298.89,
+      "end_time": 300.48,
+      "duration_sec": 1.59,
+      "video_frames": [
+        7180,
+        7190,
+        7200,
+        7210
+      ]
     },
     {
       "segment_id": "SEG161",
       "type": "speaking",
-      "start_time": 283.47,
-      "end_time": 284.25,
-      "duration_sec": 0.78,
-      "video_frames": [
-        6810,
-        6820
-      ]
-    },
-    {
-      "segment_id": "SEG162",
-      "type": "speaking",
-      "start_time": 284.34,
-      "end_time": 284.43,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG163",
-      "type": "speaking",
-      "start_time": 284.64,
-      "end_time": 284.76,
+      "start_time": 300.96,
+      "end_time": 301.08,
       "duration_sec": 0.12,
       "video_frames": []
     },
     {
+      "segment_id": "SEG162",
+      "type": "speaking",
+      "start_time": 302.85,
+      "end_time": 302.97,
+      "duration_sec": 0.12,
+      "video_frames": [
+        7270
+      ]
+    },
+    {
+      "segment_id": "SEG163",
+      "type": "speaking",
+      "start_time": 304.53,
+      "end_time": 304.62,
+      "duration_sec": 0.09,
+      "video_frames": [
+        7310
+      ]
+    },
+    {
       "segment_id": "SEG164",
       "type": "speaking",
-      "start_time": 285.03,
-      "end_time": 285.18,
-      "duration_sec": 0.15,
-      "video_frames": []
+      "start_time": 305.79,
+      "end_time": 305.88,
+      "duration_sec": 0.09,
+      "video_frames": [
+        7340
+      ]
     },
     {
       "segment_id": "SEG165",
       "type": "speaking",
-      "start_time": 285.24,
-      "end_time": 285.51,
-      "duration_sec": 0.27,
-      "video_frames": [
-        6850
-      ]
+      "start_time": 306.48,
+      "end_time": 306.57,
+      "duration_sec": 0.09,
+      "video_frames": []
     },
     {
       "segment_id": "SEG166",
       "type": "speaking",
-      "start_time": 285.54,
-      "end_time": 290.64,
-      "duration_sec": 5.1,
-      "video_frames": [
-        6860,
-        6870,
-        6880,
-        6890,
-        6900,
-        6910,
-        6920,
-        6930,
-        6940,
-        6950,
-        6960,
-        6970
-      ]
+      "start_time": 307.14,
+      "end_time": 307.47,
+      "duration_sec": 0.33,
+      "video_frames": []
     },
     {
       "segment_id": "SEG167",
       "type": "speaking",
-      "start_time": 290.97,
-      "end_time": 292.77,
-      "duration_sec": 1.8,
+      "start_time": 307.5,
+      "end_time": 310.08,
+      "duration_sec": 2.58,
       "video_frames": [
-        6990,
-        7000,
-        7010,
-        7020
+        7380,
+        7390,
+        7400,
+        7410,
+        7420,
+        7430,
+        7440
       ]
     },
     {
       "segment_id": "SEG168",
       "type": "speaking",
-      "start_time": 292.98,
-      "end_time": 294.39,
-      "duration_sec": 1.41,
-      "video_frames": [
-        7040,
-        7050,
-        7060
-      ]
+      "start_time": 310.11,
+      "end_time": 310.2,
+      "duration_sec": 0.09,
+      "video_frames": []
     },
     {
       "segment_id": "SEG169",
       "type": "speaking",
-      "start_time": 294.48,
-      "end_time": 297.15,
-      "duration_sec": 2.67,
+      "start_time": 310.23,
+      "end_time": 311.43,
+      "duration_sec": 1.2,
       "video_frames": [
-        7070,
-        7080,
-        7090,
-        7100,
-        7110,
-        7120,
-        7130
+        7450,
+        7460,
+        7470
       ]
     },
     {
       "segment_id": "SEG170",
       "type": "speaking",
-      "start_time": 297.6,
-      "end_time": 297.96,
-      "duration_sec": 0.36,
+      "start_time": 311.49,
+      "end_time": 312.54,
+      "duration_sec": 1.05,
       "video_frames": [
-        7150
+        7480,
+        7490,
+        7500
       ]
     },
     {
       "segment_id": "SEG171",
       "type": "speaking",
-      "start_time": 298.14,
-      "end_time": 299.61,
-      "duration_sec": 1.47,
+      "start_time": 312.87,
+      "end_time": 313.92,
+      "duration_sec": 1.05,
       "video_frames": [
-        7160,
-        7170,
-        7180,
-        7190
+        7510,
+        7520,
+        7530
       ]
     },
     {
       "segment_id": "SEG172",
       "type": "speaking",
-      "start_time": 300.24,
-      "end_time": 300.36,
-      "duration_sec": 0.12,
-      "video_frames": []
+      "start_time": 314.1,
+      "end_time": 317.07,
+      "duration_sec": 2.97,
+      "video_frames": [
+        7540,
+        7550,
+        7560,
+        7570,
+        7580,
+        7590,
+        7600
+      ]
     },
     {
       "segment_id": "SEG173",
       "type": "speaking",
-      "start_time": 300.48,
-      "end_time": 303.18,
-      "duration_sec": 2.7,
+      "start_time": 317.37,
+      "end_time": 319.77,
+      "duration_sec": 2.4,
       "video_frames": [
-        7220,
-        7230,
-        7240,
-        7250,
-        7260,
-        7270
+        7620,
+        7630,
+        7640,
+        7650,
+        7660,
+        7670
       ]
     },
     {
       "segment_id": "SEG174",
       "type": "speaking",
-      "start_time": 303.21,
-      "end_time": 304.05,
-      "duration_sec": 0.84,
+      "start_time": 319.83,
+      "end_time": 320.01,
+      "duration_sec": 0.18,
       "video_frames": [
-        7280,
-        7290
+        7680
       ]
     },
     {
       "segment_id": "SEG175",
       "type": "speaking",
-      "start_time": 304.47,
-      "end_time": 307.2,
-      "duration_sec": 2.73,
-      "video_frames": [
-        7310,
-        7320,
-        7330,
-        7340,
-        7350,
-        7360,
-        7370
-      ]
+      "start_time": 321.72,
+      "end_time": 321.84,
+      "duration_sec": 0.12,
+      "video_frames": []
     },
     {
       "segment_id": "SEG176",
       "type": "speaking",
-      "start_time": 307.32,
-      "end_time": 307.53,
-      "duration_sec": 0.21,
-      "video_frames": [
-        7380
-      ]
+      "start_time": 324.24,
+      "end_time": 324.36,
+      "duration_sec": 0.12,
+      "video_frames": []
     },
     {
       "segment_id": "SEG177",
       "type": "speaking",
-      "start_time": 307.59,
-      "end_time": 308.49,
-      "duration_sec": 0.9,
+      "start_time": 324.51,
+      "end_time": 324.63,
+      "duration_sec": 0.12,
       "video_frames": [
-        7390,
-        7400
+        7790
       ]
     },
     {
       "segment_id": "SEG178",
       "type": "speaking",
-      "start_time": 308.52,
-      "end_time": 312.12,
-      "duration_sec": 3.6,
+      "start_time": 324.93,
+      "end_time": 325.05,
+      "duration_sec": 0.12,
       "video_frames": [
-        7410,
-        7420,
-        7430,
-        7440,
-        7450,
-        7460,
-        7470,
-        7480,
-        7490
+        7800
       ]
     },
     {
       "segment_id": "SEG179",
       "type": "speaking",
-      "start_time": 314.04,
-      "end_time": 314.13,
+      "start_time": 325.2,
+      "end_time": 325.29,
       "duration_sec": 0.09,
       "video_frames": []
     },
     {
       "segment_id": "SEG180",
       "type": "speaking",
-      "start_time": 314.22,
-      "end_time": 314.52,
-      "duration_sec": 0.3,
-      "video_frames": []
+      "start_time": 325.38,
+      "end_time": 325.47,
+      "duration_sec": 0.09,
+      "video_frames": [
+        7810
+      ]
     },
     {
       "segment_id": "SEG181",
       "type": "speaking",
-      "start_time": 314.58,
-      "end_time": 315.03,
-      "duration_sec": 0.45,
-      "video_frames": [
-        7550,
-        7560
-      ]
+      "start_time": 326.04,
+      "end_time": 326.13,
+      "duration_sec": 0.09,
+      "video_frames": []
     },
     {
       "segment_id": "SEG182",
       "type": "speaking",
-      "start_time": 315.06,
-      "end_time": 315.36,
-      "duration_sec": 0.3,
+      "start_time": 326.4,
+      "end_time": 326.49,
+      "duration_sec": 0.09,
       "video_frames": []
     },
     {
       "segment_id": "SEG183",
       "type": "speaking",
-      "start_time": 315.42,
-      "end_time": 315.51,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG184",
-      "type": "speaking",
-      "start_time": 316.08,
-      "end_time": 316.2,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG185",
-      "type": "speaking",
-      "start_time": 318.0,
-      "end_time": 318.09,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG186",
-      "type": "speaking",
-      "start_time": 318.84,
-      "end_time": 318.93,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG187",
-      "type": "speaking",
-      "start_time": 319.26,
-      "end_time": 321.36,
-      "duration_sec": 2.1,
+      "start_time": 326.64,
+      "end_time": 326.85,
+      "duration_sec": 0.21,
       "video_frames": [
-        7670,
-        7680,
-        7690,
-        7700,
-        7710
-      ]
-    },
-    {
-      "segment_id": "SEG188",
-      "type": "speaking",
-      "start_time": 321.42,
-      "end_time": 323.91,
-      "duration_sec": 2.49,
-      "video_frames": [
-        7720,
-        7730,
-        7740,
-        7750,
-        7760,
-        7770
-      ]
-    },
-    {
-      "segment_id": "SEG189",
-      "type": "speaking",
-      "start_time": 324.21,
-      "end_time": 325.2,
-      "duration_sec": 0.99,
-      "video_frames": [
-        7790,
-        7800
-      ]
-    },
-    {
-      "segment_id": "SEG190",
-      "type": "speaking",
-      "start_time": 325.23,
-      "end_time": 326.73,
-      "duration_sec": 1.5,
-      "video_frames": [
-        7810,
-        7820,
-        7830,
         7840
       ]
     },
     {
-      "segment_id": "SEG191",
+      "segment_id": "SEG184",
       "type": "speaking",
-      "start_time": 327.21,
-      "end_time": 329.73,
-      "duration_sec": 2.52,
+      "start_time": 327.09,
+      "end_time": 331.5,
+      "duration_sec": 4.41,
       "video_frames": [
         7860,
         7870,
         7880,
         7890,
         7900,
-        7910
-      ]
-    },
-    {
-      "segment_id": "SEG192",
-      "type": "speaking",
-      "start_time": 329.76,
-      "end_time": 331.65,
-      "duration_sec": 1.89,
-      "video_frames": [
+        7910,
         7920,
         7930,
         7940,
@@ -2251,236 +2179,142 @@
       ]
     },
     {
-      "segment_id": "SEG193",
+      "segment_id": "SEG185",
       "type": "speaking",
-      "start_time": 332.16,
-      "end_time": 333.36,
-      "duration_sec": 1.2,
+      "start_time": 331.77,
+      "end_time": 336.3,
+      "duration_sec": 4.53,
       "video_frames": [
+        7970,
         7980,
         7990,
-        8000
+        8000,
+        8010,
+        8020,
+        8030,
+        8040,
+        8050,
+        8060,
+        8070
       ]
     },
     {
-      "segment_id": "SEG194",
+      "segment_id": "SEG186",
       "type": "speaking",
-      "start_time": 333.45,
-      "end_time": 334.14,
-      "duration_sec": 0.69,
+      "start_time": 336.36,
+      "end_time": 339.15,
+      "duration_sec": 2.79,
       "video_frames": [
-        8010
+        8080,
+        8090,
+        8100,
+        8110,
+        8120,
+        8130
       ]
     },
     {
-      "segment_id": "SEG195",
+      "segment_id": "SEG187",
       "type": "speaking",
-      "start_time": 334.86,
-      "end_time": 335.34,
-      "duration_sec": 0.48,
-      "video_frames": [
-        8040
-      ]
-    },
-    {
-      "segment_id": "SEG196",
-      "type": "speaking",
-      "start_time": 335.67,
-      "end_time": 335.79,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG197",
-      "type": "speaking",
-      "start_time": 335.97,
-      "end_time": 336.09,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG198",
-      "type": "speaking",
-      "start_time": 336.57,
-      "end_time": 336.93,
-      "duration_sec": 0.36,
-      "video_frames": [
-        8080
-      ]
-    },
-    {
-      "segment_id": "SEG199",
-      "type": "speaking",
-      "start_time": 336.96,
-      "end_time": 337.35,
-      "duration_sec": 0.39,
-      "video_frames": [
-        8090
-      ]
-    },
-    {
-      "segment_id": "SEG200",
-      "type": "speaking",
-      "start_time": 337.5,
-      "end_time": 337.62,
-      "duration_sec": 0.12,
-      "video_frames": [
-        8100
-      ]
-    },
-    {
-      "segment_id": "SEG201",
-      "type": "speaking",
-      "start_time": 338.1,
-      "end_time": 338.28,
-      "duration_sec": 0.18,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG202",
-      "type": "speaking",
-      "start_time": 338.52,
-      "end_time": 338.64,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG203",
-      "type": "speaking",
-      "start_time": 338.88,
-      "end_time": 339.03,
-      "duration_sec": 0.15,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG204",
-      "type": "speaking",
-      "start_time": 339.33,
-      "end_time": 339.87,
-      "duration_sec": 0.54,
-      "video_frames": [
-        8150
-      ]
-    },
-    {
-      "segment_id": "SEG205",
-      "type": "speaking",
-      "start_time": 340.32,
-      "end_time": 340.41,
+      "start_time": 342.9,
+      "end_time": 342.99,
       "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG206",
-      "type": "speaking",
-      "start_time": 340.47,
-      "end_time": 343.05,
-      "duration_sec": 2.58,
       "video_frames": [
-        8180,
-        8190,
-        8200,
-        8210,
-        8220,
         8230
       ]
     },
     {
-      "segment_id": "SEG207",
+      "segment_id": "SEG188",
       "type": "speaking",
-      "start_time": 343.11,
-      "end_time": 345.18,
-      "duration_sec": 2.07,
+      "start_time": 343.35,
+      "end_time": 343.77,
+      "duration_sec": 0.42,
       "video_frames": [
-        8240,
-        8250,
-        8260,
-        8270,
+        8250
+      ]
+    },
+    {
+      "segment_id": "SEG189",
+      "type": "speaking",
+      "start_time": 343.92,
+      "end_time": 344.04,
+      "duration_sec": 0.12,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG190",
+      "type": "speaking",
+      "start_time": 344.79,
+      "end_time": 345.09,
+      "duration_sec": 0.3,
+      "video_frames": [
         8280
       ]
     },
     {
-      "segment_id": "SEG208",
+      "segment_id": "SEG191",
       "type": "speaking",
-      "start_time": 345.21,
-      "end_time": 347.22,
-      "duration_sec": 2.01,
+      "start_time": 345.3,
+      "end_time": 350.88,
+      "duration_sec": 5.58,
       "video_frames": [
         8290,
         8300,
         8310,
         8320,
-        8330
-      ]
-    },
-    {
-      "segment_id": "SEG209",
-      "type": "speaking",
-      "start_time": 347.7,
-      "end_time": 349.26,
-      "duration_sec": 1.56,
-      "video_frames": [
+        8330,
+        8340,
         8350,
         8360,
         8370,
-        8380
-      ]
-    },
-    {
-      "segment_id": "SEG210",
-      "type": "speaking",
-      "start_time": 349.59,
-      "end_time": 350.55,
-      "duration_sec": 0.96,
-      "video_frames": [
+        8380,
+        8390,
         8400,
-        8410
-      ]
-    },
-    {
-      "segment_id": "SEG211",
-      "type": "speaking",
-      "start_time": 350.82,
-      "end_time": 350.91,
-      "duration_sec": 0.09,
-      "video_frames": [
+        8410,
         8420
       ]
     },
     {
-      "segment_id": "SEG212",
+      "segment_id": "SEG192",
       "type": "speaking",
-      "start_time": 351.09,
-      "end_time": 352.35,
-      "duration_sec": 1.26,
+      "start_time": 350.94,
+      "end_time": 352.65,
+      "duration_sec": 1.71,
       "video_frames": [
         8430,
         8440,
-        8450
+        8450,
+        8460
       ]
     },
     {
-      "segment_id": "SEG213",
+      "segment_id": "SEG193",
       "type": "speaking",
-      "start_time": 352.38,
-      "end_time": 354.69,
-      "duration_sec": 2.31,
+      "start_time": 352.68,
+      "end_time": 353.31,
+      "duration_sec": 0.63,
       "video_frames": [
-        8460,
-        8470,
-        8480,
+        8470
+      ]
+    },
+    {
+      "segment_id": "SEG194",
+      "type": "speaking",
+      "start_time": 353.49,
+      "end_time": 353.67,
+      "duration_sec": 0.18,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG195",
+      "type": "speaking",
+      "start_time": 353.7,
+      "end_time": 357.06,
+      "duration_sec": 3.36,
+      "video_frames": [
         8490,
         8500,
-        8510
-      ]
-    },
-    {
-      "segment_id": "SEG214",
-      "type": "speaking",
-      "start_time": 354.9,
-      "end_time": 356.73,
-      "duration_sec": 1.83,
-      "video_frames": [
+        8510,
         8520,
         8530,
         8540,
@@ -2489,115 +2323,38 @@
       ]
     },
     {
-      "segment_id": "SEG215",
+      "segment_id": "SEG196",
       "type": "speaking",
-      "start_time": 357.06,
-      "end_time": 358.38,
-      "duration_sec": 1.32,
+      "start_time": 357.15,
+      "end_time": 359.01,
+      "duration_sec": 1.86,
       "video_frames": [
-        8570,
         8580,
         8590,
-        8600
+        8600,
+        8610
       ]
     },
     {
-      "segment_id": "SEG216",
+      "segment_id": "SEG197",
       "type": "speaking",
-      "start_time": 358.41,
-      "end_time": 358.65,
-      "duration_sec": 0.24,
+      "start_time": 361.71,
+      "end_time": 361.8,
+      "duration_sec": 0.09,
       "video_frames": []
     },
     {
-      "segment_id": "SEG217",
-      "type": "speaking",
-      "start_time": 358.89,
-      "end_time": 359.46,
-      "duration_sec": 0.57,
-      "video_frames": [
-        8620
-      ]
-    },
-    {
-      "segment_id": "SEG218",
-      "type": "speaking",
-      "start_time": 359.91,
-      "end_time": 360.0,
-      "duration_sec": 0.09,
-      "video_frames": [
-        8640
-      ]
-    },
-    {
-      "segment_id": "SEG219",
-      "type": "speaking",
-      "start_time": 360.12,
-      "end_time": 360.54,
-      "duration_sec": 0.42,
-      "video_frames": [
-        8650
-      ]
-    },
-    {
-      "segment_id": "SEG220",
+      "segment_id": "SEG198",
       "type": "speaking",
       "start_time": 361.92,
-      "end_time": 362.04,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG221",
-      "type": "speaking",
-      "start_time": 362.07,
-      "end_time": 362.46,
-      "duration_sec": 0.39,
+      "end_time": 362.1,
+      "duration_sec": 0.18,
       "video_frames": [
         8690
       ]
     },
     {
-      "segment_id": "SEG222",
-      "type": "speaking",
-      "start_time": 362.49,
-      "end_time": 363.12,
-      "duration_sec": 0.63,
-      "video_frames": [
-        8700,
-        8710
-      ]
-    },
-    {
-      "segment_id": "SEG223",
-      "type": "speaking",
-      "start_time": 363.15,
-      "end_time": 363.39,
-      "duration_sec": 0.24,
-      "video_frames": [
-        8720
-      ]
-    },
-    {
-      "segment_id": "SEG224",
-      "type": "speaking",
-      "start_time": 363.42,
-      "end_time": 363.78,
-      "duration_sec": 0.36,
-      "video_frames": [
-        8730
-      ]
-    },
-    {
-      "segment_id": "SEG225",
-      "type": "speaking",
-      "start_time": 364.26,
-      "end_time": 364.38,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG226",
+      "segment_id": "SEG199",
       "type": "speaking",
       "start_time": 364.56,
       "end_time": 364.68,
@@ -2607,78 +2364,77 @@
       ]
     },
     {
-      "segment_id": "SEG227",
+      "segment_id": "SEG200",
       "type": "speaking",
-      "start_time": 365.97,
-      "end_time": 366.24,
-      "duration_sec": 0.27,
+      "start_time": 364.77,
+      "end_time": 364.89,
+      "duration_sec": 0.12,
       "video_frames": []
     },
     {
-      "segment_id": "SEG228",
+      "segment_id": "SEG201",
       "type": "speaking",
-      "start_time": 367.2,
-      "end_time": 367.59,
-      "duration_sec": 0.39,
+      "start_time": 365.19,
+      "end_time": 368.34,
+      "duration_sec": 3.15,
       "video_frames": [
-        8820
+        8770,
+        8780,
+        8790,
+        8800,
+        8810,
+        8820,
+        8830,
+        8840
       ]
     },
     {
-      "segment_id": "SEG229",
+      "segment_id": "SEG202",
       "type": "speaking",
-      "start_time": 367.68,
-      "end_time": 369.9,
-      "duration_sec": 2.22,
+      "start_time": 368.7,
+      "end_time": 370.65,
+      "duration_sec": 1.95,
       "video_frames": [
-        8830,
-        8840,
         8850,
         8860,
-        8870
+        8870,
+        8880,
+        8890
       ]
     },
     {
-      "segment_id": "SEG230",
+      "segment_id": "SEG203",
       "type": "speaking",
-      "start_time": 370.02,
-      "end_time": 372.51,
-      "duration_sec": 2.49,
+      "start_time": 370.71,
+      "end_time": 373.62,
+      "duration_sec": 2.91,
       "video_frames": [
-        8890,
         8900,
         8910,
         8920,
         8930,
-        8940
-      ]
-    },
-    {
-      "segment_id": "SEG231",
-      "type": "speaking",
-      "start_time": 372.63,
-      "end_time": 372.9,
-      "duration_sec": 0.27,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG232",
-      "type": "speaking",
-      "start_time": 372.93,
-      "end_time": 373.56,
-      "duration_sec": 0.63,
-      "video_frames": [
+        8940,
+        8950,
         8960
       ]
     },
     {
-      "segment_id": "SEG233",
+      "segment_id": "SEG204",
       "type": "speaking",
-      "start_time": 374.01,
-      "end_time": 376.83,
-      "duration_sec": 2.82,
+      "start_time": 373.65,
+      "end_time": 374.07,
+      "duration_sec": 0.42,
       "video_frames": [
-        8980,
+        8970
+      ]
+    },
+    {
+      "segment_id": "SEG205",
+      "type": "speaking",
+      "start_time": 374.19,
+      "end_time": 376.92,
+      "duration_sec": 2.73,
+      "video_frames": [
         8990,
         9000,
         9010,
@@ -2688,1965 +2444,95 @@
       ]
     },
     {
-      "segment_id": "SEG234",
+      "segment_id": "SEG206",
       "type": "speaking",
-      "start_time": 377.22,
-      "end_time": 377.31,
+      "start_time": 377.19,
+      "end_time": 378.45,
+      "duration_sec": 1.26,
+      "video_frames": [
+        9060,
+        9070,
+        9080
+      ]
+    },
+    {
+      "segment_id": "SEG207",
+      "type": "speaking",
+      "start_time": 378.57,
+      "end_time": 378.66,
       "duration_sec": 0.09,
       "video_frames": []
     },
     {
-      "segment_id": "SEG235",
+      "segment_id": "SEG208",
       "type": "speaking",
-      "start_time": 377.94,
-      "end_time": 380.04,
-      "duration_sec": 2.1,
+      "start_time": 380.19,
+      "end_time": 380.28,
+      "duration_sec": 0.09,
+      "video_frames": []
+    },
+    {
+      "segment_id": "SEG209",
+      "type": "speaking",
+      "start_time": 380.55,
+      "end_time": 381.03,
+      "duration_sec": 0.48,
       "video_frames": [
-        9080,
-        9090,
-        9100,
-        9110,
-        9120
+        9140
       ]
     },
     {
-      "segment_id": "SEG236",
+      "segment_id": "SEG210",
       "type": "speaking",
-      "start_time": 381.42,
-      "end_time": 382.2,
-      "duration_sec": 0.78,
+      "start_time": 382.02,
+      "end_time": 382.14,
+      "duration_sec": 0.12,
       "video_frames": [
-        9160,
         9170
       ]
     },
     {
-      "segment_id": "SEG237",
+      "segment_id": "SEG211",
       "type": "speaking",
-      "start_time": 382.29,
-      "end_time": 382.41,
+      "start_time": 382.86,
+      "end_time": 382.98,
       "duration_sec": 0.12,
-      "video_frames": []
+      "video_frames": [
+        9190
+      ]
     },
     {
-      "segment_id": "SEG238",
+      "segment_id": "SEG212",
       "type": "speaking",
-      "start_time": 382.56,
-      "end_time": 385.89,
-      "duration_sec": 3.33,
+      "start_time": 383.22,
+      "end_time": 383.85,
+      "duration_sec": 0.63,
       "video_frames": [
-        9190,
         9200,
-        9210,
-        9220,
-        9230,
-        9240,
-        9250,
-        9260
+        9210
       ]
     },
     {
-      "segment_id": "SEG239",
+      "segment_id": "SEG213",
       "type": "speaking",
-      "start_time": 385.92,
-      "end_time": 386.01,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG240",
-      "type": "speaking",
-      "start_time": 386.04,
-      "end_time": 389.37,
-      "duration_sec": 3.33,
-      "video_frames": [
-        9270,
-        9280,
-        9290,
-        9300,
-        9310,
-        9320,
-        9330,
-        9340
-      ]
-    },
-    {
-      "segment_id": "SEG241",
-      "type": "speaking",
-      "start_time": 390.03,
-      "end_time": 391.08,
-      "duration_sec": 1.05,
-      "video_frames": [
-        9370,
-        9380
-      ]
-    },
-    {
-      "segment_id": "SEG242",
-      "type": "speaking",
-      "start_time": 391.2,
-      "end_time": 392.67,
-      "duration_sec": 1.47,
-      "video_frames": [
-        9390,
-        9400,
-        9410,
-        9420
-      ]
-    },
-    {
-      "segment_id": "SEG243",
-      "type": "speaking",
-      "start_time": 392.85,
-      "end_time": 394.35,
-      "duration_sec": 1.5,
-      "video_frames": [
-        9430,
-        9440,
-        9450,
-        9460
-      ]
-    },
-    {
-      "segment_id": "SEG244",
-      "type": "speaking",
-      "start_time": 394.41,
-      "end_time": 395.34,
-      "duration_sec": 0.93,
-      "video_frames": [
-        9470,
-        9480
-      ]
-    },
-    {
-      "segment_id": "SEG245",
-      "type": "speaking",
-      "start_time": 395.46,
-      "end_time": 395.88,
-      "duration_sec": 0.42,
-      "video_frames": [
-        9500
-      ]
-    },
-    {
-      "segment_id": "SEG246",
-      "type": "speaking",
-      "start_time": 395.94,
-      "end_time": 396.24,
-      "duration_sec": 0.3,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG247",
-      "type": "speaking",
-      "start_time": 398.25,
-      "end_time": 398.46,
-      "duration_sec": 0.21,
-      "video_frames": [
-        9560
-      ]
-    },
-    {
-      "segment_id": "SEG248",
-      "type": "speaking",
-      "start_time": 398.52,
-      "end_time": 398.61,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG249",
-      "type": "speaking",
-      "start_time": 398.67,
-      "end_time": 398.79,
-      "duration_sec": 0.12,
-      "video_frames": [
-        9570
-      ]
-    },
-    {
-      "segment_id": "SEG250",
-      "type": "speaking",
-      "start_time": 399.54,
-      "end_time": 399.99,
-      "duration_sec": 0.45,
-      "video_frames": [
-        9590
-      ]
-    },
-    {
-      "segment_id": "SEG251",
-      "type": "speaking",
-      "start_time": 400.05,
-      "end_time": 400.14,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG252",
-      "type": "speaking",
-      "start_time": 400.38,
-      "end_time": 401.01,
-      "duration_sec": 0.63,
-      "video_frames": [
-        9610,
-        9620
-      ]
-    },
-    {
-      "segment_id": "SEG253",
-      "type": "speaking",
-      "start_time": 401.07,
-      "end_time": 401.85,
-      "duration_sec": 0.78,
-      "video_frames": [
-        9630,
-        9640
-      ]
-    },
-    {
-      "segment_id": "SEG254",
-      "type": "speaking",
-      "start_time": 401.94,
-      "end_time": 405.78,
-      "duration_sec": 3.84,
-      "video_frames": [
-        9650,
-        9660,
-        9670,
-        9680,
-        9690,
-        9700,
-        9710,
-        9720,
-        9730
-      ]
-    },
-    {
-      "segment_id": "SEG255",
-      "type": "speaking",
-      "start_time": 406.35,
-      "end_time": 407.82,
-      "duration_sec": 1.47,
-      "video_frames": [
-        9760,
-        9770,
-        9780
-      ]
-    },
-    {
-      "segment_id": "SEG256",
-      "type": "speaking",
-      "start_time": 408.6,
-      "end_time": 410.49,
-      "duration_sec": 1.89,
-      "video_frames": [
-        9810,
-        9820,
-        9830,
-        9840,
-        9850
-      ]
-    },
-    {
-      "segment_id": "SEG257",
-      "type": "speaking",
-      "start_time": 410.76,
-      "end_time": 414.75,
-      "duration_sec": 3.99,
-      "video_frames": [
-        9860,
-        9870,
-        9880,
-        9890,
-        9900,
-        9910,
-        9920,
-        9930,
-        9940,
-        9950
-      ]
-    },
-    {
-      "segment_id": "SEG258",
-      "type": "speaking",
-      "start_time": 414.96,
-      "end_time": 415.11,
-      "duration_sec": 0.15,
-      "video_frames": [
-        9960
-      ]
-    },
-    {
-      "segment_id": "SEG259",
-      "type": "speaking",
-      "start_time": 415.29,
-      "end_time": 415.89,
-      "duration_sec": 0.6,
-      "video_frames": [
-        9970,
-        9980
-      ]
-    },
-    {
-      "segment_id": "SEG260",
-      "type": "speaking",
-      "start_time": 415.95,
-      "end_time": 417.33,
-      "duration_sec": 1.38,
-      "video_frames": [
-        9990,
-        10000,
-        10010
-      ]
-    },
-    {
-      "segment_id": "SEG261",
-      "type": "speaking",
-      "start_time": 417.36,
-      "end_time": 419.73,
-      "duration_sec": 2.37,
-      "video_frames": [
-        10020,
-        10030,
-        10040,
-        10050,
-        10060,
-        10070
-      ]
-    },
-    {
-      "segment_id": "SEG262",
-      "type": "speaking",
-      "start_time": 426.06,
-      "end_time": 426.15,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG263",
-      "type": "speaking",
-      "start_time": 426.66,
-      "end_time": 427.08,
-      "duration_sec": 0.42,
-      "video_frames": [
-        10240
-      ]
-    },
-    {
-      "segment_id": "SEG264",
-      "type": "speaking",
-      "start_time": 427.11,
-      "end_time": 427.77,
-      "duration_sec": 0.66,
-      "video_frames": [
-        10260
-      ]
-    },
-    {
-      "segment_id": "SEG265",
-      "type": "speaking",
-      "start_time": 428.22,
-      "end_time": 432.24,
-      "duration_sec": 4.02,
-      "video_frames": [
-        10280,
-        10290,
-        10300,
-        10310,
-        10320,
-        10330,
-        10340,
-        10350,
-        10360,
-        10370
-      ]
-    },
-    {
-      "segment_id": "SEG266",
-      "type": "speaking",
-      "start_time": 432.72,
-      "end_time": 435.93,
-      "duration_sec": 3.21,
-      "video_frames": [
-        10390,
-        10400,
-        10410,
-        10420,
-        10430,
-        10440,
-        10450,
-        10460
-      ]
-    },
-    {
-      "segment_id": "SEG267",
-      "type": "speaking",
-      "start_time": 436.14,
-      "end_time": 437.19,
-      "duration_sec": 1.05,
-      "video_frames": [
-        10470,
-        10480,
-        10490
-      ]
-    },
-    {
-      "segment_id": "SEG268",
-      "type": "speaking",
-      "start_time": 437.46,
-      "end_time": 438.18,
-      "duration_sec": 0.72,
-      "video_frames": [
-        10500,
-        10510
-      ]
-    },
-    {
-      "segment_id": "SEG269",
-      "type": "speaking",
-      "start_time": 440.79,
-      "end_time": 440.88,
-      "duration_sec": 0.09,
-      "video_frames": [
-        10580
-      ]
-    },
-    {
-      "segment_id": "SEG270",
-      "type": "speaking",
-      "start_time": 441.03,
-      "end_time": 441.12,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG271",
-      "type": "speaking",
-      "start_time": 441.18,
-      "end_time": 441.27,
-      "duration_sec": 0.09,
-      "video_frames": [
-        10590
-      ]
-    },
-    {
-      "segment_id": "SEG272",
-      "type": "speaking",
-      "start_time": 441.75,
-      "end_time": 443.43,
-      "duration_sec": 1.68,
-      "video_frames": [
-        10610,
-        10620,
-        10630,
-        10640
-      ]
-    },
-    {
-      "segment_id": "SEG273",
-      "type": "speaking",
-      "start_time": 443.88,
-      "end_time": 444.63,
-      "duration_sec": 0.75,
-      "video_frames": [
-        10660,
-        10670
-      ]
-    },
-    {
-      "segment_id": "SEG274",
-      "type": "speaking",
-      "start_time": 444.87,
-      "end_time": 445.02,
-      "duration_sec": 0.15,
-      "video_frames": [
-        10680
-      ]
-    },
-    {
-      "segment_id": "SEG275",
-      "type": "speaking",
-      "start_time": 445.14,
-      "end_time": 446.67,
-      "duration_sec": 1.53,
-      "video_frames": [
-        10690,
-        10700,
-        10710,
-        10720
-      ]
-    },
-    {
-      "segment_id": "SEG276",
-      "type": "speaking",
-      "start_time": 446.82,
-      "end_time": 446.97,
-      "duration_sec": 0.15,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG277",
-      "type": "speaking",
-      "start_time": 447.0,
-      "end_time": 448.17,
-      "duration_sec": 1.17,
-      "video_frames": [
-        10730,
-        10740,
-        10750
-      ]
-    },
-    {
-      "segment_id": "SEG278",
-      "type": "speaking",
-      "start_time": 448.26,
-      "end_time": 449.01,
-      "duration_sec": 0.75,
-      "video_frames": [
-        10760,
-        10770
-      ]
-    },
-    {
-      "segment_id": "SEG279",
-      "type": "speaking",
-      "start_time": 449.94,
-      "end_time": 450.48,
-      "duration_sec": 0.54,
-      "video_frames": [
-        10800,
-        10810
-      ]
-    },
-    {
-      "segment_id": "SEG280",
-      "type": "speaking",
-      "start_time": 450.6,
-      "end_time": 450.69,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG281",
-      "type": "speaking",
-      "start_time": 450.75,
-      "end_time": 453.12,
-      "duration_sec": 2.37,
-      "video_frames": [
-        10820,
-        10830,
-        10840,
-        10850,
-        10860,
-        10870
-      ]
-    },
-    {
-      "segment_id": "SEG282",
-      "type": "speaking",
-      "start_time": 453.51,
-      "end_time": 454.44,
-      "duration_sec": 0.93,
-      "video_frames": [
-        10890,
-        10900
-      ]
-    },
-    {
-      "segment_id": "SEG283",
-      "type": "speaking",
-      "start_time": 454.59,
-      "end_time": 456.69,
-      "duration_sec": 2.1,
-      "video_frames": [
-        10920,
-        10930,
-        10940,
-        10950,
-        10960
-      ]
-    },
-    {
-      "segment_id": "SEG284",
-      "type": "speaking",
-      "start_time": 456.87,
-      "end_time": 459.81,
-      "duration_sec": 2.94,
-      "video_frames": [
-        10970,
-        10980,
-        10990,
-        11000,
-        11010,
-        11020,
-        11030
-      ]
-    },
-    {
-      "segment_id": "SEG285",
-      "type": "speaking",
-      "start_time": 460.08,
-      "end_time": 460.23,
-      "duration_sec": 0.15,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG286",
-      "type": "speaking",
-      "start_time": 460.47,
-      "end_time": 461.85,
-      "duration_sec": 1.38,
-      "video_frames": [
-        11060,
-        11070,
-        11080
-      ]
-    },
-    {
-      "segment_id": "SEG287",
-      "type": "speaking",
-      "start_time": 461.91,
-      "end_time": 465.57,
-      "duration_sec": 3.66,
-      "video_frames": [
-        11090,
-        11100,
-        11110,
-        11120,
-        11130,
-        11140,
-        11150,
-        11160,
-        11170
-      ]
-    },
-    {
-      "segment_id": "SEG288",
-      "type": "speaking",
-      "start_time": 466.14,
-      "end_time": 467.28,
-      "duration_sec": 1.14,
-      "video_frames": [
-        11190,
-        11200,
-        11210
-      ]
-    },
-    {
-      "segment_id": "SEG289",
-      "type": "speaking",
-      "start_time": 467.4,
-      "end_time": 469.08,
-      "duration_sec": 1.68,
-      "video_frames": [
-        11220,
-        11230,
-        11240,
-        11250
-      ]
-    },
-    {
-      "segment_id": "SEG290",
-      "type": "speaking",
-      "start_time": 469.11,
-      "end_time": 470.43,
-      "duration_sec": 1.32,
-      "video_frames": [
-        11260,
-        11270,
-        11280,
-        11290
-      ]
-    },
-    {
-      "segment_id": "SEG291",
-      "type": "speaking",
-      "start_time": 470.52,
-      "end_time": 471.42,
-      "duration_sec": 0.9,
-      "video_frames": [
-        11300,
-        11310
-      ]
-    },
-    {
-      "segment_id": "SEG292",
-      "type": "speaking",
-      "start_time": 471.93,
-      "end_time": 472.74,
-      "duration_sec": 0.81,
-      "video_frames": [
-        11330,
-        11340
-      ]
-    },
-    {
-      "segment_id": "SEG293",
-      "type": "speaking",
-      "start_time": 477.63,
-      "end_time": 477.93,
-      "duration_sec": 0.3,
-      "video_frames": [
-        11470
-      ]
-    },
-    {
-      "segment_id": "SEG294",
-      "type": "speaking",
-      "start_time": 478.29,
-      "end_time": 479.76,
-      "duration_sec": 1.47,
-      "video_frames": [
-        11480,
-        11490,
-        11500,
-        11510
-      ]
-    },
-    {
-      "segment_id": "SEG295",
-      "type": "speaking",
-      "start_time": 480.03,
-      "end_time": 483.27,
-      "duration_sec": 3.24,
-      "video_frames": [
-        11530,
-        11540,
-        11550,
-        11560,
-        11570,
-        11580,
-        11590
-      ]
-    },
-    {
-      "segment_id": "SEG296",
-      "type": "speaking",
-      "start_time": 483.48,
-      "end_time": 483.69,
-      "duration_sec": 0.21,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG297",
-      "type": "speaking",
-      "start_time": 483.93,
-      "end_time": 485.01,
-      "duration_sec": 1.08,
-      "video_frames": [
-        11620,
-        11630,
-        11640
-      ]
-    },
-    {
-      "segment_id": "SEG298",
-      "type": "speaking",
-      "start_time": 485.04,
-      "end_time": 485.67,
-      "duration_sec": 0.63,
-      "video_frames": [
-        11650
-      ]
-    },
-    {
-      "segment_id": "SEG299",
-      "type": "speaking",
-      "start_time": 485.91,
-      "end_time": 486.24,
-      "duration_sec": 0.33,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG300",
-      "type": "speaking",
-      "start_time": 486.57,
-      "end_time": 487.11,
-      "duration_sec": 0.54,
-      "video_frames": [
-        11680,
-        11690
-      ]
-    },
-    {
-      "segment_id": "SEG301",
-      "type": "speaking",
-      "start_time": 487.29,
-      "end_time": 487.65,
-      "duration_sec": 0.36,
-      "video_frames": [
-        11700
-      ]
-    },
-    {
-      "segment_id": "SEG302",
-      "type": "speaking",
-      "start_time": 487.74,
-      "end_time": 489.06,
-      "duration_sec": 1.32,
-      "video_frames": [
-        11710,
-        11720,
-        11730
-      ]
-    },
-    {
-      "segment_id": "SEG303",
-      "type": "speaking",
-      "start_time": 489.09,
-      "end_time": 490.17,
-      "duration_sec": 1.08,
-      "video_frames": [
-        11740,
-        11750,
-        11760
-      ]
-    },
-    {
-      "segment_id": "SEG304",
-      "type": "speaking",
-      "start_time": 490.32,
-      "end_time": 490.44,
-      "duration_sec": 0.12,
-      "video_frames": [
-        11770
-      ]
-    },
-    {
-      "segment_id": "SEG305",
-      "type": "speaking",
-      "start_time": 492.69,
-      "end_time": 492.81,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG306",
-      "type": "speaking",
-      "start_time": 492.99,
-      "end_time": 493.11,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG307",
-      "type": "speaking",
-      "start_time": 493.26,
-      "end_time": 493.38,
-      "duration_sec": 0.12,
-      "video_frames": [
-        11840
-      ]
-    },
-    {
-      "segment_id": "SEG308",
-      "type": "speaking",
-      "start_time": 493.44,
-      "end_time": 493.65,
-      "duration_sec": 0.21,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG309",
-      "type": "speaking",
-      "start_time": 493.71,
-      "end_time": 493.8,
-      "duration_sec": 0.09,
-      "video_frames": [
-        11850
-      ]
-    },
-    {
-      "segment_id": "SEG310",
-      "type": "speaking",
-      "start_time": 494.04,
-      "end_time": 494.28,
-      "duration_sec": 0.24,
-      "video_frames": [
-        11860
-      ]
-    },
-    {
-      "segment_id": "SEG311",
-      "type": "speaking",
-      "start_time": 494.4,
-      "end_time": 494.49,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG312",
-      "type": "speaking",
-      "start_time": 494.73,
-      "end_time": 494.82,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG313",
-      "type": "speaking",
-      "start_time": 494.85,
-      "end_time": 495.18,
-      "duration_sec": 0.33,
-      "video_frames": [
-        11880
-      ]
-    },
-    {
-      "segment_id": "SEG314",
-      "type": "speaking",
-      "start_time": 495.24,
-      "end_time": 495.42,
-      "duration_sec": 0.18,
-      "video_frames": [
-        11890
-      ]
-    },
-    {
-      "segment_id": "SEG315",
-      "type": "speaking",
-      "start_time": 496.02,
-      "end_time": 496.11,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG316",
-      "type": "speaking",
-      "start_time": 496.26,
-      "end_time": 496.38,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG317",
-      "type": "speaking",
-      "start_time": 496.47,
-      "end_time": 496.59,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG318",
-      "type": "speaking",
-      "start_time": 496.62,
-      "end_time": 497.61,
-      "duration_sec": 0.99,
-      "video_frames": [
-        11920,
-        11930,
-        11940
-      ]
-    },
-    {
-      "segment_id": "SEG319",
-      "type": "speaking",
-      "start_time": 497.64,
-      "end_time": 498.12,
+      "start_time": 384.36,
+      "end_time": 384.84,
       "duration_sec": 0.48,
       "video_frames": [
-        11950
+        9230
       ]
     },
     {
-      "segment_id": "SEG320",
+      "segment_id": "SEG214",
       "type": "speaking",
-      "start_time": 498.15,
-      "end_time": 498.6,
-      "duration_sec": 0.45,
-      "video_frames": [
-        11960
-      ]
-    },
-    {
-      "segment_id": "SEG321",
-      "type": "speaking",
-      "start_time": 498.84,
-      "end_time": 498.96,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG322",
-      "type": "speaking",
-      "start_time": 499.47,
-      "end_time": 501.96,
-      "duration_sec": 2.49,
-      "video_frames": [
-        11990,
-        12000,
-        12010,
-        12020,
-        12030,
-        12040
-      ]
-    },
-    {
-      "segment_id": "SEG323",
-      "type": "speaking",
-      "start_time": 502.05,
-      "end_time": 503.22,
-      "duration_sec": 1.17,
-      "video_frames": [
-        12050,
-        12060,
-        12070
-      ]
-    },
-    {
-      "segment_id": "SEG324",
-      "type": "speaking",
-      "start_time": 503.28,
-      "end_time": 503.94,
-      "duration_sec": 0.66,
-      "video_frames": [
-        12080,
-        12090
-      ]
-    },
-    {
-      "segment_id": "SEG325",
-      "type": "speaking",
-      "start_time": 504.24,
-      "end_time": 504.33,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG326",
-      "type": "speaking",
-      "start_time": 504.78,
-      "end_time": 504.87,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG327",
-      "type": "speaking",
-      "start_time": 505.38,
-      "end_time": 507.06,
-      "duration_sec": 1.68,
-      "video_frames": [
-        12130,
-        12140,
-        12150,
-        12160
-      ]
-    },
-    {
-      "segment_id": "SEG328",
-      "type": "speaking",
-      "start_time": 507.27,
-      "end_time": 507.39,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG329",
-      "type": "speaking",
-      "start_time": 507.51,
-      "end_time": 508.74,
-      "duration_sec": 1.23,
-      "video_frames": [
-        12190,
-        12200
-      ]
-    },
-    {
-      "segment_id": "SEG330",
-      "type": "speaking",
-      "start_time": 508.89,
-      "end_time": 512.82,
-      "duration_sec": 3.93,
-      "video_frames": [
-        12220,
-        12230,
-        12240,
-        12250,
-        12260,
-        12270,
-        12280,
-        12290,
-        12300
-      ]
-    },
-    {
-      "segment_id": "SEG331",
-      "type": "speaking",
-      "start_time": 513.27,
-      "end_time": 513.96,
-      "duration_sec": 0.69,
-      "video_frames": [
-        12320,
-        12330
-      ]
-    },
-    {
-      "segment_id": "SEG332",
-      "type": "speaking",
-      "start_time": 515.91,
-      "end_time": 516.0,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG333",
-      "type": "speaking",
-      "start_time": 519.24,
-      "end_time": 519.6,
+      "start_time": 384.93,
+      "end_time": 385.29,
       "duration_sec": 0.36,
       "video_frames": [
-        12470
+        9240
       ]
-    },
-    {
-      "segment_id": "SEG334",
-      "type": "speaking",
-      "start_time": 519.84,
-      "end_time": 522.27,
-      "duration_sec": 2.43,
-      "video_frames": [
-        12480,
-        12490,
-        12500,
-        12510,
-        12520,
-        12530
-      ]
-    },
-    {
-      "segment_id": "SEG335",
-      "type": "speaking",
-      "start_time": 522.42,
-      "end_time": 523.71,
-      "duration_sec": 1.29,
-      "video_frames": [
-        12540,
-        12550,
-        12560
-      ]
-    },
-    {
-      "segment_id": "SEG336",
-      "type": "speaking",
-      "start_time": 524.01,
-      "end_time": 526.8,
-      "duration_sec": 2.79,
-      "video_frames": [
-        12580,
-        12590,
-        12600,
-        12610,
-        12620,
-        12630,
-        12640
-      ]
-    },
-    {
-      "segment_id": "SEG337",
-      "type": "speaking",
-      "start_time": 526.92,
-      "end_time": 527.64,
-      "duration_sec": 0.72,
-      "video_frames": [
-        12650,
-        12660
-      ]
-    },
-    {
-      "segment_id": "SEG338",
-      "type": "speaking",
-      "start_time": 528.48,
-      "end_time": 529.23,
-      "duration_sec": 0.75,
-      "video_frames": [
-        12690,
-        12700
-      ]
-    },
-    {
-      "segment_id": "SEG339",
-      "type": "speaking",
-      "start_time": 529.53,
-      "end_time": 530.64,
-      "duration_sec": 1.11,
-      "video_frames": [
-        12710,
-        12720,
-        12730
-      ]
-    },
-    {
-      "segment_id": "SEG340",
-      "type": "speaking",
-      "start_time": 530.67,
-      "end_time": 532.86,
-      "duration_sec": 2.19,
-      "video_frames": [
-        12740,
-        12750,
-        12760,
-        12770,
-        12780
-      ]
-    },
-    {
-      "segment_id": "SEG341",
-      "type": "speaking",
-      "start_time": 533.13,
-      "end_time": 537.42,
-      "duration_sec": 4.29,
-      "video_frames": [
-        12800,
-        12810,
-        12820,
-        12830,
-        12840,
-        12850,
-        12860,
-        12870,
-        12880,
-        12890
-      ]
-    },
-    {
-      "segment_id": "SEG342",
-      "type": "speaking",
-      "start_time": 537.69,
-      "end_time": 537.81,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG343",
-      "type": "speaking",
-      "start_time": 537.84,
-      "end_time": 539.4,
-      "duration_sec": 1.56,
-      "video_frames": [
-        12910,
-        12920,
-        12930,
-        12940
-      ]
-    },
-    {
-      "segment_id": "SEG344",
-      "type": "speaking",
-      "start_time": 541.08,
-      "end_time": 541.2,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG345",
-      "type": "speaking",
-      "start_time": 542.13,
-      "end_time": 542.25,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG346",
-      "type": "speaking",
-      "start_time": 542.49,
-      "end_time": 543.63,
-      "duration_sec": 1.14,
-      "video_frames": [
-        13020,
-        13030,
-        13040
-      ]
-    },
-    {
-      "segment_id": "SEG347",
-      "type": "speaking",
-      "start_time": 543.66,
-      "end_time": 544.23,
-      "duration_sec": 0.57,
-      "video_frames": [
-        13050,
-        13060
-      ]
-    },
-    {
-      "segment_id": "SEG348",
-      "type": "speaking",
-      "start_time": 544.29,
-      "end_time": 544.47,
-      "duration_sec": 0.18,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG349",
-      "type": "speaking",
-      "start_time": 544.5,
-      "end_time": 545.61,
-      "duration_sec": 1.11,
-      "video_frames": [
-        13070,
-        13080,
-        13090
-      ]
-    },
-    {
-      "segment_id": "SEG350",
-      "type": "speaking",
-      "start_time": 545.85,
-      "end_time": 546.57,
-      "duration_sec": 0.72,
-      "video_frames": [
-        13110
-      ]
-    },
-    {
-      "segment_id": "SEG351",
-      "type": "speaking",
-      "start_time": 546.6,
-      "end_time": 548.61,
-      "duration_sec": 2.01,
-      "video_frames": [
-        13120,
-        13130,
-        13140,
-        13150,
-        13160
-      ]
-    },
-    {
-      "segment_id": "SEG352",
-      "type": "speaking",
-      "start_time": 548.79,
-      "end_time": 550.83,
-      "duration_sec": 2.04,
-      "video_frames": [
-        13180,
-        13190,
-        13200,
-        13210
-      ]
-    },
-    {
-      "segment_id": "SEG353",
-      "type": "speaking",
-      "start_time": 550.86,
-      "end_time": 551.76,
-      "duration_sec": 0.9,
-      "video_frames": [
-        13230,
-        13240
-      ]
-    },
-    {
-      "segment_id": "SEG354",
-      "type": "speaking",
-      "start_time": 552.21,
-      "end_time": 552.93,
-      "duration_sec": 0.72,
-      "video_frames": [
-        13260,
-        13270
-      ]
-    },
-    {
-      "segment_id": "SEG355",
-      "type": "speaking",
-      "start_time": 553.17,
-      "end_time": 555.09,
-      "duration_sec": 1.92,
-      "video_frames": [
-        13280,
-        13290,
-        13300,
-        13310,
-        13320
-      ]
-    },
-    {
-      "segment_id": "SEG356",
-      "type": "speaking",
-      "start_time": 555.51,
-      "end_time": 556.62,
-      "duration_sec": 1.11,
-      "video_frames": [
-        13340,
-        13350
-      ]
-    },
-    {
-      "segment_id": "SEG357",
-      "type": "speaking",
-      "start_time": 556.71,
-      "end_time": 557.67,
-      "duration_sec": 0.96,
-      "video_frames": [
-        13370,
-        13380
-      ]
-    },
-    {
-      "segment_id": "SEG358",
-      "type": "speaking",
-      "start_time": 558.54,
-      "end_time": 559.86,
-      "duration_sec": 1.32,
-      "video_frames": [
-        13410,
-        13420,
-        13430
-      ]
-    },
-    {
-      "segment_id": "SEG359",
-      "type": "speaking",
-      "start_time": 560.07,
-      "end_time": 560.19,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG360",
-      "type": "speaking",
-      "start_time": 560.58,
-      "end_time": 562.14,
-      "duration_sec": 1.56,
-      "video_frames": [
-        13460,
-        13470,
-        13480,
-        13490
-      ]
-    },
-    {
-      "segment_id": "SEG361",
-      "type": "speaking",
-      "start_time": 562.59,
-      "end_time": 562.89,
-      "duration_sec": 0.3,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG362",
-      "type": "speaking",
-      "start_time": 562.95,
-      "end_time": 563.1,
-      "duration_sec": 0.15,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG363",
-      "type": "speaking",
-      "start_time": 568.11,
-      "end_time": 568.44,
-      "duration_sec": 0.33,
-      "video_frames": [
-        13640
-      ]
-    },
-    {
-      "segment_id": "SEG364",
-      "type": "speaking",
-      "start_time": 568.56,
-      "end_time": 568.74,
-      "duration_sec": 0.18,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG365",
-      "type": "speaking",
-      "start_time": 568.86,
-      "end_time": 568.95,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG366",
-      "type": "speaking",
-      "start_time": 569.04,
-      "end_time": 569.13,
-      "duration_sec": 0.09,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG367",
-      "type": "speaking",
-      "start_time": 569.19,
-      "end_time": 573.42,
-      "duration_sec": 4.23,
-      "video_frames": [
-        13670,
-        13680,
-        13690,
-        13700,
-        13710,
-        13720,
-        13730,
-        13740,
-        13750,
-        13760
-      ]
-    },
-    {
-      "segment_id": "SEG368",
-      "type": "speaking",
-      "start_time": 574.02,
-      "end_time": 574.71,
-      "duration_sec": 0.69,
-      "video_frames": [
-        13780,
-        13790
-      ]
-    },
-    {
-      "segment_id": "SEG369",
-      "type": "speaking",
-      "start_time": 574.83,
-      "end_time": 577.86,
-      "duration_sec": 3.03,
-      "video_frames": [
-        13800,
-        13810,
-        13820,
-        13830,
-        13840,
-        13850,
-        13860
-      ]
-    },
-    {
-      "segment_id": "SEG370",
-      "type": "speaking",
-      "start_time": 578.28,
-      "end_time": 578.82,
-      "duration_sec": 0.54,
-      "video_frames": [
-        13880,
-        13890
-      ]
-    },
-    {
-      "segment_id": "SEG371",
-      "type": "speaking",
-      "start_time": 579.24,
-      "end_time": 580.77,
-      "duration_sec": 1.53,
-      "video_frames": [
-        13910,
-        13920,
-        13930
-      ]
-    },
-    {
-      "segment_id": "SEG372",
-      "type": "speaking",
-      "start_time": 581.25,
-      "end_time": 581.97,
-      "duration_sec": 0.72,
-      "video_frames": [
-        13950,
-        13960
-      ]
-    },
-    {
-      "segment_id": "SEG373",
-      "type": "speaking",
-      "start_time": 582.0,
-      "end_time": 584.61,
-      "duration_sec": 2.61,
-      "video_frames": [
-        13970,
-        13980,
-        13990,
-        14000,
-        14010,
-        14020,
-        14030
-      ]
-    },
-    {
-      "segment_id": "SEG374",
-      "type": "speaking",
-      "start_time": 584.91,
-      "end_time": 586.17,
-      "duration_sec": 1.26,
-      "video_frames": [
-        14040,
-        14050,
-        14060
-      ]
-    },
-    {
-      "segment_id": "SEG375",
-      "type": "speaking",
-      "start_time": 586.35,
-      "end_time": 586.65,
-      "duration_sec": 0.3,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG376",
-      "type": "speaking",
-      "start_time": 590.52,
-      "end_time": 590.64,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG377",
-      "type": "speaking",
-      "start_time": 590.76,
-      "end_time": 590.88,
-      "duration_sec": 0.12,
-      "video_frames": [
-        14180
-      ]
-    },
-    {
-      "segment_id": "SEG378",
-      "type": "speaking",
-      "start_time": 591.03,
-      "end_time": 591.42,
-      "duration_sec": 0.39,
-      "video_frames": [
-        14190
-      ]
-    },
-    {
-      "segment_id": "SEG379",
-      "type": "speaking",
-      "start_time": 592.11,
-      "end_time": 592.59,
-      "duration_sec": 0.48,
-      "video_frames": [
-        14220
-      ]
-    },
-    {
-      "segment_id": "SEG380",
-      "type": "speaking",
-      "start_time": 592.86,
-      "end_time": 593.67,
-      "duration_sec": 0.81,
-      "video_frames": [
-        14230,
-        14240
-      ]
-    },
-    {
-      "segment_id": "SEG381",
-      "type": "speaking",
-      "start_time": 593.7,
-      "end_time": 594.21,
-      "duration_sec": 0.51,
-      "video_frames": [
-        14250,
-        14260
-      ]
-    },
-    {
-      "segment_id": "SEG382",
-      "type": "speaking",
-      "start_time": 594.42,
-      "end_time": 595.2,
-      "duration_sec": 0.78,
-      "video_frames": [
-        14270,
-        14280
-      ]
-    },
-    {
-      "segment_id": "SEG383",
-      "type": "speaking",
-      "start_time": 596.1,
-      "end_time": 602.04,
-      "duration_sec": 5.94,
-      "video_frames": [
-        14310,
-        14320,
-        14330,
-        14340,
-        14350,
-        14360,
-        14370,
-        14380,
-        14390,
-        14400,
-        14410,
-        14420,
-        14430,
-        14440
-      ]
-    },
-    {
-      "segment_id": "SEG384",
-      "type": "speaking",
-      "start_time": 602.43,
-      "end_time": 603.54,
-      "duration_sec": 1.11,
-      "video_frames": [
-        14460,
-        14470,
-        14480
-      ]
-    },
-    {
-      "segment_id": "SEG385",
-      "type": "speaking",
-      "start_time": 603.81,
-      "end_time": 605.55,
-      "duration_sec": 1.74,
-      "video_frames": [
-        14500,
-        14510,
-        14520,
-        14530
-      ]
-    },
-    {
-      "segment_id": "SEG386",
-      "type": "speaking",
-      "start_time": 606.0,
-      "end_time": 606.84,
-      "duration_sec": 0.84,
-      "video_frames": [
-        14550,
-        14560
-      ]
-    },
-    {
-      "segment_id": "SEG387",
-      "type": "speaking",
-      "start_time": 607.53,
-      "end_time": 610.62,
-      "duration_sec": 3.09,
-      "video_frames": [
-        14590,
-        14600,
-        14610,
-        14620,
-        14630,
-        14640,
-        14650
-      ]
-    },
-    {
-      "segment_id": "SEG388",
-      "type": "speaking",
-      "start_time": 613.02,
-      "end_time": 613.17,
-      "duration_sec": 0.15,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG389",
-      "type": "speaking",
-      "start_time": 613.71,
-      "end_time": 613.8,
-      "duration_sec": 0.09,
-      "video_frames": [
-        14730
-      ]
-    },
-    {
-      "segment_id": "SEG390",
-      "type": "speaking",
-      "start_time": 614.1,
-      "end_time": 614.25,
-      "duration_sec": 0.15,
-      "video_frames": [
-        14740
-      ]
-    },
-    {
-      "segment_id": "SEG391",
-      "type": "speaking",
-      "start_time": 614.7,
-      "end_time": 615.15,
-      "duration_sec": 0.45,
-      "video_frames": [
-        14760
-      ]
-    },
-    {
-      "segment_id": "SEG392",
-      "type": "speaking",
-      "start_time": 615.18,
-      "end_time": 617.67,
-      "duration_sec": 2.49,
-      "video_frames": [
-        14770,
-        14780,
-        14790,
-        14800,
-        14810,
-        14820
-      ]
-    },
-    {
-      "segment_id": "SEG393",
-      "type": "speaking",
-      "start_time": 617.7,
-      "end_time": 619.17,
-      "duration_sec": 1.47,
-      "video_frames": [
-        14830,
-        14840,
-        14850,
-        14860
-      ]
-    },
-    {
-      "segment_id": "SEG394",
-      "type": "speaking",
-      "start_time": 619.53,
-      "end_time": 620.64,
-      "duration_sec": 1.11,
-      "video_frames": [
-        14870,
-        14880,
-        14890
-      ]
-    },
-    {
-      "segment_id": "SEG395",
-      "type": "speaking",
-      "start_time": 622.26,
-      "end_time": 627.03,
-      "duration_sec": 4.77,
-      "video_frames": [
-        14940,
-        14950,
-        14960,
-        14970,
-        14980,
-        14990,
-        15000,
-        15010,
-        15020,
-        15030,
-        15040
-      ]
-    },
-    {
-      "segment_id": "SEG396",
-      "type": "speaking",
-      "start_time": 627.54,
-      "end_time": 630.69,
-      "duration_sec": 3.15,
-      "video_frames": [
-        15070,
-        15080,
-        15090,
-        15100,
-        15110,
-        15120,
-        15130
-      ]
-    },
-    {
-      "segment_id": "SEG397",
-      "type": "speaking",
-      "start_time": 630.72,
-      "end_time": 632.55,
-      "duration_sec": 1.83,
-      "video_frames": [
-        15140,
-        15150,
-        15160,
-        15170,
-        15180
-      ]
-    },
-    {
-      "segment_id": "SEG398",
-      "type": "speaking",
-      "start_time": 632.58,
-      "end_time": 632.73,
-      "duration_sec": 0.15,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG399",
-      "type": "speaking",
-      "start_time": 634.74,
-      "end_time": 634.89,
-      "duration_sec": 0.15,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG400",
-      "type": "speaking",
-      "start_time": 635.07,
-      "end_time": 635.31,
-      "duration_sec": 0.24,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG401",
-      "type": "speaking",
-      "start_time": 635.4,
-      "end_time": 635.52,
-      "duration_sec": 0.12,
-      "video_frames": [
-        15250
-      ]
-    },
-    {
-      "segment_id": "SEG402",
-      "type": "speaking",
-      "start_time": 636.72,
-      "end_time": 637.26,
-      "duration_sec": 0.54,
-      "video_frames": [
-        15290
-      ]
-    },
-    {
-      "segment_id": "SEG403",
-      "type": "speaking",
-      "start_time": 637.29,
-      "end_time": 637.41,
-      "duration_sec": 0.12,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG404",
-      "type": "speaking",
-      "start_time": 637.44,
-      "end_time": 637.59,
-      "duration_sec": 0.15,
-      "video_frames": [
-        15300
-      ]
-    },
-    {
-      "segment_id": "SEG405",
-      "type": "speaking",
-      "start_time": 638.43,
-      "end_time": 638.58,
-      "duration_sec": 0.15,
-      "video_frames": []
-    },
-    {
-      "segment_id": "SEG406",
-      "type": "speaking",
-      "start_time": 639.12,
-      "end_time": 639.24,
-      "duration_sec": 0.12,
-      "video_frames": [
-        15340
-      ]
-    },
-    {
-      "segment_id": "SEG407",
-      "type": "speaking",
-      "start_time": 639.69,
-      "end_time": 639.792,
-      "duration_sec": 0.102,
-      "video_frames": []
     }
   ],
-  "speaking_count": 407,
+  "speaking_count": 214,
   "non_speaking_count": 0
 }

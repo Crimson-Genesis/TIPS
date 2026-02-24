@@ -1,270 +1,210 @@
 {
-  "dataset_id": "1",
+  "dataset_id": "2",
   "qa_pairs": [
     {
       "question_id": "Q1",
-      "question_text": "Give me a brief overview of your background and kinds of system you architect.",
-      "question_start_time": 13.75,
-      "question_end_time": 19.21,
+      "question_text": "Give me a brief overview of your background in machine learning.",
+      "question_start_time": 0.0,
+      "question_end_time": 3.98,
       "answer": {
-        "start_time": 20.77,
-        "end_time": 58.35,
+        "start_time": 4.31,
+        "end_time": 22.06,
         "segment_ids": [],
-        "text": "I have nine years of experience building distributed backend systems. For the last five years, I worked as a principal system engineer at a global SaaS company with approximately 120 million monthly active users and I led architecture of a multi-regional platform processing, 2.8 million requests per second at peak deployed across North America, Europe, South Pacific with a sustained 99.9% availability target."
+        "text": "I have seven years of experience working in machine learning and data-driven systems. For the last four years, I worked as a senior machine learning engineer on large-scale production models serving over 80 million users. My work focused on model development, deployment, monitoring, and failures in real-world environments."
       }
     },
     {
       "question_id": "Q2",
-      "question_text": "Let's move into system design. Design a global URLs or name service at Google scale.",
-      "question_start_time": 60.89,
-      "question_end_time": 66.6,
+      "question_text": "Describe a machine learning system which you built end to end.",
+      "question_start_time": 24.57,
+      "question_end_time": 28.09,
       "answer": {
-        "start_time": 70.18,
-        "end_time": 100.95,
+        "start_time": 29.51,
+        "end_time": 56.32,
         "segment_ids": [],
-        "text": "So the core requirement is low latency, redirects, global availability, correctness of redirects and operation simplicity. Quantitatively, I would assume 1 billion active short URLs, 5 million new URLs per day and approximately 300 million read-outs per day with P99 latency at a 15 milliseconds."
+        "text": "I designed and deployed a recommendation system for content ranking. It ingested user interaction events in real-time, time, performed feature extraction using a mix of batch and streaming pipelines, trained gradient boosted and deep learning models, and served a prediction with latency rate under 30 milliseconds. The system proceeded approximately 1.5 million events per second a week."
       }
     },
     {
       "question_id": "Q3",
-      "question_text": "What does the high level architecture look like?",
-      "question_start_time": 102.91,
-      "question_end_time": 105.91,
+      "question_text": "How did you define success for that model?",
+      "question_start_time": 59.52,
+      "question_end_time": 62.66,
       "answer": {
-        "start_time": 109.45,
-        "end_time": 148.87,
+        "start_time": 64.64,
+        "end_time": 82.94,
         "segment_ids": [],
-        "text": "Traffic inter through any cost, DNS and global load balancers, requests are routed to the Indian health region, primarily the US central one, US restaurant, or the South East one of Asia's region. There are separate services for URL creation and redirects. Redirects are optimized for read heavy traffic and the seat behind and aggressive CDNDS. It goes through regional API services backed by the distributed ID generator and the global redirected key value steps."
+        "text": "Success was measured using online metrics rather than offline accuracy alone. We tracked a click-through rate, long-term engagement, and regression metrics tied to business outcomes. Offline metrics were used only as getting checks, not final decision criteria."
       }
     },
     {
       "question_id": "Q4",
-      "question_text": "How do you generate short URL without collision and or coordination issues?",
-      "question_start_time": 149.99,
-      "question_end_time": 155.09,
+      "question_text": "How did you handle the training serving skills?",
+      "question_start_time": 84.69,
+      "question_end_time": 88.15,
       "answer": {
-        "start_time": 157.25,
-        "end_time": 192.09,
+        "start_time": 90.12,
+        "end_time": 107.64,
         "segment_ids": [],
-        "text": "Okay, I use 64 bit snowflake style IDs. Then I locate the consistor of the layout consistor of 41 bits for timestamp and 10 bits for vision ID and 12 bits for the per node sequence counter. This allows about 4096 IDs per millisecond per nodes without to co-ordinations and the ID is base 64 imported and so producing URL between 7 to 9 characters."
+        "text": "The same feature generation logic is shared between training and serving through a unified feature show. Features are versioned and statistical checks compare training and serving distribution continuously. Any detected drift trigger alert and automated rollbacks."
       }
     },
     {
       "question_id": "Q5",
-      "question_text": "Why not random hashes?",
-      "question_start_time": 192.74,
-      "question_end_time": 194.26,
+      "question_text": "Explain the difference between bias and the variance in practical terms.",
+      "question_start_time": 109.84,
+      "question_end_time": 114.82,
       "answer": {
-        "start_time": 196.76,
-        "end_time": 217.61,
+        "start_time": 116.66,
+        "end_time": 135.7,
         "segment_ids": [],
-        "text": "Random answers includes the collision handling and the coordination over at the skin. Sequential time order IDs are simpler to operate and easier to charge. So the problem theoretically includes operational credibility."
+        "text": "Bias represents systematic error caused by over-lie simplistic assumption in the model. Variance represents sensitivity to noise in the training data. In production, high bias lead to consistently wrong predictions, while high variance causes unstable behavior under slight data changes."
       }
     },
     {
       "question_id": "Q6",
-      "question_text": "Talk about data storage.",
-      "question_start_time": 218.78,
-      "question_end_time": 220.4,
+      "question_text": "How do you decide which model to repair?",
+      "question_start_time": 137.07,
+      "question_end_time": 139.11,
       "answer": {
-        "start_time": 223.87,
-        "end_time": 258.42,
+        "start_time": 141.34,
+        "end_time": 157.11,
         "segment_ids": [],
-        "text": "Okay, primary store is a sardid globally deputated key value data store. Each short URL maps to the long URL creation time stamps, optional expression, timestamp and owner ID. The application factor is three per region with corner rates for correctness and analytics and logging data are returned sequentially to append all the events to and proceed separately."
+        "text": "Model selection is based on offline validation followed by controlled online experiments. A model is deployed only if it shows statistically a significant improvement in primary metrics without degrading secondary metrics such as latency or stability."
       }
     },
     {
       "question_id": "Q7",
-      "question_text": "How do you share the data?",
-      "question_start_time": 259.94,
-      "question_end_time": 261.3,
+      "question_text": "How do you handle corrupt drift?",
+      "question_start_time": 159.44,
+      "question_end_time": 162.06,
       "answer": {
-        "start_time": 263.07,
-        "end_time": 280.19,
+        "start_time": 164.94,
+        "end_time": 183.2,
         "segment_ids": [],
-        "text": "Data is shared by hashing the sort you are the line is. This ensures uniform distribution and allow short count changes without reshaping the entire dataset. The system starts with 2048 short global and scale horizontally as right throughput increases."
+        "text": "We monitor feature distribution and prediction confidence over time. Retraining is scheduled regularly but we also trigger retraining when drift exit defined thresholds. For several drifts, the system falls back to previously stable model."
       }
     },
     {
       "question_id": "Q8",
-      "question_text": "Describe the redact path in detail. How",
-      "question_start_time": 281.28,
-      "question_end_time": 284.14,
+      "question_text": "Describe your approach to feature engine. How",
+      "question_start_time": 185.44,
+      "question_end_time": 188.72,
       "answer": {
-        "start_time": 286.12,
-        "end_time": 311.96,
+        "start_time": 190.38,
+        "end_time": 207.83,
         "segment_ids": [],
-        "text": "Most redirect stars saved directly from the CDN engine with a 24 hour TDN on a cache bench. The request is routed to the nearest redirect services, which perform a single key value lookup and returns a 301 or 302 as a TP response. The redirect service is stateless and horizontally scalable."
+        "text": "I prioritize is features that are stable, interpretable, and cheap to compute complex feature are introduced only when they demonstrate clear incremental value. Feature importance and ablation studies guide pruning decisions."
       }
     },
     {
       "question_id": "Q9",
-      "question_text": "high do you expect the catch-hit ratio to be?",
-      "question_start_time": 313.22,
-      "question_end_time": 316.88,
+      "question_text": "do you ensure modern are explainable?",
+      "question_start_time": 209.5,
+      "question_end_time": 211.78,
       "answer": {
-        "start_time": 319.28,
-        "end_time": 335.13,
+        "start_time": 213.62,
+        "end_time": 231.46,
         "segment_ids": [],
-        "text": "About 95% of the redirect services are highly schooled with a small subset of links receiving the majority of graphics. The architecture is designed to exploit this across pattern accessible."
+        "text": "For inherently complex models, we use post hoc explanation techniques such as feature attribution and sensitivity analysis. For high-risk decisions, we favor simpler models even if they are marginally less accurate."
       }
     },
     {
       "question_id": "Q10",
-      "question_text": "What about catch invalidation?",
-      "question_start_time": 336.48,
-      "question_end_time": 338.18,
+      "question_text": "What happens when our deployed models start degrading silently?",
+      "question_start_time": 233.13,
+      "question_end_time": 236.93,
       "answer": {
-        "start_time": 340.3,
-        "end_time": 359.66,
+        "start_time": 239.25,
+        "end_time": 256.11,
         "segment_ids": [],
-        "text": "There is no synchronous sketched validation. Administrative changes admittance is synchronous in validation instance. Short lived state lessness is acceptable but incorrect redirects are not. The right path enforces correctness before propagation."
+        "text": "Silent Degradation is detected through monitoring of downstream metrics rather than models scores alone. When detected, traffic is shifted to a fallback model while the root cause is investigated. Models are never treated as static artifacts."
       }
     },
     {
       "question_id": "Q11",
-      "question_text": "Let's talk about failures. A region goes completely offline.",
-      "question_start_time": 361.99,
-      "question_end_time": 365.55,
+      "question_text": "How do you think about fairness in the machine learning system?",
+      "question_start_time": 257.77,
+      "question_end_time": 261.73,
       "answer": {
-        "start_time": 366.45,
-        "end_time": 395.93,
+        "start_time": 263.68,
+        "end_time": 279.74,
         "segment_ids": [],
-        "text": "DNS health checks removes the region within 30 to 50 seconds. Read continues after remaining. Region using the replication data and automatically routed to the nearest health data. The recovery point objective is under one second and full full traffic stabilization occurs in under two minutes."
+        "text": "Fairness constraints are defined at the problem level, not added afterward. world. We measured disparities across relevant subgroups and enforced thresholds during training and evolution. Traits of are documented explicitly."
       }
     },
     {
       "question_id": "Q12",
-      "question_text": "How do you ensure consistency for redirects?",
-      "question_start_time": 397.3,
-      "question_end_time": 400.04,
+      "question_text": "What is the biggest mistake teams make with the machine learning systems?",
+      "question_start_time": 281.14,
+      "question_end_time": 286.68,
       "answer": {
-        "start_time": 401.44,
-        "end_time": 419.46,
+        "start_time": 289.72,
+        "end_time": 300.22,
         "segment_ids": [],
-        "text": "Once a short URL is created, it must always resolve to the same long URL. It writes using the program, the application did using the program when accessing the storage, through most read-ass from cache and never use the traditional."
+        "text": "Over-optimizing offline metrics while ignoring deployment, monitoring and failure modes. Most ML failures are system failures, not algorithmic ones."
       }
     },
     {
       "question_id": "Q13",
-      "question_text": "What happens if two users try to create the same short URL?",
-      "question_start_time": 421.37,
-      "question_end_time": 425.15,
+      "question_text": "How do you develop a model behaving unexpectedly in production?",
+      "question_start_time": 301.4,
+      "question_end_time": 305.88,
       "answer": {
-        "start_time": 427.2,
-        "end_time": 437.68,
+        "start_time": 307.53,
+        "end_time": 319.67,
         "segment_ids": [],
-        "text": "They can't. Short URLs are a system generated not to use a program. This eliminates the conflict and simplifies abuse of the previous."
+        "text": "I start by checking data freshness, feature distribution, and serving logs. If When data is correct, I impact recent changes through training data or code. Model parameter are rarely the first suspect."
       }
     },
     {
       "question_id": "Q14",
-      "question_text": "How do you monitor the system?",
-      "question_start_time": 438.6,
-      "question_end_time": 439.96,
+      "question_text": "How do you vision and roll back a model?",
+      "question_start_time": 321.07,
+      "question_end_time": 325.51,
       "answer": {
-        "start_time": 443.84,
-        "end_time": 472.93,
+        "start_time": 327.1,
+        "end_time": 339.02,
         "segment_ids": [],
-        "text": "We take the golden science, latency, traffic, error rate, key metrics include the P15, P95, P99, grade act latency, catch hit ratio, storage, read latency, and write error rate. All request catch carry IDs of the distributed tracing alerts are driven by SLO, violation rather than raw resource thresholds."
+        "text": "Every model artifact, feature schema, and data set snapshot is wasn't. Rollbacks are automated and reversible within minutes. No model is deployed without a known good fallback."
       }
     },
     {
       "question_id": "Q15",
-      "question_text": "What's the availability target?",
-      "question_start_time": 474.82,
-      "question_end_time": 476.66,
+      "question_text": "What redox would do you commonly face in ML system design?",
+      "question_start_time": 339.9,
+      "question_end_time": 344.62,
       "answer": {
-        "start_time": 478.22,
-        "end_time": 490.16,
+        "start_time": 346.17,
+        "end_time": 358.83,
         "segment_ids": [],
-        "text": "99.9% monthly availability for radars is the right path for tolerate beef, brief degradation without technical use of the"
+        "text": "Accuracy versus latency, model complexity versus interpretability, and automation versus control. role. These trade-offs are resolved based on system constraints, not theoretical optimality."
       }
     },
     {
       "question_id": "Q16",
-      "question_text": "Traffic increases tenfold in a year. What breaks first?",
-      "question_start_time": 491.1,
-      "question_end_time": 495.26,
+      "question_text": "What defines a valid engineering machine learning system?",
+      "question_start_time": 360.62,
+      "question_end_time": 364.1,
       "answer": {
-        "start_time": 496.58,
-        "end_time": 513.72,
+        "start_time": 365.21,
+        "end_time": 378.09,
         "segment_ids": [],
-        "text": "metadata right path. Mitigation involved increasing short-haul, adding right benching and extra catch TTL for inactive orders. The read part is scale is a linear due to the city at absorption"
+        "text": "A system where models can fail without causing outage. Performance degrades gracefully and behavior is observable and explainable. If engineer can reason about it under pressure, it will well engineer."
       }
     },
     {
       "question_id": "Q17",
-      "question_text": "how do you handle abuse and malicious links?",
-      "question_start_time": 514.85,
-      "question_end_time": 517.67,
+      "question_text": "That's it. Thank you.",
+      "question_start_time": 380.02,
+      "question_end_time": 381.08,
       "answer": {
-        "start_time": 519.34,
-        "end_time": 539.25,
-        "segment_ids": [],
-        "text": "you are a creation event are asynchronous is scanned using application services known malicious links are disabled by uploading metro data and fishing catch invalidation the redacted service in force this cashage before responding"
-      }
-    },
-    {
-      "question_id": "Q18",
-      "question_text": "How do you roll out schema changes?",
-      "question_start_time": 540.18,
-      "question_end_time": 541.88,
-      "answer": {
-        "start_time": 545.47,
-        "end_time": 562.77,
-        "segment_ids": [],
-        "text": "only backward comparatively changes are allowed. Neufils are added with the default values. Readers are updated before writers. There is no in-place distributed migration on the hot path."
-      }
-    },
-    {
-      "question_id": "Q19",
-      "question_text": "How do you document this architecture for large teams?",
-      "question_start_time": 563.8,
-      "question_end_time": 567.46,
-      "answer": {
-        "start_time": 569.7,
-        "end_time": 586.5,
-        "segment_ids": [],
-        "text": "I use high-level diagrams for cross-chain alignment, detailed design documentation for implementers, and exploit is ownership of this documentation is recent and reviewed for like code."
-      }
-    },
-    {
-      "question_id": "Q20",
-      "question_text": "What trade-off did you intentionally make?",
-      "question_start_time": 587.41,
-      "question_end_time": 590.21,
-      "answer": {
-        "start_time": 592.7,
-        "end_time": 611.13,
-        "segment_ids": [],
-        "text": "Eventually constencing for analytics, no synchronous cache validation and system-generated IOTs instead of user customization. This is version that use complexity and increasingly duplicate. A"
-      }
-    },
-    {
-      "question_id": "Q21",
-      "question_text": "What makes a system well-architected?",
-      "question_start_time": 611.08,
-      "question_end_time": 613.46,
-      "answer": {
-        "start_time": 615.24,
-        "end_time": 632.56,
-        "segment_ids": [],
-        "text": "well-architected system scales without redesign, fail periodically, and can be operated by engineers who did not originally build it if an incident can be diagnosed and mitigated quickly the architecture is affected."
-      }
-    },
-    {
-      "question_id": "Q22",
-      "question_text": "That's all. Thank you.",
-      "question_start_time": 633.52,
-      "question_end_time": 634.54,
-      "answer": {
-        "start_time": 636.71,
-        "end_time": 637.03,
+        "start_time": 383.12,
+        "end_time": 383.54,
         "segment_ids": [],
         "text": "Thank you."
       }
     }
   ],
-  "total_pairs": 22
+  "total_pairs": 17
 }

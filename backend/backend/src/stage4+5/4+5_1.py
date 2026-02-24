@@ -1,38 +1,66 @@
 """
 Stage 4+5: Combined Relevance Scoring + Incremental Verdict Aggregation (4-BIT QUANTIZED)
 Single-pass LLM evaluation with progressive interview profiling
+WITH GPU MEMORY MANAGEMENT
 """
 import json
 from pathlib import Path
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 import torch
+import gc
 import sys
 import time
 
 MODEL_ID = "Qwen/Qwen2.5-3B-Instruct"
 
 # -------------------------------
-# Load Model (4-BIT QUANTIZED)
+# CLEAR GPU MEMORY FIRST
+# -------------------------------
+def clear_gpu_memory():
+    """Clear GPU memory before loading model."""
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.ipc_collect()
+        total_mem = torch.cuda.get_device_properties(0).total_memory / 1024**3
+        allocated = torch.cuda.memory_allocated(0) / 1024**3
+        reserved = torch.cuda.memory_reserved(0) / 1024**3
+        print(f"GPU Memory - Total: {total_mem:.2f}GB, Allocated: {allocated:.2f}GB, Reserved: {reserved:.2f}GB", flush=True)
+
+print("Clearing GPU memory...", flush=True)
+clear_gpu_memory()
+
+# -------------------------------
+# Load Model (4-BIT QUANTIZED - MEMORY OPTIMIZED)
 # -------------------------------
 print("Loading tokenizer...", flush=True)
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=True)
 tokenizer.model_max_length = 8192
 
-print("Loading model (4-bit quantized)...", flush=True)
+print("Loading model (4-bit quantized with memory optimization)...", flush=True)
 quantization_config = BitsAndBytesConfig(
     load_in_4bit=True,
     bnb_4bit_compute_dtype=torch.float16,
     bnb_4bit_use_double_quant=True,
-    bnb_4bit_quant_type="nf4"
+    bnb_4bit_quant_type="nf4",
+    # llm_int8_enable_fp32_cpu_offload=True
 )
 
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_ID,
-    device_map="auto",
     quantization_config=quantization_config,
-    torch_dtype=torch.float16
+    device_map="auto",
+    torch_dtype=torch.float16,
+    low_cpu_mem_usage=True,
+    max_memory={0: "3.0GB", "cpu": "12GB"}  # Reduced to 3.2GB for safety
 )
-print("Model ready (4-bit quantized, ~2GB VRAM)", flush=True)
+print("Model ready (4-bit quantized, ~2-3GB VRAM)", flush=True)
+
+# Print memory usage after loading
+if torch.cuda.is_available():
+    allocated = torch.cuda.memory_allocated(0) / 1024**3
+    reserved = torch.cuda.memory_reserved(0) / 1024**3
+    print(f"After loading - Allocated: {allocated:.2f}GB, Reserved: {reserved:.2f}GB", flush=True)
 
 # -------------------------------
 # Utilities
@@ -120,7 +148,7 @@ def score_and_assess(
     q_tokens = count_tokens(question)
     a_tokens = count_tokens(answer)
     
-    RESERVED_TOKENS = 600  # More room for combined output
+    RESERVED_TOKENS = 600
     available_for_answer = 8192 - jd_tokens - q_tokens - RESERVED_TOKENS
     
     if available_for_answer < 100:
@@ -211,6 +239,11 @@ Respond with ONLY valid JSON:
             do_sample=False,
             pad_token_id=tokenizer.pad_token_id or tokenizer.eos_token_id
         )
+    
+    # Clear intermediate tensors
+    del inputs
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
     
     elapsed = time.time() - start_time
     print(f"  LLM finished in {elapsed:.2f}s", flush=True)
@@ -326,6 +359,11 @@ Respond with ONLY valid JSON:
             do_sample=False,
             pad_token_id=tokenizer.pad_token_id or tokenizer.eos_token_id
         )
+    
+    # Clear intermediate tensors
+    del inputs
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
     
     elapsed = time.time() - start_time
     print(f"Final verdict LLM finished in {elapsed:.2f}s", flush=True)
@@ -527,6 +565,16 @@ def run(output_dir: str, jd_path: str):
     print(f"Overall Score: {final_verdict['overall_score']}", flush=True)
     print(f"Total time: {total_elapsed/60:.2f} minutes", flush=True)
     print(f"Average per Q&A: {total_elapsed/len(qa_pairs):.2f}s", flush=True)
+    
+    # CLEANUP GPU MEMORY
+    print("\nCleaning up GPU memory...", flush=True)
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.ipc_collect()
+        allocated = torch.cuda.memory_allocated(0) / 1024**3
+        print(f"After cleanup - Allocated: {allocated:.2f}GB", flush=True)
+    print("Cleanup complete.", flush=True)
 
 # -------------------------------
 # Entry Point
